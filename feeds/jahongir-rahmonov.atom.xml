@@ -1,5 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/jahongir-rahmonov.atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2015-08-06T20:36:00+05:00</updated><entry><title>Why one plus one is not two</title><link href="http://rahmonov.github.io/posts/why-one-plus-one-is-not-two/" rel="alternate"></link><updated>2015-08-06T20:36:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2015-08-05:posts/why-one-plus-one-is-not-two/</id><summary type="html">&lt;p&gt;If you plant two plants close together, the roots commingle and improve the quality of the soil so that both 
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/jahongir-rahmonov.atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2015-09-12T21:14:00+05:00</updated><entry><title>Introduction to Python Social Auth</title><link href="http://rahmonov.github.io/posts/introduction-to-python-social-auth/" rel="alternate"></link><updated>2015-09-12T21:14:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2015-09-12:posts/introduction-to-python-social-auth/</id><summary type="html">&lt;p&gt;Python Social Auth aims to be an easy to setup social authentication and authorization mechanism for 
+Python projects supporting protocols like OAuth (1 and 2), OpenId and others.&lt;/p&gt;
+&lt;p&gt;Written by &lt;a href="https://github.com/omab"&gt;omab&lt;/a&gt;, this library helps a great deal in integrating social 
+authentication to your web apps. Why am I writing this when there is a whole 
+&lt;a href="http://psa.matiasaguirre.net/docs/index.html"&gt;documentation&lt;/a&gt; on the subject? This post is by no means 
+intended to replace the documentation. It is intended to serve as an introduction to the library itself 
+and concepts used in it, such as pipeline, partial pipeline, extending and etc. understanding of which 
+would have saved me a lot of time when I was learning the library.&lt;/p&gt;
+&lt;p&gt;I will not talk about small things like installation and configuration but rather try to give you a 
+bigger picture on PSA.&lt;/p&gt;
+&lt;h2&gt;Pipeline&lt;/h2&gt;
+&lt;p&gt;PSA uses a mechanism called Pipeline to do the autentication. Pipeline is like a stack of functions. 
+These functions get executed one by one and return some result to the next function. 
+The default pipeline looks like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;SOCIAL_AUTH_PIPELINE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.social_details&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.social_uid&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.auth_allowed&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.social_user&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.user.get_username&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="c"&gt;# &amp;#39;social.pipeline.mail.mail_validation&amp;#39;,&lt;/span&gt;
+    &lt;span class="c"&gt;# &amp;#39;social.pipeline.social_auth.associate_by_email&amp;#39;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.user.create_user&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.associate_user&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.load_extra_data&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.user.user_details&amp;#39;&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This is what happens when a user clicks a login button: &lt;code&gt;social_details&lt;/code&gt; function gets executed first. 
+It gets the information it can from, let's say, Facebook and returns it to the method &lt;code&gt;social_uid&lt;/code&gt; in a 
+simple format. &lt;code&gt;social_uid&lt;/code&gt; method does the same thing: does something with the information it got from 
+&lt;code&gt;social_details&lt;/code&gt; and returns the result to &lt;code&gt;auth_allowed&lt;/code&gt;. So on and so forth until the end of the 
+pipeline when user gets returned to the url you specified. This is the authentication pipeline. 
+There is also an disconnection pipeline, i.e. pipeline for when a user logs out. The same principles 
+apply to that too. More info on pipeline can be found 
+&lt;a href="http://psa.matiasaguirre.net/docs/pipeline.html"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Now, you can do whatever you like with this set of functions for the pipeline and customize it however 
+you like. You can remove any of the methods, for example to create a pipeline that won't create users, 
+just accepts already registered ones:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;SOCIAL_AUTH_PIPELINE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.social_details&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.social_uid&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.auth_allowed&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.social_user&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.associate_user&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.load_extra_data&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.user.user_details&amp;#39;&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Customize any of the methods:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;SOCIAL_AUTH_PIPELINE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;path.to.custom.social_details&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;    &lt;span class="c"&gt;# custom method&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.social_uid&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.auth_allowed&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.social_user&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.associate_user&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.load_extra_data&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.user.user_details&amp;#39;&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;or just create a function and add it to the pipeline. Good example of extending a pipeline can be found 
+&lt;a href="http://psa.matiasaguirre.net/docs/pipeline.html#extending-the-pipeline"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;Partial Pipeline&lt;/h2&gt;
+&lt;p&gt;It is also possible to cut the pipeline to ask the user for more information and resume the proccess 
+later. For example, to ensure that the user provides his email, you can write the following partial 
+pipeline:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nd"&gt;@partial&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;require_email&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;strategy&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;details&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;is_new&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;email&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt;
+    &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="n"&gt;is_new&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;details&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;email&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;email&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;strategy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;request_data&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;email&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;email&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;details&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;email&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;email&lt;/span&gt;
+        &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;redirect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;require_email&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This method first checks whether email exists. If so, continues the pipeline. Otherwise, it will 
+redirect to &lt;code&gt;require_email&lt;/code&gt; view, which looks like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;require_email&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;render&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;path/to/template.html&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So, it will render the template with a form. Attention: this form must be submitted to 
+&lt;code&gt;/complete/&amp;lt;backend&amp;gt;/&lt;/code&gt; to continue the pipeline:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nt"&gt;&amp;lt;form&lt;/span&gt; &lt;span class="na"&gt;action=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;/complete/instagram&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;method=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;post&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;After a user submits the form, the pipeline comes to this part of the partial pipeline code:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;email&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;strategy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;request_data&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;email&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;email&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;details&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;email&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;email&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;and if user entered his email, the pipeline continues and you will have access to his email through 
+&lt;code&gt;details['email']&lt;/code&gt;.&lt;/p&gt;
+&lt;h2&gt;Important use case&lt;/h2&gt;
+&lt;p&gt;Provide login/registration with PSA for two types of users.&lt;/p&gt;
+&lt;p&gt;So we have two types of users, SimpleUser and Shop(SimpleUser) which extends from SimpleUser. 
+To provide different registration proccess for them we can do the following:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Provide two different links and mark one of them with a get parameter(user_type):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nt"&gt;&amp;lt;a&lt;/span&gt; &lt;span class="na"&gt;href=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;{% url &amp;#39;social:begin&amp;#39; &amp;#39;facebook&amp;#39; %}&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;Login as SimpleUser&lt;span class="nt"&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;a&lt;/span&gt; &lt;span class="na"&gt;href=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;{% url &amp;#39;social:begin&amp;#39; &amp;#39;facebook&amp;#39; %}?user_type=shop&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;Login as Shop&lt;span class="nt"&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;In order to access this get parameter, we will have to do this in our settings file:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;FIELDS_STORED_IN_SESSION&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;user_type&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This will ensure that the value of this paramter is saved in a session.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Then in &lt;code&gt;create_user&lt;/code&gt; method of the pipeline, create different users depending on this parameter:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;create_user&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;strategy&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;backend&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;details&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;user_type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;strategy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;session_get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;type&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;user_type&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;shop&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+          &lt;span class="c"&gt;# create a shop&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+          &lt;span class="c"&gt;# create a simple user&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;and don't forget to include it in the pipeline settings.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;We are done! Hooorrayy  =)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Okay fellas, I hope you now have at least a little idea about how things work in PSA and can easily 
+read the documentation. These were only the most important and basic parts. 
+Checkout the documentation for the details. &lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="python"></category><category term="authentication"></category></entry><entry><title>Why one plus one is not two</title><link href="http://rahmonov.github.io/posts/why-one-plus-one-is-not-two/" rel="alternate"></link><updated>2015-08-06T20:36:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2015-08-05:posts/why-one-plus-one-is-not-two/</id><summary type="html">&lt;p&gt;If you plant two plants close together, the roots commingle and improve the quality of the soil so that both 
 plants will grow better than if they were separated. If you put two pieces of wood together, they will hold much 
 more than the total of the weight held by each separately.&lt;/p&gt;
 &lt;p&gt;That is what Steven Covey said in his wonderful book &lt;a href="http://www.amazon.com/7-Habits-Highly-Effective-People/dp/0935721800"&gt;Seven Habits of Highly Effective People&lt;/a&gt;
