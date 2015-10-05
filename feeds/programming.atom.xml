@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/programming.atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2015-09-12T21:14:00+05:00</updated><entry><title>Introduction to Python Social Auth</title><link href="http://rahmonov.github.io/posts/introduction-to-python-social-auth/" rel="alternate"></link><updated>2015-09-12T21:14:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2015-09-12:posts/introduction-to-python-social-auth/</id><summary type="html">&lt;p&gt;Python Social Auth aims to be an easy to setup social authentication and authorization mechanism for 
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/programming.atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2015-10-01T21:14:00+05:00</updated><entry><title>"Relation 'auth_user' does not exist" bug in Django 1.8</title><link href="http://rahmonov.github.io/posts/django-1.8-bug/" rel="alternate"></link><updated>2015-10-01T21:14:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2015-10-01:posts/django-1.8-bug/</id><summary type="html">&lt;p&gt;I recently started a fresh project in Django 1.8 with PostgreSQL. I set everything up and was ready to do
+my migrations. To my surprise, I got this error: &lt;code&gt;ProgrammingError: relation "auth_user" does not exist&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;I had absolutely no fancy stuff that could cause some problem.&lt;/p&gt;
+&lt;p&gt;I looked around and found out that I was not the only one. Even some &lt;a href="https://github.com/evonove/django-oauth-toolkit/issues/204"&gt;issues&lt;/a&gt;
+were opened on this question.&lt;/p&gt;
+&lt;p&gt;In short, here is how I solved it:&lt;/p&gt;
+&lt;p&gt;First option is to migrate the model which others depend on, i.e. &lt;code&gt;auth_user&lt;/code&gt; and then the rest:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="n"&gt;manage&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;migrate&lt;/span&gt; &lt;span class="n"&gt;auth&lt;/span&gt;
+&lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="n"&gt;manage&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;migrate&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Second option is downgrade the Django to 1.7 version and everything should work fine.&lt;/p&gt;
+&lt;p&gt;I hope this tip will prevent at least somebody from wasting a lot of time like I did.&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="python"></category><category term="django"></category><category term="bug"></category></entry><entry><title>Introduction to Python Social Auth</title><link href="http://rahmonov.github.io/posts/introduction-to-python-social-auth/" rel="alternate"></link><updated>2015-09-12T21:14:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2015-09-12:posts/introduction-to-python-social-auth/</id><summary type="html">&lt;p&gt;Python Social Auth aims to be an easy to setup social authentication and authorization mechanism for 
 Python projects supporting protocols like OAuth (1 and 2), OpenId and others.&lt;/p&gt;
 &lt;p&gt;Written by &lt;a href="https://github.com/omab"&gt;omab&lt;/a&gt;, this library helps a great deal in integrating social 
 authentication to your web apps. Why am I writing this when there is a whole 
