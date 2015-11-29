@@ -1,5 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Jahongir Rahmonov</title><link>http://rahmonov.github.io/</link><description></description><atom:link href="http://rahmonov.github.io/feeds/jahongir-rahmonov.rss.xml" rel="self"></atom:link><lastBuildDate>Thu, 01 Oct 2015 21:14:00 +0500</lastBuildDate><item><title>"Relation 'auth_user' does not exist" bug in Django 1.8</title><link>http://rahmonov.github.io/posts/django-1.8-bug/</link><description>&lt;p&gt;I recently started a fresh project in Django 1.8 with PostgreSQL. I set everything up and was ready to do
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Jahongir Rahmonov</title><link>http://rahmonov.github.io/</link><description></description><atom:link href="http://rahmonov.github.io/feeds/jahongir-rahmonov.rss.xml" rel="self"></atom:link><lastBuildDate>Wed, 18 Nov 2015 21:14:00 +0500</lastBuildDate><item><title>Be productive with the pomodoro technique</title><link>http://rahmonov.github.io/posts/pomodoro-technique/</link><description>&lt;h2&gt;Scenario I&lt;/h2&gt;
+&lt;p&gt;You have a lot of tasks to do today. You plan your day by breaking down those tasks into sub tasks and
+allocate some time to each of them. However, while doing those tasks, you run back and forth to check 
+your facebook, telegram or email, watch some videos on youtube and at the end of the day you end up 
+doing less than even a half of what you were supposed to do wondering where time went.&lt;/p&gt;
+&lt;h2&gt;Scenario II&lt;/h2&gt;
+&lt;p&gt;You have a lot of tasks to do today. You are super focused and determined to finish them no matter what.
+You drink a cup of coffee and start working. You power through your tasks like Flash. You don't care 
+about any other thing: you don't have lunch, dinner and most importantly break. At the end of the day,
+you are proud of yourself because you did it. However, the next two or three days, you don't feel like
+doing anything and want to just lay in your bed(listening to Lazy Song by Bruno Mars now). You burnt out!
+Where did your pride go now? It metamorphosed into regret.&lt;/p&gt;
+&lt;h2&gt;What to do?&lt;/h2&gt;
+&lt;p&gt;I have been to both of those above mentioned scenarios, with studies, work and a little freelancing 
+happening at the same time. In my search for a solution, I ran into the pomodoro technique and it has
+been a game changer. Now I can focus on my tasks without letting Facebook distract me(at least 
+most of the time) and not get burnt out. There is also a rewarding by-product you get besides productivity:
+confidence! The reason is that you feel like you are in control of your life and not the other way around.&lt;/p&gt;
+&lt;h2&gt;The Technique&lt;/h2&gt;
+&lt;p&gt;The technique is in itself pretty simple. You work for 25 minutes only on your task. No Facebook, no email,
+no youtube, no talking, no nothing but your task. Then you get a 5-minute break. Then, you do three more
+pomodoros(yes, that 25-minute working period IS pomodoro), giving you 100 minutes of work time and 15 minutes
+of break. After the fourth pomodoro, you get a longer break: 25 minutes. This is it. This way, your mind 
+remains fresh and focused throughout the day and you won't burn out. But make sure that you get quality
+break times, i.e. do something that is resting for you. In one of those longer breaks, take a nap. They
+say you live two days(one and a half at least) instead of one day if you take a nap.&lt;/p&gt;
+&lt;h2&gt;Pre-pomodoro&lt;/h2&gt;
+&lt;p&gt;Before using the technique, make sure that you have concrete and important tasks. Without them, the pomodoro
+will be of no use. Imagine focusing on doing the wrong things. Yikes! &lt;/p&gt;
+&lt;h2&gt;Wrap up&lt;/h2&gt;
+&lt;p&gt;Finish 10 pomodoro a day on average and you can consider yourself a very productive person. It will be even
+reflected on other areas of your life. &lt;/p&gt;
+&lt;p&gt;There are lots of web and mobile apps to help you with this. My favourite is &lt;a href="kanbanflow.com"&gt;Kanbanflow&lt;/a&gt; because it has kanban 
+board and the pomodoro timer in one app. More on kanban in later posts.&lt;/p&gt;
+&lt;p&gt;I hope this post will help someone improve their time-management and productivity skills in the future.&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jahongir Rahmonov</dc:creator><pubDate>Wed, 18 Nov 2015 21:14:00 +0500</pubDate><guid>tag:rahmonov.github.io,2015-11-18:posts/pomodoro-technique/</guid><category>productivity</category><category>pomodoro</category></item><item><title>Customize django admin templates</title><link>http://rahmonov.github.io/posts/customize-django-admin-templates/</link><description>&lt;p&gt;Quite often, we need to customize the django admin template: to add additional functionality or just 
+change its look and feel.&lt;/p&gt;
+&lt;p&gt;Recently, I had the task of adding an ajax request on admin page load(specifically, change_form.html) 
+and adding two buttons, one of which would bring a modal up and the other would delete the selected items
+which, in their turn, were brought by that ajax request.&lt;/p&gt;
+&lt;p&gt;Here is what I did and went through:&lt;/p&gt;
+&lt;h2&gt;Template&lt;/h2&gt;
+&lt;p&gt;First, I created a &lt;code&gt;change_form.html&lt;/code&gt; file in &lt;code&gt;/templates/admin/&lt;/code&gt; folder. As I wanted this file to extend, 
+not replace, the default &lt;code&gt;change_form.html&lt;/code&gt;, I wrote this at the beginning of the file:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;extends&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;admin/change_form.html&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This, naturally, led to &lt;code&gt;maximum recursin depth exceeded&lt;/code&gt; error as it was trying to &lt;code&gt;extend&lt;/code&gt; itself.&lt;/p&gt;
+&lt;p&gt;Then, I read somewhere that I could put this file in &lt;code&gt;/templates/admin/app_name&lt;/code&gt; folder, so that it will 
+change the templates of only this app. Voila! Recursion problem solved.&lt;/p&gt;
+&lt;p&gt;Then, I added all those buttons and modals I wanted to(more on this later). Everything was working fine 
+until I found out that the buttons I added appear on the admin pages of all the models in the app. But 
+I wanted them to appear only on the admin pages of, let's say, &lt;code&gt;product&lt;/code&gt; model.&lt;/p&gt;
+&lt;p&gt;Turned out, the same works here. I just needed to put the file inside &lt;code&gt;/templates/admin/app_name/model_name&lt;/code&gt;.
+In my case, it the file was  &lt;code&gt;/templates/admin/enterprise/product&lt;/code&gt;.&lt;/p&gt;
+&lt;h2&gt;Styles, Scripts and Buttons&lt;/h2&gt;
+&lt;p&gt;Where do I put them? Taking a look at &lt;code&gt;admin/base.html&lt;/code&gt; did the trick. It has special blocks for extra styles and
+scripts. So I put my css and javascript files in the following way:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;block&lt;/span&gt; &lt;span class="n"&gt;extrastyle&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;{{&lt;/span&gt; &lt;span class="n"&gt;block&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;super&lt;/span&gt; &lt;span class="p"&gt;}}&lt;/span&gt;
+
+    &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;link&lt;/span&gt; &lt;span class="n"&gt;rel&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;stylesheet&amp;quot;&lt;/span&gt; &lt;span class="n"&gt;href&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;{&lt;/span&gt;&lt;span class="si"&gt;% s&lt;/span&gt;&lt;span class="s"&gt;tatic &amp;#39;css/enterprise/main.css&amp;#39;%}&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;endblock&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;block&lt;/span&gt; &lt;span class="n"&gt;extrahead&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;{{&lt;/span&gt; &lt;span class="n"&gt;block&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;super&lt;/span&gt; &lt;span class="p"&gt;}}&lt;/span&gt;
+
+    &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;script&lt;/span&gt; &lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;text/javascript&amp;quot;&lt;/span&gt; &lt;span class="n"&gt;src&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;{&lt;/span&gt;&lt;span class="si"&gt;% s&lt;/span&gt;&lt;span class="s"&gt;tatic &amp;#39;js/enterprise/modal.js&amp;#39;%}&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;lt;/&lt;/span&gt;&lt;span class="n"&gt;script&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;endblock&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;As for buttons, I thought a good place would be above the default buttons. So, I thought out the block of those buttons 
+and put mine right above them:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;block&lt;/span&gt; &lt;span class="n"&gt;submit_buttons_bottom&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;div&lt;/span&gt; &lt;span class="n"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;submit-row&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;button&lt;/span&gt; &lt;span class="n"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;btn btn-danger&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Custom&lt;/span&gt; &lt;span class="n"&gt;Button&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="n"&gt;button&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="n"&gt;div&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+
+    &lt;span class="p"&gt;{{&lt;/span&gt; &lt;span class="n"&gt;block&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;super&lt;/span&gt; &lt;span class="p"&gt;}}&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;endblock&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;As I was using &lt;a href="https://github.com/django-admin-bootstrapped/django-admin-bootstrapped"&gt;django-admin-bootstrapped&lt;/a&gt;,
+&lt;code&gt;submit-row&lt;/code&gt; gave the &lt;code&gt;div&lt;/code&gt; nice and natural look.&lt;/p&gt;
+&lt;h2&gt;Additional&lt;/h2&gt;
+&lt;p&gt;In the ajax request, I had to send the &lt;code&gt;id&lt;/code&gt; of the product being changed. So I thought I could get it with &lt;code&gt;{{ product.id }}&lt;/code&gt;
+but I was wrong. Then, I learned that I could get it like so:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="p"&gt;{{&lt;/span&gt; &lt;span class="n"&gt;original&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt; &lt;span class="p"&gt;}}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So, the model instance being dealt with can be accessed with the word &lt;code&gt;original&lt;/code&gt;. How original, isn't it?&lt;/p&gt;
+&lt;h2&gt;Wrap up&lt;/h2&gt;
+&lt;p&gt;Either I am bad at reading the documentation or it could be improved a little further. Probably first option. &lt;/p&gt;
+&lt;p&gt;I hope it will help somebody save some time in the future.&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jahongir Rahmonov</dc:creator><pubDate>Sun, 18 Oct 2015 21:14:00 +0500</pubDate><guid>tag:rahmonov.github.io,2015-10-18:posts/customize-django-admin-templates/</guid><category>python</category><category>django</category><category>admin</category></item><item><title>Close modal on back button in AngularJS</title><link>http://rahmonov.github.io/posts/close-modal-on-back-button/</link><description>&lt;p&gt;We, developers, use modals all the time. I personally like to use &lt;a href="https://github.com/likeastore/ngDialog"&gt;ngDialog&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;It is light, easy to use and highly customizable. &lt;a href="https://angular-ui.github.io/bootstrap/#/modal"&gt;Bootstrap&lt;/a&gt; is also good but 
+it is somewhat heavy.&lt;/p&gt;
+&lt;p&gt;Here is how modal is opened in ngDialog:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nx"&gt;ngDialog&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;open&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;
+    &lt;span class="nx"&gt;template&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;externalTemplate.html&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nx"&gt;controller&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;SomeController&amp;#39;&lt;/span&gt;
+&lt;span class="p"&gt;});&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It will open up a modal as expected but when you press the back button of the browser, what happens?&lt;/p&gt;
+&lt;p&gt;I would expect the modal to close and stay where I was before the modal. But what happens is that you go
+back in browser history. Ouch! Especially on mobile, it is really not convenient to press the small 'x' button
+of the modal. That's why, I would guess, user would press the back button to close the modal.&lt;/p&gt;
+&lt;p&gt;Here is how I solved the problem:&lt;/p&gt;
+&lt;p&gt;First, I created a service that deals with modals and it has a flag &lt;code&gt;modalIsShown&lt;/code&gt; which will be used later:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nx"&gt;myApp&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;service&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;ModalService&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;ngDialog&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;ngDialog&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;modalIsShown&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;openModal&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;template&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;controller&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;ngDialog&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;open&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;
+      &lt;span class="nx"&gt;template&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;template&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="nx"&gt;controller&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;controller&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="nx"&gt;closeByDocument&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="nx"&gt;closeByEscape&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="nx"&gt;showClose&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;
+    &lt;span class="p"&gt;});&lt;/span&gt;
+  &lt;span class="p"&gt;};&lt;/span&gt;
+
+  &lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;closeModal&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;ngDialog&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;close&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+  &lt;span class="p"&gt;};&lt;/span&gt;
+
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;openModal&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;openModal&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nx"&gt;closeModal&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;closeModal&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nx"&gt;modalIsShown&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;modalIsShown&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}]);&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Second, Here is how I open up a modal from my controller:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nx"&gt;$scope&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;contactModal&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="nx"&gt;ModalService&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;modalIsShown&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="nx"&gt;ModalService&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;openModal&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;contactModal.html&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;FooterController&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;};&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Basically, the function sets the flag to true and opens the modal.&lt;/p&gt;
+&lt;p&gt;The most interestion part happens here:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nx"&gt;myApp&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;run&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;$rootScope&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;$route&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;$location&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;$routeParams&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;ModalService&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;$rootScope&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;$route&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;$location&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;$routeParams&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;ModalService&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+  &lt;span class="nx"&gt;$rootScope&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;$on&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;$routeChangeStart&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;evt&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;next&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;current&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;ModalService&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;modalIsShown&lt;/span&gt;&lt;span class="p"&gt;){&lt;/span&gt;
+      &lt;span class="nx"&gt;ModalService&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;closeModal&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+      &lt;span class="nx"&gt;ModalService&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;modalIsShown&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="nx"&gt;evt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;preventDefault&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="p"&gt;});&lt;/span&gt;
+&lt;span class="p"&gt;}]);&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;When a user presses a back button, when the url is about to change, angular calls this &lt;code&gt;$routeChangeStart&lt;/code&gt;
+observing function. And this function checks whether the flag &lt;code&gt;modalIsShown&lt;/code&gt; is set to true. If so, it means
+that a user is trying to close a modal by pressing the back button, thus it closes the modal, sets the flag
+back to false and prevents the url change.&lt;/p&gt;
+&lt;p&gt;If anyone could suggest a better or cleaner way in comments, that would be awesome.&lt;/p&gt;
+&lt;p&gt;Hope it helps.&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jahongir Rahmonov</dc:creator><pubDate>Sat, 03 Oct 2015 21:14:00 +0500</pubDate><guid>tag:rahmonov.github.io,2015-10-03:posts/close-modal-on-back-button/</guid><category>javascript</category><category>angularjs</category><category>modal</category></item><item><title>"Relation 'auth_user' does not exist" bug in Django 1.8</title><link>http://rahmonov.github.io/posts/django-1.8-bug/</link><description>&lt;p&gt;I recently started a fresh project in Django 1.8 with PostgreSQL. I set everything up and was ready to do
 my migrations. To my surprise, I got this error: &lt;code&gt;ProgrammingError: relation "auth_user" does not exist&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;I had absolutely no fancy stuff that could cause some problem.&lt;/p&gt;
 &lt;p&gt;I looked around and found out that I was not the only one. Even some &lt;a href="https://github.com/evonove/django-oauth-toolkit/issues/204"&gt;issues&lt;/a&gt;
