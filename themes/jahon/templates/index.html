@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% block content_title %}
+<h2>Latest Post</h2>
+{% endblock %}
+
+<h4>
+    <a href="{{ articles[0].url }}">
+        {{ articles[0].date|strftime('%d %B %Y')}}
+    </a>
+</h4>
+
+<h1>{{ articles[0].title }}</h1>
+
+{{ articles[0].content }}
+
+{% include 'footer.html' %}
+
+{% endblock content %}
+

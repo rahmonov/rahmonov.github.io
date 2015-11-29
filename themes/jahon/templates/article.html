@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block head %}
+  {{ super() }}
+
+  {% if article.description %}
+    <meta name="description" content="{{article.summary}}" />
+  {% endif %}
+
+  {% for tag in article.tags %}
+    <meta name="tags" content="{{tag}}" />
+  {% endfor %}
+
+{% endblock %}
+
+<title>{% block title %} {{ article.title }} - {{ SITENAME }} {% endblock %}</title>
+
+{% block open_graph %}
+<meta property="og:title" content="{{ article.title }} - {{ SITENAME }}">
+<meta property="og:type" content="website">
+<meta property="og:image" content="/static/images/programming.jpg">
+<meta property="og:url" content="{{ SITEURL }}/{{ article.url }}">
+<meta property="og:description" content="{{ article.summary }}">
+{% endblock %}
+
+
+{% block content %}
+
+  <h4>{{ article.locale_date }}</h4>
+
+  <h1>{{ article.title }}</h1>
+
+  <div class="entry-content">
+    {{ article.content }}
+  </div>
+
+  {% include 'footer.html' %}
+
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES * * */
+        var disqus_shortname = 'jrahmonov';
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+{% endblock %}
+
+
+
+

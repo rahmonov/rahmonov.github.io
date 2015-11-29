@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+<title>{% block title %} About - {{ SITENAME }} {% endblock %}</title>
+
+{% block open_graph %}
+<meta property="og:title" content="About - {{ SITENAME }}">
+<meta property="og:type" content="website">
+<meta property="og:image" content="/static/images/me.jpg">
+<meta property="og:url" content="{{ SITEURL }}/pages/about.html">
+<meta property="og:description" content="Basic info and about Jahongir Rahmonov including links and contact info.">
+{% endblock %}
+
+{% block content %}
+
+{% block content_title %}
+<h2 id="about">About </h2>
+{% endblock %}
+
+
+<p class="greeting">
+    My name is Jahongir Rahmonov.
+</p>
+
+<p>
+    I'm a
+    <a href="https://github.com/rahmonov">software engineer</a>
+    at <a href="http://shift.uz/">Shift Technologies</a>
+    and a senior student in Business Information Systems at
+    <a href="http://wiut.uz">Westminster International University in Tashkent</a>
+</p>
+
+<p>
+    I like simplicity and reading. I always try to love what I am doing.
+    I think everybody should be humble and kind no matter what status they own.
+    And yeah, I think Android is more powerful(Google rocks) than iOS but Apple is super awesome as a company too.
+</p>
+
+
+<h2 id="contact">Contact</h2>
+<p>
+    Feel free to contact me through
+    <a href="https://twitter.com/the_rahmonov" target="_blank">Twitter</a> and
+    <a href="https://www.facebook.com/rahmonovj" target="_blank">Facebook</a>
+    or privately through
+    <a href="mailto:jrahmonov@wiut.uz">email</a>.
+    I really enjoy talking with people.
+</p>
+
+<h2 id="contact">Powered by</h2>
+<p>
+    The website is powered by <a href="http://docs.getpelican.com/" target="_blank">Pelican</a> static site generator
+    and <a href="https://pages.github.com/" target="_blank">Github Pages</a>.
+    Design is inspired by <a href="http://joshldavis.com/" target="_blank">Josh Davis</a>.
+</p>
+
+
+{% include 'footer.html' %}
+
+{% endblock content %}

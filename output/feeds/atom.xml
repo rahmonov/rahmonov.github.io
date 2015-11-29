@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2015-10-18T21:14:00+05:00</updated><entry><title>Customize django admin templates</title><link href="http://rahmonov.github.io/posts/customize-django-admin-templates/" rel="alternate"></link><updated>2015-10-18T21:14:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2015-10-18:posts/customize-django-admin-templates/</id><summary type="html">&lt;p&gt;Quite often, we need to customize the django admin template: to add additional functionality or just 
+change its look and feel.&lt;/p&gt;
+&lt;p&gt;Recently, I had the task of adding an ajax request on admin page load(specifically, change_form.html) 
+and adding two buttons, one of which would bring a modal up and the other would delete the selected items
+which, in their turn, were brought by that ajax request.&lt;/p&gt;
+&lt;p&gt;Here is what I did and went through:&lt;/p&gt;
+&lt;h2&gt;Template&lt;/h2&gt;
+&lt;p&gt;First, I created a &lt;code&gt;change_form.html&lt;/code&gt; file in &lt;code&gt;/templates/admin/&lt;/code&gt; folder. As I wanted this file to extend, 
+not replace, the default &lt;code&gt;change_form.html&lt;/code&gt;, I wrote this at the beginning of the file:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;extends&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;admin/change_form.html&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This, naturally, led to &lt;code&gt;maximum recursin depth exceeded&lt;/code&gt; error as it was trying to &lt;code&gt;extend&lt;/code&gt; itself.&lt;/p&gt;
+&lt;p&gt;Then, I read somewhere that I could put this file in &lt;code&gt;/templates/admin/app_name&lt;/code&gt; folder, so that it will 
+change the templates of only this app. Voila! Recursion problem solved.&lt;/p&gt;
+&lt;p&gt;Then, I added all those buttons and modals I wanted to(more on this later). Everything was working fine 
+until I found out that the buttons I added appear on the admin pages of all the models in the app. But 
+I wanted them to appear only on the admin pages of, let's say, &lt;code&gt;product&lt;/code&gt; model.&lt;/p&gt;
+&lt;p&gt;Turned out, the same works here. I just needed to put the file inside &lt;code&gt;/templates/admin/app_name/model_name&lt;/code&gt;.
+In my case, it the file was  &lt;code&gt;/templates/admin/enterprise/product&lt;/code&gt;.&lt;/p&gt;
+&lt;h2&gt;Styles, Scripts and Buttons&lt;/h2&gt;
+&lt;p&gt;Where do I put them? Taking a look at &lt;code&gt;admin/base.html&lt;/code&gt; did the trick. It has special blocks for extra styles and
+scripts. So I put my css and javascript files in the following way:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;block&lt;/span&gt; &lt;span class="n"&gt;extrastyle&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;{{&lt;/span&gt; &lt;span class="n"&gt;block&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;super&lt;/span&gt; &lt;span class="p"&gt;}}&lt;/span&gt;
+
+    &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;link&lt;/span&gt; &lt;span class="n"&gt;rel&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;stylesheet&amp;quot;&lt;/span&gt; &lt;span class="n"&gt;href&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;{&lt;/span&gt;&lt;span class="si"&gt;% s&lt;/span&gt;&lt;span class="s"&gt;tatic &amp;#39;css/enterprise/main.css&amp;#39;%}&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;endblock&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;block&lt;/span&gt; &lt;span class="n"&gt;extrahead&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;{{&lt;/span&gt; &lt;span class="n"&gt;block&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;super&lt;/span&gt; &lt;span class="p"&gt;}}&lt;/span&gt;
+
+    &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;script&lt;/span&gt; &lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;text/javascript&amp;quot;&lt;/span&gt; &lt;span class="n"&gt;src&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;{&lt;/span&gt;&lt;span class="si"&gt;% s&lt;/span&gt;&lt;span class="s"&gt;tatic &amp;#39;js/enterprise/modal.js&amp;#39;%}&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;lt;/&lt;/span&gt;&lt;span class="n"&gt;script&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;endblock&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;As for buttons, I thought a good place would be above the default buttons. So, I thought out the block of those buttons 
+and put mine right above them:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;block&lt;/span&gt; &lt;span class="n"&gt;submit_buttons_bottom&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;div&lt;/span&gt; &lt;span class="n"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;submit-row&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;button&lt;/span&gt; &lt;span class="n"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;btn btn-danger&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Custom&lt;/span&gt; &lt;span class="n"&gt;Button&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="n"&gt;button&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="n"&gt;div&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+
+    &lt;span class="p"&gt;{{&lt;/span&gt; &lt;span class="n"&gt;block&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;super&lt;/span&gt; &lt;span class="p"&gt;}}&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;endblock&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;As I was using &lt;a href="https://github.com/django-admin-bootstrapped/django-admin-bootstrapped"&gt;django-admin-bootstrapped&lt;/a&gt;,
+&lt;code&gt;submit-row&lt;/code&gt; gave the &lt;code&gt;div&lt;/code&gt; nice and natural look.&lt;/p&gt;
+&lt;h2&gt;Additional&lt;/h2&gt;
+&lt;p&gt;In the ajax request, I had to send the &lt;code&gt;id&lt;/code&gt; of the product being changed. So I thought I could get it with &lt;code&gt;{{ product.id }}&lt;/code&gt;
+but I was wrong. Then, I learned that I could get it like so:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="p"&gt;{{&lt;/span&gt; &lt;span class="n"&gt;original&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt; &lt;span class="p"&gt;}}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So, the model instance being dealt with can be accessed with the word &lt;code&gt;original&lt;/code&gt;. How original, isn't it?&lt;/p&gt;
+&lt;h2&gt;Wrap up&lt;/h2&gt;
+&lt;p&gt;Either I am bad at reading the documentation or it could be improved a little further. Probably first option. &lt;/p&gt;
+&lt;p&gt;I hope it will help somebody save some time in the future.&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="javascript"></category><category term="angularjs"></category><category term="modal"></category></entry><entry><title>Close modal on back button in AngularJS</title><link href="http://rahmonov.github.io/posts/close-modal-on-back-button/" rel="alternate"></link><updated>2015-10-03T21:14:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2015-10-03:posts/close-modal-on-back-button/</id><summary type="html">&lt;p&gt;We, developers, use modals all the time. I personally like to use &lt;a href="https://github.com/likeastore/ngDialog"&gt;ngDialog&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;It is light, easy to use and highly customizable. &lt;a href="https://angular-ui.github.io/bootstrap/#/modal"&gt;Bootstrap&lt;/a&gt; is also good but 
+it is somewhat heavy.&lt;/p&gt;
+&lt;p&gt;Here is how modal is opened in ngDialog:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nx"&gt;ngDialog&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;open&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;
+    &lt;span class="nx"&gt;template&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;externalTemplate.html&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nx"&gt;controller&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;SomeController&amp;#39;&lt;/span&gt;
+&lt;span class="p"&gt;});&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It will open up a modal as expected but when you press the back button of the browser, what happens?&lt;/p&gt;
+&lt;p&gt;I would expect the modal to close and stay where I was before the modal. But what happens is that you go
+back in browser history. Ouch! Especially on mobile, it is really not convenient to press the small 'x' button
+of the modal. That's why, I would guess, user would press the back button to close the modal.&lt;/p&gt;
+&lt;p&gt;Here is how I solved the problem:&lt;/p&gt;
+&lt;p&gt;First, I created a service that deals with modals and it has a flag &lt;code&gt;modalIsShown&lt;/code&gt; which will be used later:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nx"&gt;myApp&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;service&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;ModalService&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;ngDialog&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;ngDialog&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;modalIsShown&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;openModal&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;template&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;controller&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;ngDialog&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;open&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;
+      &lt;span class="nx"&gt;template&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;template&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="nx"&gt;controller&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;controller&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="nx"&gt;closeByDocument&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="nx"&gt;closeByEscape&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="nx"&gt;showClose&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;
+    &lt;span class="p"&gt;});&lt;/span&gt;
+  &lt;span class="p"&gt;};&lt;/span&gt;
+
+  &lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;closeModal&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;ngDialog&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;close&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+  &lt;span class="p"&gt;};&lt;/span&gt;
+
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;openModal&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;openModal&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nx"&gt;closeModal&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;closeModal&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nx"&gt;modalIsShown&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;modalIsShown&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}]);&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Second, Here is how I open up a modal from my controller:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nx"&gt;$scope&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;contactModal&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="nx"&gt;ModalService&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;modalIsShown&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="nx"&gt;ModalService&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;openModal&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;contactModal.html&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;FooterController&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;};&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Basically, the function sets the flag to true and opens the modal.&lt;/p&gt;
+&lt;p&gt;The most interestion part happens here:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nx"&gt;myApp&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;run&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;$rootScope&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;$route&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;$location&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;$routeParams&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;ModalService&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;$rootScope&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;$route&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;$location&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;$routeParams&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;ModalService&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+  &lt;span class="nx"&gt;$rootScope&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;$on&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;$routeChangeStart&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;evt&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;next&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;current&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;ModalService&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;modalIsShown&lt;/span&gt;&lt;span class="p"&gt;){&lt;/span&gt;
+      &lt;span class="nx"&gt;ModalService&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;closeModal&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+      &lt;span class="nx"&gt;ModalService&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;modalIsShown&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="nx"&gt;evt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;preventDefault&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="p"&gt;});&lt;/span&gt;
+&lt;span class="p"&gt;}]);&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;When a user presses a back button, when the url is about to change, angular calls this &lt;code&gt;$routeChangeStart&lt;/code&gt;
+observing function. And this function checks whether the flag &lt;code&gt;modalIsShown&lt;/code&gt; is set to true. If so, it means
+that a user is trying to close a modal by pressing the back button, thus it closes the modal, sets the flag
+back to false and prevents the url change.&lt;/p&gt;
+&lt;p&gt;If anyone could suggest a better or cleaner way in comments, that would be awesome.&lt;/p&gt;
+&lt;p&gt;Hope it helps.&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="javascript"></category><category term="angularjs"></category><category term="modal"></category></entry><entry><title>"Relation 'auth_user' does not exist" bug in Django 1.8</title><link href="http://rahmonov.github.io/posts/django-1.8-bug/" rel="alternate"></link><updated>2015-10-01T21:14:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2015-10-01:posts/django-1.8-bug/</id><summary type="html">&lt;p&gt;I recently started a fresh project in Django 1.8 with PostgreSQL. I set everything up and was ready to do
+my migrations. To my surprise, I got this error: &lt;code&gt;ProgrammingError: relation "auth_user" does not exist&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;I had absolutely no fancy stuff that could cause some problem.&lt;/p&gt;
+&lt;p&gt;I looked around and found out that I was not the only one. Even some &lt;a href="https://github.com/evonove/django-oauth-toolkit/issues/204"&gt;issues&lt;/a&gt;
+were opened on this question.&lt;/p&gt;
+&lt;p&gt;In short, here is how I solved it:&lt;/p&gt;
+&lt;p&gt;First option is to migrate the model which others depend on, i.e. &lt;code&gt;auth_user&lt;/code&gt; and then the rest:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="n"&gt;manage&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;migrate&lt;/span&gt; &lt;span class="n"&gt;auth&lt;/span&gt;
+&lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="n"&gt;manage&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;migrate&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Second option is downgrade the Django to 1.7 version and everything should work fine.&lt;/p&gt;
+&lt;p&gt;I hope this tip will prevent at least somebody from wasting a lot of time like I did.&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="python"></category><category term="django"></category><category term="bug"></category></entry><entry><title>Introduction to Python Social Auth</title><link href="http://rahmonov.github.io/posts/introduction-to-python-social-auth/" rel="alternate"></link><updated>2015-09-12T21:14:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2015-09-12:posts/introduction-to-python-social-auth/</id><summary type="html">&lt;p&gt;Python Social Auth aims to be an easy to setup social authentication and authorization mechanism for 
+Python projects supporting protocols like OAuth (1 and 2), OpenId and others.&lt;/p&gt;
+&lt;p&gt;Written by &lt;a href="https://github.com/omab"&gt;omab&lt;/a&gt;, this library helps a great deal in integrating social 
+authentication to your web apps. Why am I writing this when there is a whole 
+&lt;a href="http://psa.matiasaguirre.net/docs/index.html"&gt;documentation&lt;/a&gt; on the subject? This post is by no means 
+intended to replace the documentation. It is intended to serve as an introduction to the library itself 
+and concepts used in it, such as pipeline, partial pipeline, extending and etc. understanding of which 
+would have saved me a lot of time when I was learning the library.&lt;/p&gt;
+&lt;p&gt;I will not talk about small things like installation and configuration but rather try to give you a 
+bigger picture on PSA.&lt;/p&gt;
+&lt;h2&gt;Pipeline&lt;/h2&gt;
+&lt;p&gt;PSA uses a mechanism called Pipeline to do the autentication. Pipeline is like a stack of functions. 
+These functions get executed one by one and return some result to the next function. 
+The default pipeline looks like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;SOCIAL_AUTH_PIPELINE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.social_details&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.social_uid&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.auth_allowed&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.social_user&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.user.get_username&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="c"&gt;# &amp;#39;social.pipeline.mail.mail_validation&amp;#39;,&lt;/span&gt;
+    &lt;span class="c"&gt;# &amp;#39;social.pipeline.social_auth.associate_by_email&amp;#39;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.user.create_user&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.associate_user&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.load_extra_data&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.user.user_details&amp;#39;&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This is what happens when a user clicks a login button: &lt;code&gt;social_details&lt;/code&gt; function gets executed first. 
+It gets the information it can from, let's say, Facebook and returns it to the method &lt;code&gt;social_uid&lt;/code&gt; in a 
+simple format. &lt;code&gt;social_uid&lt;/code&gt; method does the same thing: does something with the information it got from 
+&lt;code&gt;social_details&lt;/code&gt; and returns the result to &lt;code&gt;auth_allowed&lt;/code&gt;. So on and so forth until the end of the 
+pipeline when user gets returned to the url you specified. This is the authentication pipeline. 
+There is also an disconnection pipeline, i.e. pipeline for when a user logs out. The same principles 
+apply to that too. More info on pipeline can be found 
+&lt;a href="http://psa.matiasaguirre.net/docs/pipeline.html"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Now, you can do whatever you like with this set of functions for the pipeline and customize it however 
+you like. You can remove any of the methods, for example to create a pipeline that won't create users, 
+just accepts already registered ones:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;SOCIAL_AUTH_PIPELINE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.social_details&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.social_uid&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.auth_allowed&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.social_user&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.associate_user&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.load_extra_data&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.user.user_details&amp;#39;&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Customize any of the methods:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;SOCIAL_AUTH_PIPELINE&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;path.to.custom.social_details&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;    &lt;span class="c"&gt;# custom method&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.social_uid&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.auth_allowed&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.social_user&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.associate_user&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.social_auth.load_extra_data&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="s"&gt;&amp;#39;social.pipeline.user.user_details&amp;#39;&lt;/span&gt;
+&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;or just create a function and add it to the pipeline. Good example of extending a pipeline can be found 
+&lt;a href="http://psa.matiasaguirre.net/docs/pipeline.html#extending-the-pipeline"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;Partial Pipeline&lt;/h2&gt;
+&lt;p&gt;It is also possible to cut the pipeline to ask the user for more information and resume the proccess 
+later. For example, to ensure that the user provides his email, you can write the following partial 
+pipeline:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nd"&gt;@partial&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;require_email&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;strategy&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;details&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;is_new&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;False&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;email&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt;
+    &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="n"&gt;is_new&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;details&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;email&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;email&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;strategy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;request_data&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;email&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;email&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;details&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;email&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;email&lt;/span&gt;
+        &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;redirect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;require_email&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This method first checks whether email exists. If so, continues the pipeline. Otherwise, it will 
+redirect to &lt;code&gt;require_email&lt;/code&gt; view, which looks like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;require_email&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;render&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;path/to/template.html&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So, it will render the template with a form. Attention: this form must be submitted to 
+&lt;code&gt;/complete/&amp;lt;backend&amp;gt;/&lt;/code&gt; to continue the pipeline:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nt"&gt;&amp;lt;form&lt;/span&gt; &lt;span class="na"&gt;action=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;/complete/instagram&amp;quot;&lt;/span&gt; &lt;span class="na"&gt;method=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;post&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;After a user submits the form, the pipeline comes to this part of the partial pipeline code:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;email&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;strategy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;request_data&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;email&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;email&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;details&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;email&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;email&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;and if user entered his email, the pipeline continues and you will have access to his email through 
+&lt;code&gt;details['email']&lt;/code&gt;.&lt;/p&gt;
+&lt;h2&gt;Important use case&lt;/h2&gt;
+&lt;p&gt;Provide login/registration with PSA for two types of users.&lt;/p&gt;
+&lt;p&gt;So we have two types of users, SimpleUser and Shop(SimpleUser) which extends from SimpleUser. 
+To provide different registration proccess for them we can do the following:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Provide two different links and mark one of them with a get parameter(user_type):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nt"&gt;&amp;lt;a&lt;/span&gt; &lt;span class="na"&gt;href=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;{% url &amp;#39;social:begin&amp;#39; &amp;#39;facebook&amp;#39; %}&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;Login as SimpleUser&lt;span class="nt"&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+&lt;span class="nt"&gt;&amp;lt;a&lt;/span&gt; &lt;span class="na"&gt;href=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;{% url &amp;#39;social:begin&amp;#39; &amp;#39;facebook&amp;#39; %}?user_type=shop&amp;quot;&lt;/span&gt;&lt;span class="nt"&gt;&amp;gt;&lt;/span&gt;Login as Shop&lt;span class="nt"&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;In order to access this get parameter, we will have to do this in our settings file:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;FIELDS_STORED_IN_SESSION&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;user_type&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This will ensure that the value of this paramter is saved in a session.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Then in &lt;code&gt;create_user&lt;/code&gt; method of the pipeline, create different users depending on this parameter:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;create_user&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;strategy&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;backend&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;details&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;user&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;None&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="n"&gt;kwargs&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;user_type&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;strategy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;session_get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;type&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;user_type&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;shop&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+          &lt;span class="c"&gt;# create a shop&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+          &lt;span class="c"&gt;# create a simple user&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;and don't forget to include it in the pipeline settings.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;We are done! Hooorrayy  =)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Okay fellas, I hope you now have at least a little idea about how things work in PSA and can easily 
+read the documentation. These were only the most important and basic parts. 
+Checkout the documentation for the details. &lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="python"></category><category term="authentication"></category></entry><entry><title>Why one plus one is not two</title><link href="http://rahmonov.github.io/posts/why-one-plus-one-is-not-two/" rel="alternate"></link><updated>2015-08-06T20:36:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2015-08-05:posts/why-one-plus-one-is-not-two/</id><summary type="html">&lt;p&gt;If you plant two plants close together, the roots commingle and improve the quality of the soil so that both 
+plants will grow better than if they were separated. If you put two pieces of wood together, they will hold much 
+more than the total of the weight held by each separately.&lt;/p&gt;
+&lt;p&gt;That is what Steven Covey said in his wonderful book &lt;a href="http://www.amazon.com/7-Habits-Highly-Effective-People/dp/0935721800"&gt;Seven Habits of Highly Effective People&lt;/a&gt;
+about synergy: One plus one equals three or more.&lt;/p&gt;
+&lt;p&gt;What follows is mostly Steven’s opinion and words. It just highly resonated with me and I decided to write about 
+it here.&lt;/p&gt;
+&lt;p&gt;So, what is synergy? Simply put, it means that the whole is greater than the sum of its parts. The very way that a 
+man and a woman bring a child into the world is synergistic.&lt;/p&gt;
+&lt;p&gt;Once a professor from IE Business School visited WIUT to hold a guest lecture and the first thing he did was to 
+write rules on whiteboard that would help him to hold a great lecture. However, he did not write his own rules. 
+He asked us, the students on the hall, what rules, in our opinion, we should comply with so that the lecture would 
+be as useful and enjoyable as possible. “Respect others’ opinion”, “Keep calm while somebody else is talking”, 
+“Be active” and the like were what we came up with.&lt;/p&gt;
+&lt;p&gt;He wanted us to act synergistically, and we did. What do you think happened that day? We had one of the most 
+useful and interesting lectures ever.&lt;/p&gt;
+&lt;p&gt;Synergy is useful even in retailing: Imagine two shops located in two different parts of the city. Around 130 
+people visit the first one and 150 people visit the second one in one day. Now, what happens if you put them next 
+to each other? Chances are people visiting the first one will visit the second shop too. They both will have more 
+customers that they used to. That is a win-win case(assuming the location is good).&lt;/p&gt;
+&lt;p&gt;I could go on forever with examples of why synergy is what we should strive for most of the time.&lt;/p&gt;
+&lt;p&gt;However, many people have not really experienced even a moderate degree of synergy in their family life or in 
+other interactions. They may have memories of some unusual creative experiences, perhaps in athletics, where they 
+were involved in a real team spirit for a period of time. Or perhaps they were in an emergency situation where 
+people cooperated to an unusually high degree and submerged ego and pride in an effort to save someone’s life or 
+to produce a solution to a crisis.&lt;/p&gt;
+&lt;p&gt;This represents one of the great tragedies and wastes in life, because so much potential remains untapped — 
+completely undeveloped and unused. To many, such events may seem unusual, almost out of character with life, 
+even miraculous. But this is not so. These things can be produced regularly, consistently, almost daily in 
+people’s lives. Just let the synergy be!&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="synergy"></category><category term="thought"></category><category term="philosophy"></category></entry><entry><title>The music to listen to while working</title><link href="http://rahmonov.github.io/posts/music-to-listen-to-at-work/" rel="alternate"></link><updated>2015-07-16T20:36:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2015-07-15:posts/music-to-listen-to-at-work/</id><summary type="html">&lt;p&gt;Most of the time, I listen to some kind of music while working/coding/programming. 
+Sometimes, I catch myself distracted from the work and singing along that music I am listening to.&lt;/p&gt;
+&lt;p&gt;Well, that is not too good for developers. We have to be sharp focused on the task at hand.&lt;/p&gt;
+&lt;p&gt;So, I did my mini-research and found that the best music for developers is the music without lyrics, i.e. 
+instrumental music. Besides, the sound of nature is favorable too.&lt;/p&gt;
+&lt;p&gt;The following are the links to the music I am listening right now at work. Just open these links at the same time 
+and enjoy while working hard:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href="http://www.rainymood.com/"&gt;Rainymood&lt;/a&gt;  – endless sound of rains&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href="http://endlessvideo.com/watch?v=HMnrl0tmd3k"&gt;Saxaphone&lt;/a&gt; – awesome instrumental music&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href="http://endlessvideo.com/watch?v=DIx3aMRDUL4"&gt;Sound of Fire&lt;/a&gt; – endless sound of fire&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;One more good thing is you don’t have to replay them by yourself. They loop endlessly themselves!&lt;/p&gt;
+&lt;p&gt;Have fun and work hard. Fight on!&lt;/p&gt;</summary><category term="work"></category><category term="music"></category></entry><entry><title>Why I want to work at Google - My validation</title><link href="http://rahmonov.github.io/posts/why-i-want-to-work-at-google/" rel="alternate"></link><updated>2015-06-06T20:36:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2015-06-05:posts/why-i-want-to-work-at-google/</id><summary type="html">&lt;p&gt;Those who know me are aware that I would really like to work at Google someday.
+Most probably, they think that it is because of the &lt;a href="http://www.glassdoor.com/Salary/Google-Software-Engineer-Salaries-E9079_D_KO7,24.htm"&gt;money&lt;/a&gt;,
+all those &lt;a href="http://www.businessinsider.com/google-employees-favorite-perks-2014-7"&gt;perks&lt;/a&gt;,
+free food and my resume that will be more or less set for life. All that stuff sounds great and it does influence my desire to some extent.
+I won’t deny that. However, none of that matters quite as much to me.&lt;/p&gt;
+&lt;p&gt;The biggest reason for me is my validation. I am not one of those people who has been programming since before
+high school and I am no genius. In fact, until two years ago I thought I would major in economics and work in
+some bank in the future. If we do the math, I have only been programming for a little more than a year now.&lt;/p&gt;
+&lt;p&gt;Besides, I am not good at anything else either. Communication – not so much. Personal life – in ruins. 
+Looks – OK. As you can imagine, I am a very insecure person. I have got to be one of the most insecure people I 
+know of.&lt;/p&gt;
+&lt;p&gt;Now, Google is a top-tier company for top-tier engineers. Being offered a Software Engineer position by 
+Google would finally give me something to be really proud of. Something to point to and say to myself 
+“Look man, you did that. You are worth something really great!”.&lt;/p&gt;
+&lt;p&gt;I don’t see this happening in the near future and even ever. Because I am not a Google-caliber engineer and not
+sure that I will ever be. But, you know what, I will try and keep trying till the day I die. I don’t want to 
+be lying at death bed and remember myself as coward because what is at stake is my self-worth.&lt;/p&gt;
+&lt;h2&gt;The beginning of the journey&lt;/h2&gt;
+&lt;p&gt;So, here it is. This is what Google means to me.&lt;/p&gt;
+&lt;p&gt;I created this blog to write about the things I learn and life experiences that happen to me on this journey 
+of validating myself, in hopes that somebody will benefit from these and get there faster.&lt;/p&gt;
+&lt;p&gt;Let’s get started!&lt;/p&gt;
+&lt;p&gt;Quote: “A journey of thousand miles begins with a single step.” – Laozi (Chinese philosopher)&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="google"></category><category term="journey"></category></entry></feed>
