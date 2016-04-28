@@ -72,48 +72,124 @@
 <h2>Articles by Jahongir Rahmonov</h2>
 
 <h4>
-    <a href="posts/pomodoro-technique/">
-        18 Noyabr 2015
+    <a href="posts/indroduction-to-celery/">
+        28 Aprel 2016
     </a>
 </h4>
 
-<h1>Be productive with the pomodoro technique</h1>
+<h1>Introduction to Celery</h1>
 
-<h2>Scenario I</h2>
-<p>You have a lot of tasks to do today. You plan your day by breaking down those tasks into sub tasks and
-allocate some time to each of them. However, while doing those tasks, you run back and forth to check 
-your facebook, telegram or email, watch some videos on youtube and at the end of the day you end up 
-doing less than even a half of what you were supposed to do wondering where time went.</p>
-<h2>Scenario II</h2>
-<p>You have a lot of tasks to do today. You are super focused and determined to finish them no matter what.
-You drink a cup of coffee and start working. You power through your tasks like Flash. You don't care 
-about any other thing: you don't have lunch, dinner and most importantly break. At the end of the day,
-you are proud of yourself because you did it. However, the next two or three days, you don't feel like
-doing anything and want to just lay in your bed(listening to Lazy Song by Bruno Mars now). You burnt out!
-Where did your pride go now? It metamorphosed into regret.</p>
-<h2>What to do?</h2>
-<p>I have been to both of those above mentioned scenarios, with studies, work and a little freelancing 
-happening at the same time. In my search for a solution, I ran into the pomodoro technique and it has
-been a game changer. Now I can focus on my tasks without letting Facebook distract me(at least 
-most of the time) and not get burnt out. There is also a rewarding by-product you get besides productivity:
-confidence! The reason is that you feel like you are in control of your life and not the other way around.</p>
-<h2>The Technique</h2>
-<p>The technique is in itself pretty simple. You work for 25 minutes only on your task. No Facebook, no email,
-no youtube, no talking, no nothing but your task. Then you get a 5-minute break. Then, you do three more
-pomodoros(yes, that 25-minute working period IS pomodoro), giving you 100 minutes of work time and 15 minutes
-of break. After the fourth pomodoro, you get a longer break: 25 minutes. This is it. This way, your mind 
-remains fresh and focused throughout the day and you won't burn out. But make sure that you get quality
-break times, i.e. do something that is resting for you. In one of those longer breaks, take a nap. They
-say you live two days(one and a half at least) instead of one day if you take a nap.</p>
-<h2>Pre-pomodoro</h2>
-<p>Before using the technique, make sure that you have concrete and important tasks. Without them, the pomodoro
-will be of no use. Imagine focusing on doing the wrong things. Yikes! </p>
-<h2>Wrap up</h2>
-<p>Finish 10 pomodoro a day on average and you can consider yourself a very productive person. It will be even
-reflected on other areas of your life. </p>
-<p>There are lots of web and mobile apps to help you with this. My favourite is <a href="kanbanflow.com">Kanbanflow</a> because it has kanban 
-board and the pomodoro timer in one app. More on kanban in later posts.</p>
-<p>I hope this post will help someone improve their time-management and productivity skills in the future.</p>
+<p>According to the <a href="http://docs.celeryproject.org/en/latest/index.html">docs</a>, Celery is a simple, 
+flexible and reliable distributed system to process vast amounts of messages, while providing 
+operations with the tools required to maintain such a system.</p>
+<p>It’s a task queue with focus on real-time processing, while also supporting task scheduling.</p>
+<h2>What is it used for?</h2>
+<p>It is mainly used for the following things:</p>
+<ul>
+<li>Running something in the background</li>
+<li>Asynchronous execution of code</li>
+<li>Scheduling periodic work</li>
+</ul>
+<h2>Use case example</h2>
+<p>Your web app needs to send an email. That is a very slow operation. While users can put up with 4 or 5
+seconds until an email is sent, it might leave a bad impression on them. Solution? Celery (singing...
+"I came in like a wrecking ball...(by Miley Cyrus)")! It will take this operation out of the main thread and executes it
+in the background. This gives the user the impression of good performance and “snappiness”, even 
+though the real work might actually take some time.</p>
+<p>Read <a href="http://decafbad.com/blog/2008/07/04/queue-everything-and-delight-everyone/">Queue everything and delight everyone</a>
+for additional info on why task queues can be useful.</p>
+<h2>Get started</h2>
+<p>Now that we know what Celery is and what it is used for, let's jump in and see how to use it with Django
+(other cases should be similar). We will see how to send an email with Celery.</p>
+<p>First, create a new <code>proj/proj/celery.py</code> module that defines a Celery instance</p>
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">celery</span> <span class="kn">import</span> <span class="n">Celery</span>
+
+<span class="c"># set the default Django settings module for the &#39;celery&#39; program.</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;DJANGO_SETTINGS_MODULE&#39;</span><span class="p">,</span> <span class="s">&#39;proj.settings&#39;</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>  <span class="c"># noqa</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Celery</span><span class="p">(</span><span class="s">&#39;proj&#39;</span><span class="p">)</span>
+
+<span class="c"># Using a string here means the worker will not have to</span>
+<span class="c"># pickle the object when using Windows.</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config_from_object</span><span class="p">(</span><span class="s">&#39;django.conf:settings&#39;</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">autodiscover_tasks</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">settings</span><span class="o">.</span><span class="n">INSTALLED_APPS</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Then, import this app in <code>proj/proj/__init__.py</code></p>
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+
+<span class="c"># This will make sure the app is always imported when</span>
+<span class="c"># Django starts so that shared_task will use this app.</span>
+<span class="kn">from</span> <span class="nn">.celery</span> <span class="kn">import</span> <span class="n">app</span> <span class="k">as</span> <span class="n">celery_app</span>  <span class="c"># noqa</span>
+</pre></div>
+
+
+<p>Then, create an ordinary function</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">send_email</span><span class="p">():</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">EmailMessage</span><span class="p">(</span><span class="s">&#39;Subject&#39;</span><span class="p">,</span> <span class="s">&#39;Message&#39;</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;jrahmonov2@gmail.com&#39;</span><span class="p">])</span>  
+    <span class="n">message</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Email is sent&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Note that tasks are normally placed in <code>tasks.py</code> file inside django apps:</p>
+<div class="highlight"><pre>- app1/
+    - app1/tasks.py
+    - app1/models.py
+- app2/
+    - app2/tasks.py
+    - app2/models.py
+</pre></div>
+
+
+<p>However, for this simple example, I put the <code>send_email()</code> function inside <code>proj/proj/celery.py</code></p>
+<p>Now, let's check our function by executing it in the shell</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">celery_demo.celery</span> <span class="kn">import</span> <span class="n">send_email</span> 
+<span class="o">&gt;&gt;&gt;</span> <span class="n">send_email</span><span class="p">()</span>
+</pre></div>
+
+
+<p>After a couple of seconds, you will see <code>Email is sent</code> message as long as you properly configured email settings.
+But these seconds are too long when you can easily get rid of them. To do that, we now need to transform
+this function into a celery task by simply using <code>@shared_task</code> decorator:</p>
+<div class="highlight"><pre><span class="nd">@shared_task</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">send_email</span><span class="p">():</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">EmailMessage</span><span class="p">(</span><span class="s">&#39;Subject&#39;</span><span class="p">,</span> <span class="s">&#39;Message&#39;</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;jrahmonov2@gmail.com&#39;</span><span class="p">])</span>
+    <span class="n">message</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Email is sent&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Now, we start celery in the command line by executing this:</p>
+<div class="highlight"><pre>celery -A celery_demo worker -l info
+</pre></div>
+
+
+<p>Now, we call our task from the shell with <code>delay()</code> method of celery:</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">celery_demo.celery</span> <span class="kn">import</span> <span class="n">send_email</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">send_email</span><span class="o">.</span><span class="n">delay</span><span class="p">()</span>
+</pre></div>
+
+
+<p>You will immediately see that the method returned! That means that users will see the results right away!
+If you check you Celery logs, you will see something like this:</p>
+<div class="highlight"><pre><span class="k">[2016-04-28 06:54:59,920: INFO/MainProcess] Received task: celery_demo.celery.send_email[1d2b9446-4791-4da4-8136-ee74d78cf394]</span>
+<span class="err">[2016-04-28</span> <span class="err">06:55:02,470:</span> <span class="err">WARNING/Worker-3]</span> <span class="err">Email</span> <span class="err">is</span> <span class="err">sent</span>
+<span class="err">[2016-04-28</span> <span class="err">06:55:02,471:</span> <span class="err">INFO/MainProcess]</span> <span class="err">Task</span> <span class="err">celery_demo.celery.send_email[1d2b9446-4791-4da4-8136-ee74d78cf394]</span> <span class="err">succeeded</span> <span class="err">in</span> <span class="err">2.550240921s:</span> <span class="err">None</span>
+</pre></div>
+
+
+<p>Awesome! Pretty fast!</p>
+<p>This was a simple example of how to use Celery. Please note that this post does not discuss the installation process of Celery (or RabbitMQ) and is only
+intended to serve as a fast introduction to the tool. </p>
+<p>In the next post, I will discuss how Celery can be used for periodic tasks (think cron jobs)</p>
 <p>Fight on!</p>
 
 <div class="end">

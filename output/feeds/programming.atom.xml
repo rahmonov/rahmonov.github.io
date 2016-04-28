@@ -1,5 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/programming.atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2015-10-18T21:14:00+05:00</updated><entry><title>Customize django admin templates</title><link href="http://rahmonov.github.io/posts/customize-django-admin-templates/" rel="alternate"></link><updated>2015-10-18T21:14:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2015-10-18:posts/customize-django-admin-templates/</id><summary type="html">&lt;p&gt;Quite often, we need to customize the django admin template: to add additional functionality or just 
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/programming.atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2016-04-28T20:10:00+05:00</updated><entry><title>Introduction to Celery</title><link href="http://rahmonov.github.io/posts/indroduction-to-celery/" rel="alternate"></link><updated>2016-04-28T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2016-04-28:posts/indroduction-to-celery/</id><summary type="html">&lt;p&gt;According to the &lt;a href="http://docs.celeryproject.org/en/latest/index.html"&gt;docs&lt;/a&gt;, Celery is a simple, 
+flexible and reliable distributed system to process vast amounts of messages, while providing 
+operations with the tools required to maintain such a system.&lt;/p&gt;
+&lt;p&gt;It’s a task queue with focus on real-time processing, while also supporting task scheduling.&lt;/p&gt;
+&lt;h2&gt;What is it used for?&lt;/h2&gt;
+&lt;p&gt;It is mainly used for the following things:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Running something in the background&lt;/li&gt;
+&lt;li&gt;Asynchronous execution of code&lt;/li&gt;
+&lt;li&gt;Scheduling periodic work&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Use case example&lt;/h2&gt;
+&lt;p&gt;Your web app needs to send an email. That is a very slow operation. While users can put up with 4 or 5
+seconds until an email is sent, it might leave a bad impression on them. Solution? Celery (singing...
+"I came in like a wrecking ball...(by Miley Cyrus)")! It will take this operation out of the main thread and executes it
+in the background. This gives the user the impression of good performance and “snappiness”, even 
+though the real work might actually take some time.&lt;/p&gt;
+&lt;p&gt;Read &lt;a href="http://decafbad.com/blog/2008/07/04/queue-everything-and-delight-everyone/"&gt;Queue everything and delight everyone&lt;/a&gt;
+for additional info on why task queues can be useful.&lt;/p&gt;
+&lt;h2&gt;Get started&lt;/h2&gt;
+&lt;p&gt;Now that we know what Celery is and what it is used for, let's jump in and see how to use it with Django
+(other cases should be similar). We will see how to send an email with Celery.&lt;/p&gt;
+&lt;p&gt;First, create a new &lt;code&gt;proj/proj/celery.py&lt;/code&gt; module that defines a Celery instance&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;__future__&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;absolute_import&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;celery&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Celery&lt;/span&gt;
+
+&lt;span class="c"&gt;# set the default Django settings module for the &amp;#39;celery&amp;#39; program.&lt;/span&gt;
+&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;environ&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;setdefault&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;DJANGO_SETTINGS_MODULE&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;proj.settings&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.conf&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;settings&lt;/span&gt;  &lt;span class="c"&gt;# noqa&lt;/span&gt;
+
+&lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Celery&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;proj&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c"&gt;# Using a string here means the worker will not have to&lt;/span&gt;
+&lt;span class="c"&gt;# pickle the object when using Windows.&lt;/span&gt;
+&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;config_from_object&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;django.conf:settings&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;autodiscover_tasks&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;INSTALLED_APPS&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then, import this app in &lt;code&gt;proj/proj/__init__.py&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;__future__&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;absolute_import&lt;/span&gt;
+
+&lt;span class="c"&gt;# This will make sure the app is always imported when&lt;/span&gt;
+&lt;span class="c"&gt;# Django starts so that shared_task will use this app.&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;.celery&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;celery_app&lt;/span&gt;  &lt;span class="c"&gt;# noqa&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then, create an ordinary function&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;send_email&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;message&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;EmailMessage&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;Subject&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;Message&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;jrahmonov2@gmail.com&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;  
+    &lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;send&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;Email is sent&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Note that tasks are normally placed in &lt;code&gt;tasks.py&lt;/code&gt; file inside django apps:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;- app1/
+    - app1/tasks.py
+    - app1/models.py
+- app2/
+    - app2/tasks.py
+    - app2/models.py
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;However, for this simple example, I put the &lt;code&gt;send_email()&lt;/code&gt; function inside &lt;code&gt;proj/proj/celery.py&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Now, let's check our function by executing it in the shell&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;celery_demo.celery&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;send_email&lt;/span&gt; 
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;send_email&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;After a couple of seconds, you will see &lt;code&gt;Email is sent&lt;/code&gt; message as long as you properly configured email settings.
+But these seconds are too long when you can easily get rid of them. To do that, we now need to transform
+this function into a celery task by simply using &lt;code&gt;@shared_task&lt;/code&gt; decorator:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nd"&gt;@shared_task&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;send_email&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;message&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;EmailMessage&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;Subject&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;Message&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;jrahmonov2@gmail.com&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+    &lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;send&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;Email is sent&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, we start celery in the command line by executing this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;celery -A celery_demo worker -l info
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, we call our task from the shell with &lt;code&gt;delay()&lt;/code&gt; method of celery:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;celery_demo.celery&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;send_email&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;send_email&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;delay&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You will immediately see that the method returned! That means that users will see the results right away!
+If you check you Celery logs, you will see something like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;[2016-04-28 06:54:59,920: INFO/MainProcess] Received task: celery_demo.celery.send_email[1d2b9446-4791-4da4-8136-ee74d78cf394]&lt;/span&gt;
+&lt;span class="err"&gt;[2016-04-28&lt;/span&gt; &lt;span class="err"&gt;06:55:02,470:&lt;/span&gt; &lt;span class="err"&gt;WARNING/Worker-3]&lt;/span&gt; &lt;span class="err"&gt;Email&lt;/span&gt; &lt;span class="err"&gt;is&lt;/span&gt; &lt;span class="err"&gt;sent&lt;/span&gt;
+&lt;span class="err"&gt;[2016-04-28&lt;/span&gt; &lt;span class="err"&gt;06:55:02,471:&lt;/span&gt; &lt;span class="err"&gt;INFO/MainProcess]&lt;/span&gt; &lt;span class="err"&gt;Task&lt;/span&gt; &lt;span class="err"&gt;celery_demo.celery.send_email[1d2b9446-4791-4da4-8136-ee74d78cf394]&lt;/span&gt; &lt;span class="err"&gt;succeeded&lt;/span&gt; &lt;span class="err"&gt;in&lt;/span&gt; &lt;span class="err"&gt;2.550240921s:&lt;/span&gt; &lt;span class="err"&gt;None&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Awesome! Pretty fast!&lt;/p&gt;
+&lt;p&gt;This was a simple example of how to use Celery. Please note that this post does not discuss the installation process of Celery (or RabbitMQ) and is only
+intended to serve as a fast introduction to the tool. &lt;/p&gt;
+&lt;p&gt;In the next post, I will discuss how Celery can be used for periodic tasks (think cron jobs)&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="celery"></category><category term="pyton"></category><category term="asynch"></category><category term="threads"></category></entry><entry><title>Customize django admin templates</title><link href="http://rahmonov.github.io/posts/customize-django-admin-templates/" rel="alternate"></link><updated>2015-10-18T21:14:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2015-10-18:posts/customize-django-admin-templates/</id><summary type="html">&lt;p&gt;Quite often, we need to customize the django admin template: to add additional functionality or just 
 change its look and feel.&lt;/p&gt;
 &lt;p&gt;Recently, I had the task of adding an ajax request on admin page load(specifically, change_form.html) 
 and adding two buttons, one of which would bring a modal up and the other would delete the selected items

@@ -73,76 +73,124 @@
 <h2>Articles in the programming category</h2>
 
 <h4>
-    <a href="posts/customize-django-admin-templates/">
-        18 Oktyabr 2015
+    <a href="posts/indroduction-to-celery/">
+        28 Aprel 2016
     </a>
 </h4>
 
-<h1>Customize django admin templates</h1>
+<h1>Introduction to Celery</h1>
 
-<p>Quite often, we need to customize the django admin template: to add additional functionality or just 
-change its look and feel.</p>
-<p>Recently, I had the task of adding an ajax request on admin page load(specifically, change_form.html) 
-and adding two buttons, one of which would bring a modal up and the other would delete the selected items
-which, in their turn, were brought by that ajax request.</p>
-<p>Here is what I did and went through:</p>
-<h2>Template</h2>
-<p>First, I created a <code>change_form.html</code> file in <code>/templates/admin/</code> folder. As I wanted this file to extend, 
-not replace, the default <code>change_form.html</code>, I wrote this at the beginning of the file:</p>
-<div class="highlight"><pre><span class="p">{</span><span class="o">%</span> <span class="n">extends</span> <span class="s">&#39;admin/change_form.html&#39;</span> <span class="o">%</span><span class="p">}</span>
+<p>According to the <a href="http://docs.celeryproject.org/en/latest/index.html">docs</a>, Celery is a simple, 
+flexible and reliable distributed system to process vast amounts of messages, while providing 
+operations with the tools required to maintain such a system.</p>
+<p>It’s a task queue with focus on real-time processing, while also supporting task scheduling.</p>
+<h2>What is it used for?</h2>
+<p>It is mainly used for the following things:</p>
+<ul>
+<li>Running something in the background</li>
+<li>Asynchronous execution of code</li>
+<li>Scheduling periodic work</li>
+</ul>
+<h2>Use case example</h2>
+<p>Your web app needs to send an email. That is a very slow operation. While users can put up with 4 or 5
+seconds until an email is sent, it might leave a bad impression on them. Solution? Celery (singing...
+"I came in like a wrecking ball...(by Miley Cyrus)")! It will take this operation out of the main thread and executes it
+in the background. This gives the user the impression of good performance and “snappiness”, even 
+though the real work might actually take some time.</p>
+<p>Read <a href="http://decafbad.com/blog/2008/07/04/queue-everything-and-delight-everyone/">Queue everything and delight everyone</a>
+for additional info on why task queues can be useful.</p>
+<h2>Get started</h2>
+<p>Now that we know what Celery is and what it is used for, let's jump in and see how to use it with Django
+(other cases should be similar). We will see how to send an email with Celery.</p>
+<p>First, create a new <code>proj/proj/celery.py</code> module that defines a Celery instance</p>
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">celery</span> <span class="kn">import</span> <span class="n">Celery</span>
+
+<span class="c"># set the default Django settings module for the &#39;celery&#39; program.</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;DJANGO_SETTINGS_MODULE&#39;</span><span class="p">,</span> <span class="s">&#39;proj.settings&#39;</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>  <span class="c"># noqa</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Celery</span><span class="p">(</span><span class="s">&#39;proj&#39;</span><span class="p">)</span>
+
+<span class="c"># Using a string here means the worker will not have to</span>
+<span class="c"># pickle the object when using Windows.</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config_from_object</span><span class="p">(</span><span class="s">&#39;django.conf:settings&#39;</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">autodiscover_tasks</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">settings</span><span class="o">.</span><span class="n">INSTALLED_APPS</span><span class="p">)</span>
 </pre></div>
 
 
-<p>This, naturally, led to <code>maximum recursin depth exceeded</code> error as it was trying to <code>extend</code> itself.</p>
-<p>Then, I read somewhere that I could put this file in <code>/templates/admin/app_name</code> folder, so that it will 
-change the templates of only this app. Voila! Recursion problem solved.</p>
-<p>Then, I added all those buttons and modals I wanted to(more on this later). Everything was working fine 
-until I found out that the buttons I added appear on the admin pages of all the models in the app. But 
-I wanted them to appear only on the admin pages of, let's say, <code>product</code> model.</p>
-<p>Turned out, the same works here. I just needed to put the file inside <code>/templates/admin/app_name/model_name</code>.
-In my case, it the file was  <code>/templates/admin/enterprise/product</code>.</p>
-<h2>Styles, Scripts and Buttons</h2>
-<p>Where do I put them? Taking a look at <code>admin/base.html</code> did the trick. It has special blocks for extra styles and
-scripts. So I put my css and javascript files in the following way:</p>
-<div class="highlight"><pre><span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">extrastyle</span> <span class="o">%</span><span class="p">}</span>
-    <span class="p">{{</span> <span class="n">block</span><span class="o">.</span><span class="n">super</span> <span class="p">}}</span>
+<p>Then, import this app in <code>proj/proj/__init__.py</code></p>
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 
-    <span class="o">&lt;</span><span class="n">link</span> <span class="n">rel</span><span class="o">=</span><span class="s">&quot;stylesheet&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;{</span><span class="si">% s</span><span class="s">tatic &#39;css/enterprise/main.css&#39;%}&quot;</span><span class="o">&gt;</span>
-<span class="p">{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
-
-<span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">extrahead</span> <span class="o">%</span><span class="p">}</span>
-    <span class="p">{{</span> <span class="n">block</span><span class="o">.</span><span class="n">super</span> <span class="p">}}</span>
-
-    <span class="o">&lt;</span><span class="n">script</span> <span class="nb">type</span><span class="o">=</span><span class="s">&quot;text/javascript&quot;</span> <span class="n">src</span><span class="o">=</span><span class="s">&quot;{</span><span class="si">% s</span><span class="s">tatic &#39;js/enterprise/modal.js&#39;%}&quot;</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
-<span class="p">{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
+<span class="c"># This will make sure the app is always imported when</span>
+<span class="c"># Django starts so that shared_task will use this app.</span>
+<span class="kn">from</span> <span class="nn">.celery</span> <span class="kn">import</span> <span class="n">app</span> <span class="k">as</span> <span class="n">celery_app</span>  <span class="c"># noqa</span>
 </pre></div>
 
 
-<p>As for buttons, I thought a good place would be above the default buttons. So, I thought out the block of those buttons 
-and put mine right above them:</p>
-<div class="highlight"><pre><span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">submit_buttons_bottom</span> <span class="o">%</span><span class="p">}</span>
-    <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s">&quot;submit-row&quot;</span><span class="o">&gt;</span>
-        <span class="o">&lt;</span><span class="n">button</span> <span class="n">class</span><span class="o">=</span><span class="s">&quot;btn btn-danger&quot;</span><span class="o">&gt;</span><span class="n">Custom</span> <span class="n">Button</span><span class="o">&lt;/</span><span class="n">button</span><span class="o">&gt;</span>
-    <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
-
-    <span class="p">{{</span> <span class="n">block</span><span class="o">.</span><span class="n">super</span> <span class="p">}}</span>
-<span class="p">{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
+<p>Then, create an ordinary function</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">send_email</span><span class="p">():</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">EmailMessage</span><span class="p">(</span><span class="s">&#39;Subject&#39;</span><span class="p">,</span> <span class="s">&#39;Message&#39;</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;jrahmonov2@gmail.com&#39;</span><span class="p">])</span>  
+    <span class="n">message</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Email is sent&#39;</span><span class="p">)</span>
 </pre></div>
 
 
-<p>As I was using <a href="https://github.com/django-admin-bootstrapped/django-admin-bootstrapped">django-admin-bootstrapped</a>,
-<code>submit-row</code> gave the <code>div</code> nice and natural look.</p>
-<h2>Additional</h2>
-<p>In the ajax request, I had to send the <code>id</code> of the product being changed. So I thought I could get it with <code>{{ product.id }}</code>
-but I was wrong. Then, I learned that I could get it like so:</p>
-<div class="highlight"><pre><span class="p">{{</span> <span class="n">original</span><span class="o">.</span><span class="n">id</span> <span class="p">}}</span>
+<p>Note that tasks are normally placed in <code>tasks.py</code> file inside django apps:</p>
+<div class="highlight"><pre>- app1/
+    - app1/tasks.py
+    - app1/models.py
+- app2/
+    - app2/tasks.py
+    - app2/models.py
 </pre></div>
 
 
-<p>So, the model instance being dealt with can be accessed with the word <code>original</code>. How original, isn't it?</p>
-<h2>Wrap up</h2>
-<p>Either I am bad at reading the documentation or it could be improved a little further. Probably first option. </p>
-<p>I hope it will help somebody save some time in the future.</p>
+<p>However, for this simple example, I put the <code>send_email()</code> function inside <code>proj/proj/celery.py</code></p>
+<p>Now, let's check our function by executing it in the shell</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">celery_demo.celery</span> <span class="kn">import</span> <span class="n">send_email</span> 
+<span class="o">&gt;&gt;&gt;</span> <span class="n">send_email</span><span class="p">()</span>
+</pre></div>
+
+
+<p>After a couple of seconds, you will see <code>Email is sent</code> message as long as you properly configured email settings.
+But these seconds are too long when you can easily get rid of them. To do that, we now need to transform
+this function into a celery task by simply using <code>@shared_task</code> decorator:</p>
+<div class="highlight"><pre><span class="nd">@shared_task</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">send_email</span><span class="p">():</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">EmailMessage</span><span class="p">(</span><span class="s">&#39;Subject&#39;</span><span class="p">,</span> <span class="s">&#39;Message&#39;</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;jrahmonov2@gmail.com&#39;</span><span class="p">])</span>
+    <span class="n">message</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Email is sent&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Now, we start celery in the command line by executing this:</p>
+<div class="highlight"><pre>celery -A celery_demo worker -l info
+</pre></div>
+
+
+<p>Now, we call our task from the shell with <code>delay()</code> method of celery:</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">celery_demo.celery</span> <span class="kn">import</span> <span class="n">send_email</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">send_email</span><span class="o">.</span><span class="n">delay</span><span class="p">()</span>
+</pre></div>
+
+
+<p>You will immediately see that the method returned! That means that users will see the results right away!
+If you check you Celery logs, you will see something like this:</p>
+<div class="highlight"><pre><span class="k">[2016-04-28 06:54:59,920: INFO/MainProcess] Received task: celery_demo.celery.send_email[1d2b9446-4791-4da4-8136-ee74d78cf394]</span>
+<span class="err">[2016-04-28</span> <span class="err">06:55:02,470:</span> <span class="err">WARNING/Worker-3]</span> <span class="err">Email</span> <span class="err">is</span> <span class="err">sent</span>
+<span class="err">[2016-04-28</span> <span class="err">06:55:02,471:</span> <span class="err">INFO/MainProcess]</span> <span class="err">Task</span> <span class="err">celery_demo.celery.send_email[1d2b9446-4791-4da4-8136-ee74d78cf394]</span> <span class="err">succeeded</span> <span class="err">in</span> <span class="err">2.550240921s:</span> <span class="err">None</span>
+</pre></div>
+
+
+<p>Awesome! Pretty fast!</p>
+<p>This was a simple example of how to use Celery. Please note that this post does not discuss the installation process of Celery (or RabbitMQ) and is only
+intended to serve as a fast introduction to the tool. </p>
+<p>In the next post, I will discuss how Celery can be used for periodic tasks (think cron jobs)</p>
 <p>Fight on!</p>
 
 <div class="end">

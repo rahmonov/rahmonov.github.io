@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head prefix="og: http://ogp.me/ns#">
-        <title>Home - Jahongir Rahmonov</title>
+          <title> Introduction to Celery - Jahongir Rahmonov </title>
 
         <link rel="stylesheet" href="/static/css/main.css" />
         <link rel="stylesheet" href="/static/css/pygment.css" />
@@ -14,14 +14,23 @@
         <meta name="author" content="Jahongir Rahmonov" />
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
-        <meta property="og:title" content="Home - Jahongir Rahmonov">
-        <meta property="og:type" content="website">
-        <meta property="og:image" content="/static/images/programming.jpg">
-        <meta property="og:url" content="http://rahmonov.github.io">
-        <meta property="og:description" content="Jahongir Rahmonov's personal blog about Python, Django, AngularJS and other things.">
+<meta property="og:title" content="Introduction to Celery - Jahongir Rahmonov">
+<meta property="og:type" content="website">
+<meta property="og:image" content="/static/images/programming.jpg">
+<meta property="og:url" content="http://rahmonov.github.io/posts/indroduction-to-celery/">
+<meta property="og:description" content="<p>Introduction to Celery: a simple, flexible and reliable distributed task queue</p>">
 
         <link href="http://rahmonov.github.io/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Full Atom Feed" />
         <link href="http://rahmonov.github.io/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="Jahongir Rahmonov Full RSS Feed" />
+        <link href="http://rahmonov.github.io/feeds/programming.atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Categories Atom Feed" />
+
+
+
+    <meta name="tags" content="celery" />
+    <meta name="tags" content="pyton" />
+    <meta name="tags" content="asynch" />
+    <meta name="tags" content="threads" />
+
 </head>
 
 <body id="index" class="home">
@@ -69,17 +78,12 @@
         <div class="wrap">
             <div class="content">
 
-<h2>Latest Post</h2>
+  <h4>Pay 28 Aprel 2016</h4>
 
-<h4>
-    <a href="posts/indroduction-to-celery/">
-        28 Aprel 2016
-    </a>
-</h4>
+  <h1>Introduction to Celery</h1>
 
-<h1>Introduction to Celery</h1>
-
-<p>According to the <a href="http://docs.celeryproject.org/en/latest/index.html">docs</a>, Celery is a simple, 
+  <div class="entry-content">
+    <p>According to the <a href="http://docs.celeryproject.org/en/latest/index.html">docs</a>, Celery is a simple, 
 flexible and reliable distributed system to process vast amounts of messages, while providing 
 operations with the tools required to maintain such a system.</p>
 <p>It’s a task queue with focus on real-time processing, while also supporting task scheduling.</p>
@@ -191,6 +195,7 @@ If you check you Celery logs, you will see something like this:</p>
 intended to serve as a fast introduction to the tool. </p>
 <p>In the next post, I will discuss how Celery can be used for periodic tasks (think cron jobs)</p>
 <p>Fight on!</p>
+  </div>
 
 <div class="end">
     <span>
@@ -200,6 +205,19 @@ intended to serve as a fast introduction to the tool. </p>
         <a href="https://github.com/rahmonov" target="_blank">GitHub</a>.
     </span>
 </div>
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES * * */
+        var disqus_shortname = 'jrahmonov';
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
             </div>
         </div>
     </div>
