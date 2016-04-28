@@ -2,7 +2,7 @@ Title: Customize django admin templates
 Date: 2015-10-18 21:14
 Modified: 2015-10-18 21:14
 Category: programming
-Tags: javascript, angularjs, modal
+Tags: python, django, admin
 Slug: customize-django-admin-templates
 Authors: Jahongir Rahmonov
 Summary: How to customize django admin templates

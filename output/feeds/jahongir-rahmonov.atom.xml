@@ -1,5 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/jahongir-rahmonov.atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2015-10-18T21:14:00+05:00</updated><entry><title>Customize django admin templates</title><link href="http://rahmonov.github.io/posts/customize-django-admin-templates/" rel="alternate"></link><updated>2015-10-18T21:14:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2015-10-18:posts/customize-django-admin-templates/</id><summary type="html">&lt;p&gt;Quite often, we need to customize the django admin template: to add additional functionality or just 
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/jahongir-rahmonov.atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2015-11-18T21:14:00+05:00</updated><entry><title>Be productive with the pomodoro technique</title><link href="http://rahmonov.github.io/posts/pomodoro-technique/" rel="alternate"></link><updated>2015-11-18T21:14:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2015-11-18:posts/pomodoro-technique/</id><summary type="html">&lt;h2&gt;Scenario I&lt;/h2&gt;
+&lt;p&gt;You have a lot of tasks to do today. You plan your day by breaking down those tasks into sub tasks and
+allocate some time to each of them. However, while doing those tasks, you run back and forth to check 
+your facebook, telegram or email, watch some videos on youtube and at the end of the day you end up 
+doing less than even a half of what you were supposed to do wondering where time went.&lt;/p&gt;
+&lt;h2&gt;Scenario II&lt;/h2&gt;
+&lt;p&gt;You have a lot of tasks to do today. You are super focused and determined to finish them no matter what.
+You drink a cup of coffee and start working. You power through your tasks like Flash. You don't care 
+about any other thing: you don't have lunch, dinner and most importantly break. At the end of the day,
+you are proud of yourself because you did it. However, the next two or three days, you don't feel like
+doing anything and want to just lay in your bed(listening to Lazy Song by Bruno Mars now). You burnt out!
+Where did your pride go now? It metamorphosed into regret.&lt;/p&gt;
+&lt;h2&gt;What to do?&lt;/h2&gt;
+&lt;p&gt;I have been to both of those above mentioned scenarios, with studies, work and a little freelancing 
+happening at the same time. In my search for a solution, I ran into the pomodoro technique and it has
+been a game changer. Now I can focus on my tasks without letting Facebook distract me(at least 
+most of the time) and not get burnt out. There is also a rewarding by-product you get besides productivity:
+confidence! The reason is that you feel like you are in control of your life and not the other way around.&lt;/p&gt;
+&lt;h2&gt;The Technique&lt;/h2&gt;
+&lt;p&gt;The technique is in itself pretty simple. You work for 25 minutes only on your task. No Facebook, no email,
+no youtube, no talking, no nothing but your task. Then you get a 5-minute break. Then, you do three more
+pomodoros(yes, that 25-minute working period IS pomodoro), giving you 100 minutes of work time and 15 minutes
+of break. After the fourth pomodoro, you get a longer break: 25 minutes. This is it. This way, your mind 
+remains fresh and focused throughout the day and you won't burn out. But make sure that you get quality
+break times, i.e. do something that is resting for you. In one of those longer breaks, take a nap. They
+say you live two days(one and a half at least) instead of one day if you take a nap.&lt;/p&gt;
+&lt;h2&gt;Pre-pomodoro&lt;/h2&gt;
+&lt;p&gt;Before using the technique, make sure that you have concrete and important tasks. Without them, the pomodoro
+will be of no use. Imagine focusing on doing the wrong things. Yikes! &lt;/p&gt;
+&lt;h2&gt;Wrap up&lt;/h2&gt;
+&lt;p&gt;Finish 10 pomodoro a day on average and you can consider yourself a very productive person. It will be even
+reflected on other areas of your life. &lt;/p&gt;
+&lt;p&gt;There are lots of web and mobile apps to help you with this. My favourite is &lt;a href="kanbanflow.com"&gt;Kanbanflow&lt;/a&gt; because it has kanban 
+board and the pomodoro timer in one app. More on kanban in later posts.&lt;/p&gt;
+&lt;p&gt;I hope this post will help someone improve their time-management and productivity skills in the future.&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="productivity"></category><category term="pomodoro"></category></entry><entry><title>Customize django admin templates</title><link href="http://rahmonov.github.io/posts/customize-django-admin-templates/" rel="alternate"></link><updated>2015-10-18T21:14:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2015-10-18:posts/customize-django-admin-templates/</id><summary type="html">&lt;p&gt;Quite often, we need to customize the django admin template: to add additional functionality or just 
 change its look and feel.&lt;/p&gt;
 &lt;p&gt;Recently, I had the task of adding an ajax request on admin page load(specifically, change_form.html) 
 and adding two buttons, one of which would bring a modal up and the other would delete the selected items
@@ -62,7 +97,7 @@ but I was wrong. Then, I learned that I could get it like so:&lt;/p&gt;
 &lt;h2&gt;Wrap up&lt;/h2&gt;
 &lt;p&gt;Either I am bad at reading the documentation or it could be improved a little further. Probably first option. &lt;/p&gt;
 &lt;p&gt;I hope it will help somebody save some time in the future.&lt;/p&gt;
-&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="javascript"></category><category term="angularjs"></category><category term="modal"></category></entry><entry><title>Close modal on back button in AngularJS</title><link href="http://rahmonov.github.io/posts/close-modal-on-back-button/" rel="alternate"></link><updated>2015-10-03T21:14:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2015-10-03:posts/close-modal-on-back-button/</id><summary type="html">&lt;p&gt;We, developers, use modals all the time. I personally like to use &lt;a href="https://github.com/likeastore/ngDialog"&gt;ngDialog&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="python"></category><category term="django"></category><category term="admin"></category></entry><entry><title>Close modal on back button in AngularJS</title><link href="http://rahmonov.github.io/posts/close-modal-on-back-button/" rel="alternate"></link><updated>2015-10-03T21:14:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2015-10-03:posts/close-modal-on-back-button/</id><summary type="html">&lt;p&gt;We, developers, use modals all the time. I personally like to use &lt;a href="https://github.com/likeastore/ngDialog"&gt;ngDialog&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;It is light, easy to use and highly customizable. &lt;a href="https://angular-ui.github.io/bootstrap/#/modal"&gt;Bootstrap&lt;/a&gt; is also good but 
 it is somewhat heavy.&lt;/p&gt;
 &lt;p&gt;Here is how modal is opened in ngDialog:&lt;/p&gt;
