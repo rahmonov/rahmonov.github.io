@@ -1,5 +1,252 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/programming.atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2015-10-01T21:14:00+05:00</updated><entry><title>"Relation 'auth_user' does not exist" bug in Django 1.8</title><link href="http://rahmonov.github.io/posts/django-1.8-bug/" rel="alternate"></link><updated>2015-10-01T21:14:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2015-10-01:posts/django-1.8-bug/</id><summary type="html">&lt;p&gt;I recently started a fresh project in Django 1.8 with PostgreSQL. I set everything up and was ready to do
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/programming.atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2016-04-28T20:10:00+05:00</updated><entry><title>Introduction to Celery</title><link href="http://rahmonov.github.io/posts/indroduction-to-celery/" rel="alternate"></link><updated>2016-04-28T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2016-04-28:posts/indroduction-to-celery/</id><summary type="html">&lt;p&gt;According to the &lt;a href="http://docs.celeryproject.org/en/latest/index.html"&gt;docs&lt;/a&gt;, Celery is a simple, 
+flexible and reliable distributed system to process vast amounts of messages, while providing 
+operations with the tools required to maintain such a system.&lt;/p&gt;
+&lt;p&gt;It’s a task queue with focus on real-time processing, while also supporting task scheduling.&lt;/p&gt;
+&lt;h2&gt;What is it used for?&lt;/h2&gt;
+&lt;p&gt;It is mainly used for the following things:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Running something in the background&lt;/li&gt;
+&lt;li&gt;Asynchronous execution of code&lt;/li&gt;
+&lt;li&gt;Scheduling periodic work&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Use case example&lt;/h2&gt;
+&lt;p&gt;Your web app needs to send an email. That is a very slow operation. While users can put up with 4 or 5
+seconds until an email is sent, it might leave a bad impression on them. Solution? Celery (singing...
+"I came in like a wrecking ball...(by Miley Cyrus)")! It will take this operation out of the main thread and executes it
+in the background. This gives the user the impression of good performance and “snappiness”, even 
+though the real work might actually take some time.&lt;/p&gt;
+&lt;p&gt;Read &lt;a href="http://decafbad.com/blog/2008/07/04/queue-everything-and-delight-everyone/"&gt;Queue everything and delight everyone&lt;/a&gt;
+for additional info on why task queues can be useful.&lt;/p&gt;
+&lt;h2&gt;Get started&lt;/h2&gt;
+&lt;p&gt;Now that we know what Celery is and what it is used for, let's jump in and see how to use it with Django
+(other cases should be similar). We will see how to send an email with Celery.&lt;/p&gt;
+&lt;p&gt;First, create a new &lt;code&gt;proj/proj/celery.py&lt;/code&gt; module that defines a Celery instance&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;__future__&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;absolute_import&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;celery&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Celery&lt;/span&gt;
+
+&lt;span class="c"&gt;# set the default Django settings module for the &amp;#39;celery&amp;#39; program.&lt;/span&gt;
+&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;environ&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;setdefault&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;DJANGO_SETTINGS_MODULE&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;proj.settings&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;django.conf&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;settings&lt;/span&gt;  &lt;span class="c"&gt;# noqa&lt;/span&gt;
+
+&lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Celery&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;proj&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c"&gt;# Using a string here means the worker will not have to&lt;/span&gt;
+&lt;span class="c"&gt;# pickle the object when using Windows.&lt;/span&gt;
+&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;config_from_object&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;django.conf:settings&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;autodiscover_tasks&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;INSTALLED_APPS&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then, import this app in &lt;code&gt;proj/proj/__init__.py&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;__future__&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;absolute_import&lt;/span&gt;
+
+&lt;span class="c"&gt;# This will make sure the app is always imported when&lt;/span&gt;
+&lt;span class="c"&gt;# Django starts so that shared_task will use this app.&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;.celery&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;celery_app&lt;/span&gt;  &lt;span class="c"&gt;# noqa&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then, create an ordinary function&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;send_email&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;message&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;EmailMessage&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;Subject&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;Message&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;jrahmonov2@gmail.com&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;  
+    &lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;send&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;Email is sent&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Note that tasks are normally placed in &lt;code&gt;tasks.py&lt;/code&gt; file inside django apps:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;- app1/
+    - app1/tasks.py
+    - app1/models.py
+- app2/
+    - app2/tasks.py
+    - app2/models.py
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;However, for this simple example, I put the &lt;code&gt;send_email()&lt;/code&gt; function inside &lt;code&gt;proj/proj/celery.py&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Now, let's check our function by executing it in the shell&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;celery_demo.celery&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;send_email&lt;/span&gt; 
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;send_email&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;After a couple of seconds, you will see &lt;code&gt;Email is sent&lt;/code&gt; message as long as you properly configured email settings.
+But these seconds are too long when you can easily get rid of them. To do that, we now need to transform
+this function into a celery task by simply using &lt;code&gt;@shared_task&lt;/code&gt; decorator:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nd"&gt;@shared_task&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;send_email&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;message&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;EmailMessage&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;Subject&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;Message&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;jrahmonov2@gmail.com&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+    &lt;span class="n"&gt;message&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;send&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;Email is sent&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, we start celery in the command line by executing this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;celery -A celery_demo worker -l info
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, we call our task from the shell with &lt;code&gt;delay()&lt;/code&gt; method of celery:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;celery_demo.celery&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;send_email&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;send_email&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;delay&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You will immediately see that the method returned! That means that users will see the results right away!
+If you check you Celery logs, you will see something like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;[2016-04-28 06:54:59,920: INFO/MainProcess] Received task: celery_demo.celery.send_email[1d2b9446-4791-4da4-8136-ee74d78cf394]&lt;/span&gt;
+&lt;span class="err"&gt;[2016-04-28&lt;/span&gt; &lt;span class="err"&gt;06:55:02,470:&lt;/span&gt; &lt;span class="err"&gt;WARNING/Worker-3]&lt;/span&gt; &lt;span class="err"&gt;Email&lt;/span&gt; &lt;span class="err"&gt;is&lt;/span&gt; &lt;span class="err"&gt;sent&lt;/span&gt;
+&lt;span class="err"&gt;[2016-04-28&lt;/span&gt; &lt;span class="err"&gt;06:55:02,471:&lt;/span&gt; &lt;span class="err"&gt;INFO/MainProcess]&lt;/span&gt; &lt;span class="err"&gt;Task&lt;/span&gt; &lt;span class="err"&gt;celery_demo.celery.send_email[1d2b9446-4791-4da4-8136-ee74d78cf394]&lt;/span&gt; &lt;span class="err"&gt;succeeded&lt;/span&gt; &lt;span class="err"&gt;in&lt;/span&gt; &lt;span class="err"&gt;2.550240921s:&lt;/span&gt; &lt;span class="err"&gt;None&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Awesome! Pretty fast!&lt;/p&gt;
+&lt;p&gt;This was a simple example of how to use Celery. Please note that this post does not discuss the installation process of Celery (or RabbitMQ) and is only
+intended to serve as a fast introduction to the tool. &lt;/p&gt;
+&lt;p&gt;In the next post, I will discuss how Celery can be used for periodic tasks (think cron jobs)&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="celery"></category><category term="pyton"></category><category term="asynch"></category><category term="threads"></category></entry><entry><title>Customize django admin templates</title><link href="http://rahmonov.github.io/posts/customize-django-admin-templates/" rel="alternate"></link><updated>2015-10-18T21:14:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2015-10-18:posts/customize-django-admin-templates/</id><summary type="html">&lt;p&gt;Quite often, we need to customize the django admin template: to add additional functionality or just 
+change its look and feel.&lt;/p&gt;
+&lt;p&gt;Recently, I had the task of adding an ajax request on admin page load(specifically, change_form.html) 
+and adding two buttons, one of which would bring a modal up and the other would delete the selected items
+which, in their turn, were brought by that ajax request.&lt;/p&gt;
+&lt;p&gt;Here is what I did and went through:&lt;/p&gt;
+&lt;h2&gt;Template&lt;/h2&gt;
+&lt;p&gt;First, I created a &lt;code&gt;change_form.html&lt;/code&gt; file in &lt;code&gt;/templates/admin/&lt;/code&gt; folder. As I wanted this file to extend, 
+not replace, the default &lt;code&gt;change_form.html&lt;/code&gt;, I wrote this at the beginning of the file:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;extends&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;admin/change_form.html&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This, naturally, led to &lt;code&gt;maximum recursin depth exceeded&lt;/code&gt; error as it was trying to &lt;code&gt;extend&lt;/code&gt; itself.&lt;/p&gt;
+&lt;p&gt;Then, I read somewhere that I could put this file in &lt;code&gt;/templates/admin/app_name&lt;/code&gt; folder, so that it will 
+change the templates of only this app. Voila! Recursion problem solved.&lt;/p&gt;
+&lt;p&gt;Then, I added all those buttons and modals I wanted to(more on this later). Everything was working fine 
+until I found out that the buttons I added appear on the admin pages of all the models in the app. But 
+I wanted them to appear only on the admin pages of, let's say, &lt;code&gt;product&lt;/code&gt; model.&lt;/p&gt;
+&lt;p&gt;Turned out, the same works here. I just needed to put the file inside &lt;code&gt;/templates/admin/app_name/model_name&lt;/code&gt;.
+In my case, it the file was  &lt;code&gt;/templates/admin/enterprise/product&lt;/code&gt;.&lt;/p&gt;
+&lt;h2&gt;Styles, Scripts and Buttons&lt;/h2&gt;
+&lt;p&gt;Where do I put them? Taking a look at &lt;code&gt;admin/base.html&lt;/code&gt; did the trick. It has special blocks for extra styles and
+scripts. So I put my css and javascript files in the following way:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;block&lt;/span&gt; &lt;span class="n"&gt;extrastyle&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;{{&lt;/span&gt; &lt;span class="n"&gt;block&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;super&lt;/span&gt; &lt;span class="p"&gt;}}&lt;/span&gt;
+
+    &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;link&lt;/span&gt; &lt;span class="n"&gt;rel&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;stylesheet&amp;quot;&lt;/span&gt; &lt;span class="n"&gt;href&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;{&lt;/span&gt;&lt;span class="si"&gt;% s&lt;/span&gt;&lt;span class="s"&gt;tatic &amp;#39;css/enterprise/main.css&amp;#39;%}&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;endblock&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;block&lt;/span&gt; &lt;span class="n"&gt;extrahead&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="p"&gt;{{&lt;/span&gt; &lt;span class="n"&gt;block&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;super&lt;/span&gt; &lt;span class="p"&gt;}}&lt;/span&gt;
+
+    &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;script&lt;/span&gt; &lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;text/javascript&amp;quot;&lt;/span&gt; &lt;span class="n"&gt;src&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;{&lt;/span&gt;&lt;span class="si"&gt;% s&lt;/span&gt;&lt;span class="s"&gt;tatic &amp;#39;js/enterprise/modal.js&amp;#39;%}&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;lt;/&lt;/span&gt;&lt;span class="n"&gt;script&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;endblock&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;As for buttons, I thought a good place would be above the default buttons. So, I thought out the block of those buttons 
+and put mine right above them:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;block&lt;/span&gt; &lt;span class="n"&gt;submit_buttons_bottom&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;div&lt;/span&gt; &lt;span class="n"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;submit-row&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;button&lt;/span&gt; &lt;span class="n"&gt;class&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;btn btn-danger&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;Custom&lt;/span&gt; &lt;span class="n"&gt;Button&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="n"&gt;button&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class="o"&gt;&amp;lt;/&lt;/span&gt;&lt;span class="n"&gt;div&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+
+    &lt;span class="p"&gt;{{&lt;/span&gt; &lt;span class="n"&gt;block&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;super&lt;/span&gt; &lt;span class="p"&gt;}}&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;endblock&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt;&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;As I was using &lt;a href="https://github.com/django-admin-bootstrapped/django-admin-bootstrapped"&gt;django-admin-bootstrapped&lt;/a&gt;,
+&lt;code&gt;submit-row&lt;/code&gt; gave the &lt;code&gt;div&lt;/code&gt; nice and natural look.&lt;/p&gt;
+&lt;h2&gt;Additional&lt;/h2&gt;
+&lt;p&gt;In the ajax request, I had to send the &lt;code&gt;id&lt;/code&gt; of the product being changed. So I thought I could get it with &lt;code&gt;{{ product.id }}&lt;/code&gt;
+but I was wrong. Then, I learned that I could get it like so:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="p"&gt;{{&lt;/span&gt; &lt;span class="n"&gt;original&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt; &lt;span class="p"&gt;}}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So, the model instance being dealt with can be accessed with the word &lt;code&gt;original&lt;/code&gt;. How original, isn't it?&lt;/p&gt;
+&lt;h2&gt;Wrap up&lt;/h2&gt;
+&lt;p&gt;Either I am bad at reading the documentation or it could be improved a little further. Probably first option. &lt;/p&gt;
+&lt;p&gt;I hope it will help somebody save some time in the future.&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="python"></category><category term="django"></category><category term="admin"></category></entry><entry><title>Close modal on back button in AngularJS</title><link href="http://rahmonov.github.io/posts/close-modal-on-back-button/" rel="alternate"></link><updated>2015-10-03T21:14:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2015-10-03:posts/close-modal-on-back-button/</id><summary type="html">&lt;p&gt;We, developers, use modals all the time. I personally like to use &lt;a href="https://github.com/likeastore/ngDialog"&gt;ngDialog&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;It is light, easy to use and highly customizable. &lt;a href="https://angular-ui.github.io/bootstrap/#/modal"&gt;Bootstrap&lt;/a&gt; is also good but 
+it is somewhat heavy.&lt;/p&gt;
+&lt;p&gt;Here is how modal is opened in ngDialog:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nx"&gt;ngDialog&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;open&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;
+    &lt;span class="nx"&gt;template&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;externalTemplate.html&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nx"&gt;controller&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;SomeController&amp;#39;&lt;/span&gt;
+&lt;span class="p"&gt;});&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It will open up a modal as expected but when you press the back button of the browser, what happens?&lt;/p&gt;
+&lt;p&gt;I would expect the modal to close and stay where I was before the modal. But what happens is that you go
+back in browser history. Ouch! Especially on mobile, it is really not convenient to press the small 'x' button
+of the modal. That's why, I would guess, user would press the back button to close the modal.&lt;/p&gt;
+&lt;p&gt;Here is how I solved the problem:&lt;/p&gt;
+&lt;p&gt;First, I created a service that deals with modals and it has a flag &lt;code&gt;modalIsShown&lt;/code&gt; which will be used later:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nx"&gt;myApp&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;service&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;ModalService&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;ngDialog&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;ngDialog&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;modalIsShown&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;openModal&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;template&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;controller&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;ngDialog&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;open&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;
+      &lt;span class="nx"&gt;template&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;template&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="nx"&gt;controller&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;controller&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="nx"&gt;closeByDocument&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="nx"&gt;closeByEscape&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+      &lt;span class="nx"&gt;showClose&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;
+    &lt;span class="p"&gt;});&lt;/span&gt;
+  &lt;span class="p"&gt;};&lt;/span&gt;
+
+  &lt;span class="kd"&gt;var&lt;/span&gt; &lt;span class="nx"&gt;closeModal&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt; &lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;ngDialog&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;close&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+  &lt;span class="p"&gt;};&lt;/span&gt;
+
+  &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="nx"&gt;openModal&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;openModal&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nx"&gt;closeModal&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;closeModal&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="nx"&gt;modalIsShown&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="nx"&gt;modalIsShown&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}]);&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Second, Here is how I open up a modal from my controller:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nx"&gt;$scope&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;contactModal&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="nx"&gt;ModalService&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;modalIsShown&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="nx"&gt;ModalService&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;openModal&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;contactModal.html&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;FooterController&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;};&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Basically, the function sets the flag to true and opens the modal.&lt;/p&gt;
+&lt;p&gt;The most interestion part happens here:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nx"&gt;myApp&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;run&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;$rootScope&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;$route&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;$location&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;$routeParams&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;ModalService&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+  &lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;$rootScope&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;$route&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;$location&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;$routeParams&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;ModalService&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+
+  &lt;span class="nx"&gt;$rootScope&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;$on&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;$routeChangeStart&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kd"&gt;function&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;evt&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;next&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nx"&gt;current&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;ModalService&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;modalIsShown&lt;/span&gt;&lt;span class="p"&gt;){&lt;/span&gt;
+      &lt;span class="nx"&gt;ModalService&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;closeModal&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+      &lt;span class="nx"&gt;ModalService&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;modalIsShown&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kc"&gt;false&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+      &lt;span class="nx"&gt;evt&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;preventDefault&lt;/span&gt;&lt;span class="p"&gt;();&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="p"&gt;});&lt;/span&gt;
+&lt;span class="p"&gt;}]);&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;When a user presses a back button, when the url is about to change, angular calls this &lt;code&gt;$routeChangeStart&lt;/code&gt;
+observing function. And this function checks whether the flag &lt;code&gt;modalIsShown&lt;/code&gt; is set to true. If so, it means
+that a user is trying to close a modal by pressing the back button, thus it closes the modal, sets the flag
+back to false and prevents the url change.&lt;/p&gt;
+&lt;p&gt;If anyone could suggest a better or cleaner way in comments, that would be awesome.&lt;/p&gt;
+&lt;p&gt;Hope it helps.&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="javascript"></category><category term="angularjs"></category><category term="modal"></category></entry><entry><title>"Relation 'auth_user' does not exist" bug in Django 1.8</title><link href="http://rahmonov.github.io/posts/django-1.8-bug/" rel="alternate"></link><updated>2015-10-01T21:14:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2015-10-01:posts/django-1.8-bug/</id><summary type="html">&lt;p&gt;I recently started a fresh project in Django 1.8 with PostgreSQL. I set everything up and was ready to do
 my migrations. To my surprise, I got this error: &lt;code&gt;ProgrammingError: relation "auth_user" does not exist&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;I had absolutely no fancy stuff that could cause some problem.&lt;/p&gt;
 &lt;p&gt;I looked around and found out that I was not the only one. Even some &lt;a href="https://github.com/evonove/django-oauth-toolkit/issues/204"&gt;issues&lt;/a&gt;
