@@ -18,9 +18,9 @@ What is it used for?
 
 It is mainly used for the following things:
 
- - Running something in the background
- - Asynchronous execution of code
- - Scheduling periodic work
+- Running something in the background
+- Asynchronous execution of code
+- Scheduling periodic work
  
 Use case example
 ----------------
@@ -92,7 +92,7 @@ However, for this simple example, I put the `send_email()` function inside `proj
 Now, let's check our function by executing it in the shell
 
     :::python
-    >>> from celery_demo.celery import send_email 
+    >>> from proj.celery import send_email 
     >>> send_email()
 
 After a couple of seconds, you will see `Email is sent` message as long as you properly configured email settings.
@@ -108,19 +108,20 @@ this function into a celery task by simply using `@shared_task` decorator:
 
 Now, we start celery in the command line by executing this:
 
-    celery -A celery_demo worker -l info
+    celery -A proj worker -l info
     
 Now, we call our task from the shell with `delay()` method of celery:
 
-    >>> from celery_demo.celery import send_email
+    >>> from proj.celery import send_email
     >>> send_email.delay()
     
 You will immediately see that the method returned! That means that users will see the results right away!
 If you check you Celery logs, you will see something like this:
 
-    [2016-04-28 06:54:59,920: INFO/MainProcess] Received task: celery_demo.celery.send_email[1d2b9446-4791-4da4-8136-ee74d78cf394]
+    :::python
+    [2016-04-28 06:54:59,920: INFO/MainProcess] Received task: proj.celery.send_email[1d2b9446-4791-4da4-8136-ee74d78cf394]
     [2016-04-28 06:55:02,470: WARNING/Worker-3] Email is sent
-    [2016-04-28 06:55:02,471: INFO/MainProcess] Task celery_demo.celery.send_email[1d2b9446-4791-4da4-8136-ee74d78cf394] succeeded in 2.550240921s: None
+    [2016-04-28 06:55:02,471: INFO/MainProcess] Task proj.celery.send_email[1d2b9446-4791-4da4-8136-ee74d78cf394] succeeded in 2.550240921s: None
 
 Awesome! Pretty fast!
 

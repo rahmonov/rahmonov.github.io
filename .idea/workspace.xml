@@ -1,7 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e248bd4c-4538-41ea-a357-304f890e551e" name="Default" comment="" />
+    <list default="true" id="e248bd4c-4538-41ea-a357-304f890e551e" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/content/introduction-to-celery.md" afterPath="$PROJECT_DIR$/content/introduction-to-celery.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/archives.html" afterPath="$PROJECT_DIR$/output/archives.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/author/jahongir-rahmonov.html" afterPath="$PROJECT_DIR$/output/author/jahongir-rahmonov.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/authors.html" afterPath="$PROJECT_DIR$/output/authors.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/categories.html" afterPath="$PROJECT_DIR$/output/categories.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/category/others.html" afterPath="$PROJECT_DIR$/output/category/others.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/category/productivity.html" afterPath="$PROJECT_DIR$/output/category/productivity.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/category/programming.html" afterPath="$PROJECT_DIR$/output/category/programming.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/feeds/all-en.atom.xml" afterPath="$PROJECT_DIR$/output/feeds/all-en.atom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/feeds/atom.xml" afterPath="$PROJECT_DIR$/output/feeds/atom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/feeds/jahongir-rahmonov.atom.xml" afterPath="$PROJECT_DIR$/output/feeds/jahongir-rahmonov.atom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/feeds/jahongir-rahmonov.rss.xml" afterPath="$PROJECT_DIR$/output/feeds/jahongir-rahmonov.rss.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/feeds/programming.atom.xml" afterPath="$PROJECT_DIR$/output/feeds/programming.atom.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/feeds/rss.xml" afterPath="$PROJECT_DIR$/output/feeds/rss.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/index.html" afterPath="$PROJECT_DIR$/output/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/pages/about.html" afterPath="$PROJECT_DIR$/output/pages/about.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/pages/posts.html" afterPath="$PROJECT_DIR$/output/pages/posts.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/posts/2015/Avg/index.html" afterPath="$PROJECT_DIR$/output/posts/2015/Avg/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/posts/2015/Iyl/index.html" afterPath="$PROJECT_DIR$/output/posts/2015/Iyl/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/posts/2015/Iyn/index.html" afterPath="$PROJECT_DIR$/output/posts/2015/Iyn/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/posts/2015/Noy/index.html" afterPath="$PROJECT_DIR$/output/posts/2015/Noy/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/posts/2015/Okt/index.html" afterPath="$PROJECT_DIR$/output/posts/2015/Okt/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/posts/2015/Sen/index.html" afterPath="$PROJECT_DIR$/output/posts/2015/Sen/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/posts/2015/index.html" afterPath="$PROJECT_DIR$/output/posts/2015/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/posts/2016/Apr/index.html" afterPath="$PROJECT_DIR$/output/posts/2016/Apr/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/posts/2016/index.html" afterPath="$PROJECT_DIR$/output/posts/2016/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/posts/close-modal-on-back-button/index.html" afterPath="$PROJECT_DIR$/output/posts/close-modal-on-back-button/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/posts/customize-django-admin-templates/index.html" afterPath="$PROJECT_DIR$/output/posts/customize-django-admin-templates/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/posts/django-1.8-bug/index.html" afterPath="$PROJECT_DIR$/output/posts/django-1.8-bug/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/posts/indroduction-to-celery/index.html" afterPath="$PROJECT_DIR$/output/posts/indroduction-to-celery/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/posts/introduction-to-python-social-auth/index.html" afterPath="$PROJECT_DIR$/output/posts/introduction-to-python-social-auth/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/posts/music-to-listen-to-at-work/index.html" afterPath="$PROJECT_DIR$/output/posts/music-to-listen-to-at-work/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/posts/pomodoro-technique/index.html" afterPath="$PROJECT_DIR$/output/posts/pomodoro-technique/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/posts/why-i-want-to-work-at-google/index.html" afterPath="$PROJECT_DIR$/output/posts/why-i-want-to-work-at-google/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/posts/why-one-plus-one-is-not-two/index.html" afterPath="$PROJECT_DIR$/output/posts/why-one-plus-one-is-not-two/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output/tags.html" afterPath="$PROJECT_DIR$/output/tags.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/themes/jahon/templates/about.html" afterPath="$PROJECT_DIR$/themes/jahon/templates/about.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/themes/jahon/templates/footer.html" afterPath="$PROJECT_DIR$/themes/jahon/templates/footer.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/themes/jahon/templates/sidebar.html" afterPath="$PROJECT_DIR$/themes/jahon/templates/sidebar.html" />
+    </list>
     <ignored path="jahongir.github.io.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -21,42 +62,34 @@
     <favorites_list name="jahongir.github.io" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="pomodoro-technique.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/content/pomodoro-technique.md">
-          <provider editor-type-id="MarkdownPreviewEditor">
-            <state />
-          </provider>
-          <provider editor-type-id="MultiMarkdownFxHtmlEditor">
-            <state />
-          </provider>
+    <leaf>
+      <file leaf-file-name="sidebar.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/themes/jahon/templates/sidebar.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-738">
-              <caret line="9" column="10" selection-start-line="9" selection-start-column="10" selection-end-line="9" selection-end-column="10" />
+            <state relative-caret-position="40">
+              <caret line="2" column="51" selection-start-line="2" selection-start-column="51" selection-end-line="2" selection-end-column="78" />
               <folding />
             </state>
-          </provider>
-          <provider editor-type-id="MultiMarkdownFxPreviewEditor">
-            <state />
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="introduction-to-celery.md" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/content/introduction-to-celery.md">
-          <provider editor-type-id="MarkdownPreviewEditor">
-            <state />
-          </provider>
-          <provider editor-type-id="MultiMarkdownFxHtmlEditor">
-            <state />
-          </provider>
+      <file leaf-file-name="about.html" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/themes/jahon/templates/about.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="302">
-              <caret line="128" column="0" selection-start-line="128" selection-start-column="0" selection-end-line="128" selection-end-column="0" />
+            <state relative-caret-position="900">
+              <caret line="45" column="0" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
               <folding />
             </state>
           </provider>
-          <provider editor-type-id="MultiMarkdownFxPreviewEditor">
-            <state />
+        </entry>
+      </file>
+      <file leaf-file-name="footer.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/themes/jahon/templates/footer.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="120">
+              <caret line="6" column="11" selection-start-line="6" selection-start-column="11" selection-end-line="6" selection-end-column="11" />
+              <folding />
+            </state>
           </provider>
         </entry>
       </file>
@@ -67,10 +100,16 @@
       <setting name="OPEN_NEW_TAB" value="true" />
     </FindUsagesManager>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/content/introduction-to-celery.md" />
+        <option value="$PROJECT_DIR$/themes/jahon/templates/sidebar.html" />
+        <option value="$PROJECT_DIR$/themes/jahon/templates/about.html" />
+        <option value="$PROJECT_DIR$/themes/jahon/templates/footer.html" />
       </list>
     </option>
   </component>
@@ -82,9 +121,9 @@
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="57" />
-    <option name="y" value="-4" />
+    <option name="y" value="21" />
     <option name="width" value="1309" />
-    <option name="height" value="772" />
+    <option name="height" value="747" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -114,6 +153,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -132,21 +173,40 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="jahongir.github.io" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="jahongir.github.io" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="themes" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="jahon" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="templates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../DjangoProjects/celery_demo" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="options.lastSelected" value="com.jetbrains.python.templateLanguages.TemplateLanguageModulesConfigurable" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
     <property name="DefaultHtmlFileTemplate" value="Html5" />
-    <property name="FullScreen" value="false" />
     <property name="ignore_missing_gitignore" value="true" />
     <property name="js-jscs-nodeInterpreter" value="/usr/bin/node" />
   </component>
@@ -251,6 +311,12 @@
       <method />
     </configuration>
     <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <gulpfile />
+      <tasks />
+      <arguments />
+      <envs />
       <method />
     </configuration>
     <configuration default="true" type="js.build_tools.npm" factoryName="npm">
@@ -388,19 +454,19 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="57" y="-4" width="1309" height="772" extended-state="6" />
+    <frame x="57" y="21" width="1309" height="747" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21615201" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23990498" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -428,11 +494,127 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/content/pomodoro-technique.md">
+    <entry file="file://$PROJECT_DIR$/content/introduction-to-celery.md">
+      <provider editor-type-id="MultiMarkdownFxPreviewEditor">
+        <state />
+      </provider>
       <provider editor-type-id="MarkdownPreviewEditor">
         <state />
       </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
       <provider editor-type-id="MultiMarkdownFxHtmlEditor">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/content/pomodoro-technique.md">
+      <provider editor-type-id="MultiMarkdownFxPreviewEditor">
+        <state />
+      </provider>
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+      <provider editor-type-id="MultiMarkdownFxHtmlEditor">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider editor-type-id="MultiMarkdownFxPreviewEditor">
+        <state />
+      </provider>
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="4" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="31" selection-end-column="70" />
+        </state>
+      </provider>
+      <provider editor-type-id="MultiMarkdownFxHtmlEditor">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/content/customize-django-admin-template.md">
+      <provider editor-type-id="MultiMarkdownFxPreviewEditor">
+        <state />
+      </provider>
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="7" column="31" selection-start-line="7" selection-start-column="31" selection-end-line="7" selection-end-column="31" />
+        </state>
+      </provider>
+      <provider editor-type-id="MultiMarkdownFxHtmlEditor">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/content/django-1.8-bug.md">
+      <provider editor-type-id="MultiMarkdownFxPreviewEditor">
+        <state />
+      </provider>
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="222">
+          <caret line="21" column="4" selection-start-line="21" selection-start-column="4" selection-end-line="23" selection-end-column="28" />
+        </state>
+      </provider>
+      <provider editor-type-id="MultiMarkdownFxHtmlEditor">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/content/pomodoro-technique.md">
+      <provider editor-type-id="MultiMarkdownFxPreviewEditor">
+        <state />
+      </provider>
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-738">
+          <caret line="9" column="10" selection-start-line="9" selection-start-column="10" selection-end-line="9" selection-end-column="10" />
+        </state>
+      </provider>
+      <provider editor-type-id="MultiMarkdownFxHtmlEditor">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/output/posts/indroduction-to-celery/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2700">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/content/introduction-to-celery.md">
+      <provider editor-type-id="MultiMarkdownFxPreviewEditor">
+        <state />
+      </provider>
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="222">
+          <caret line="95" column="20" selection-start-line="95" selection-start-column="20" selection-end-line="95" selection-end-column="20" />
+        </state>
+      </provider>
+      <provider editor-type-id="MultiMarkdownFxHtmlEditor">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/content/pages/about.md">
+      <provider editor-type-id="MultiMarkdownFxPreviewEditor">
         <state />
       </provider>
       <provider selected="true" editor-type-id="text-editor">
@@ -441,91 +623,60 @@
           <folding />
         </state>
       </provider>
-      <provider editor-type-id="MultiMarkdownFxPreviewEditor">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
       <provider editor-type-id="MarkdownPreviewEditor">
         <state />
       </provider>
       <provider editor-type-id="MultiMarkdownFxHtmlEditor">
         <state />
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/content/pages/posts.md">
       <provider editor-type-id="MultiMarkdownFxPreviewEditor">
         <state />
       </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
-          <caret line="4" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="31" selection-end-column="70" />
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/content/customize-django-admin-template.md">
       <provider editor-type-id="MarkdownPreviewEditor">
         <state />
       </provider>
       <provider editor-type-id="MultiMarkdownFxHtmlEditor">
         <state />
       </provider>
-      <provider editor-type-id="MultiMarkdownFxPreviewEditor">
-        <state />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/themes/jahon/templates/sidebar.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="40">
+          <caret line="2" column="51" selection-start-line="2" selection-start-column="51" selection-end-line="2" selection-end-column="78" />
+          <folding />
+        </state>
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/themes/jahon/templates/gosquared.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
-          <caret line="7" column="31" selection-start-line="7" selection-start-column="31" selection-end-line="7" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/content/django-1.8-bug.md">
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
-      </provider>
-      <provider editor-type-id="MultiMarkdownFxHtmlEditor">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="222">
-          <caret line="21" column="4" selection-start-line="21" selection-start-column="4" selection-end-line="23" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="MultiMarkdownFxPreviewEditor">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/content/pomodoro-technique.md">
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
-      </provider>
-      <provider editor-type-id="MultiMarkdownFxHtmlEditor">
-        <state />
-      </provider>
-      <provider editor-type-id="MultiMarkdownFxPreviewEditor">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-738">
-          <caret line="9" column="10" selection-start-line="9" selection-start-column="10" selection-end-line="9" selection-end-column="10" />
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/content/introduction-to-celery.md">
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
-      </provider>
-      <provider editor-type-id="MultiMarkdownFxHtmlEditor">
-        <state />
-      </provider>
+    <entry file="file://$PROJECT_DIR$/themes/jahon/templates/footer.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="302">
-          <caret line="128" column="0" selection-start-line="128" selection-start-column="0" selection-end-line="128" selection-end-column="0" />
+        <state relative-caret-position="120">
+          <caret line="6" column="11" selection-start-line="6" selection-start-column="11" selection-end-line="6" selection-end-column="11" />
           <folding />
         </state>
       </provider>
-      <provider editor-type-id="MultiMarkdownFxPreviewEditor">
-        <state />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/themes/jahon/templates/about.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="900">
+          <caret line="45" column="0" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
+          <folding />
+        </state>
       </provider>
     </entry>
   </component>

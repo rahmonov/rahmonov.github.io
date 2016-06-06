@@ -40,12 +40,11 @@
 
             <div class="paragraphs">
 <p>
-    I study Business Information Systems at <a href="http://wiut.uz/">WIUT</a>.
-    I'm currently a Software Engineer at <a href="http://shift.uz/">Shift Technologies</a>
-    and am living in Tashkent, Uzbekistan.
+    I hold a BSc hon. in Business Information Systems from <a href="http://wiut.uz/">WIUT</a>.
+    I'm currently a Software Developer at <a href="http://mysuperdispatch.com/">Super Dispatch (TechStars '16)</a>
 </p>
 <p>
-    I write about web, mobile and other things that are of interest to me.
+    I write about web, books, productivity and other things that are of interest to me.
 </p>            </div>
 
 
@@ -151,7 +150,7 @@ for additional info on why task queues can be useful.</p>
 
 <p>However, for this simple example, I put the <code>send_email()</code> function inside <code>proj/proj/celery.py</code></p>
 <p>Now, let's check our function by executing it in the shell</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">celery_demo.celery</span> <span class="kn">import</span> <span class="n">send_email</span> 
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">proj.celery</span> <span class="kn">import</span> <span class="n">send_email</span> 
 <span class="o">&gt;&gt;&gt;</span> <span class="n">send_email</span><span class="p">()</span>
 </pre></div>
 
@@ -168,21 +167,21 @@ this function into a celery task by simply using <code>@shared_task</code> decor
 
 
 <p>Now, we start celery in the command line by executing this:</p>
-<div class="highlight"><pre>celery -A celery_demo worker -l info
+<div class="highlight"><pre>celery -A proj worker -l info
 </pre></div>
 
 
 <p>Now, we call our task from the shell with <code>delay()</code> method of celery:</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">celery_demo.celery</span> <span class="kn">import</span> <span class="n">send_email</span>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">proj.celery</span> <span class="kn">import</span> <span class="n">send_email</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">send_email</span><span class="o">.</span><span class="n">delay</span><span class="p">()</span>
 </pre></div>
 
 
 <p>You will immediately see that the method returned! That means that users will see the results right away!
 If you check you Celery logs, you will see something like this:</p>
-<div class="highlight"><pre><span class="k">[2016-04-28 06:54:59,920: INFO/MainProcess] Received task: celery_demo.celery.send_email[1d2b9446-4791-4da4-8136-ee74d78cf394]</span>
-<span class="err">[2016-04-28</span> <span class="err">06:55:02,470:</span> <span class="err">WARNING/Worker-3]</span> <span class="err">Email</span> <span class="err">is</span> <span class="err">sent</span>
-<span class="err">[2016-04-28</span> <span class="err">06:55:02,471:</span> <span class="err">INFO/MainProcess]</span> <span class="err">Task</span> <span class="err">celery_demo.celery.send_email[1d2b9446-4791-4da4-8136-ee74d78cf394]</span> <span class="err">succeeded</span> <span class="err">in</span> <span class="err">2.550240921s:</span> <span class="err">None</span>
+<div class="highlight"><pre><span class="p">[</span><span class="mi">2016</span><span class="o">-</span><span class="mo">04</span><span class="o">-</span><span class="mi">28</span> <span class="mo">06</span><span class="p">:</span><span class="mi">54</span><span class="p">:</span><span class="mi">59</span><span class="p">,</span><span class="mi">920</span><span class="p">:</span> <span class="n">INFO</span><span class="o">/</span><span class="n">MainProcess</span><span class="p">]</span> <span class="n">Received</span> <span class="n">task</span><span class="p">:</span> <span class="n">proj</span><span class="o">.</span><span class="n">celery</span><span class="o">.</span><span class="n">send_email</span><span class="p">[</span><span class="mi">1</span><span class="n">d2b9446</span><span class="o">-</span><span class="mi">4791</span><span class="o">-</span><span class="mi">4</span><span class="n">da4</span><span class="o">-</span><span class="mi">8136</span><span class="o">-</span><span class="n">ee74d78cf394</span><span class="p">]</span>
+<span class="p">[</span><span class="mi">2016</span><span class="o">-</span><span class="mo">04</span><span class="o">-</span><span class="mi">28</span> <span class="mo">06</span><span class="p">:</span><span class="mi">55</span><span class="p">:</span><span class="mo">02</span><span class="p">,</span><span class="mi">470</span><span class="p">:</span> <span class="n">WARNING</span><span class="o">/</span><span class="n">Worker</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="n">Email</span> <span class="ow">is</span> <span class="n">sent</span>
+<span class="p">[</span><span class="mi">2016</span><span class="o">-</span><span class="mo">04</span><span class="o">-</span><span class="mi">28</span> <span class="mo">06</span><span class="p">:</span><span class="mi">55</span><span class="p">:</span><span class="mo">02</span><span class="p">,</span><span class="mi">471</span><span class="p">:</span> <span class="n">INFO</span><span class="o">/</span><span class="n">MainProcess</span><span class="p">]</span> <span class="n">Task</span> <span class="n">proj</span><span class="o">.</span><span class="n">celery</span><span class="o">.</span><span class="n">send_email</span><span class="p">[</span><span class="mi">1</span><span class="n">d2b9446</span><span class="o">-</span><span class="mi">4791</span><span class="o">-</span><span class="mi">4</span><span class="n">da4</span><span class="o">-</span><span class="mi">8136</span><span class="o">-</span><span class="n">ee74d78cf394</span><span class="p">]</span> <span class="n">succeeded</span> <span class="ow">in</span> <span class="mf">2.550240921</span><span class="n">s</span><span class="p">:</span> <span class="bp">None</span>
 </pre></div>
 
 
@@ -194,10 +193,10 @@ intended to serve as a fast introduction to the tool. </p>
 
 <div class="end">
     <span>
-        You're awesome for reading this. You should follow me on
+        Get in touch with me on
         <a href="https://twitter.com/the_rahmonov" target="_blank">Twitter</a>
-        and
-        <a href="https://github.com/rahmonov" target="_blank">GitHub</a>.
+        or
+        <a href="https://www.facebook.com/rahmonovj" target="_blank">Facebook</a>.
     </span>
 </div>
             </div>
