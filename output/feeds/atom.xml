@@ -1,5 +1,174 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2016-05-20T20:10:00+05:00</updated><entry><title>Periodic Tasks with Celery</title><link href="http://rahmonov.github.io/posts/periodic-tasks-with-celery/" rel="alternate"></link><updated>2016-05-20T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2016-05-20:posts/periodic-tasks-with-celery/</id><summary type="html">&lt;p&gt;Celery is a task queue with focus on real-time processing, while also supporting task scheduling.
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2016-06-15T20:10:00+05:00</updated><entry><title>How to write clean functions</title><link href="http://rahmonov.github.io/posts/how-to-write-clean-functions/" rel="alternate"></link><updated>2016-06-15T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2016-06-15:posts/how-to-write-clean-functions/</id><summary type="html">&lt;p&gt;The following is heavily influenced (99%) by one of the must-read books for any developer: &lt;a href="https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882"&gt;Clean Code: A Handbook of Agile Software Craftsmanship&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;Clean Code&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;Always code as if the guy who ends up maintaining your code will be a violent psychopath who knows where you live.
+Code for readability.
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Damn right! Uncle Bob Martin even mentions of a once-successful company that went bankrupt 
+because of unmaintainable codebase. Clean code is that serious.&lt;/p&gt;
+&lt;p&gt;Now that we know the importance of clean code, let's take a look at how to write clean functions first.&lt;/p&gt;
+&lt;h2&gt;Clean Functions&lt;/h2&gt;
+&lt;p&gt;Functions are key players in any program and it is very important to write them well.&lt;/p&gt;
+&lt;p&gt;Let's take a look at the following code:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;static&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="nf"&gt;testableHtml&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PageData&lt;/span&gt; &lt;span class="n"&gt;pageData&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;includeSuiteSetup&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="kd"&gt;throws&lt;/span&gt; &lt;span class="n"&gt;Exception&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="n"&gt;WikiPage&lt;/span&gt; &lt;span class="n"&gt;wikiPage&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pageData&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getWikiPage&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+    &lt;span class="n"&gt;StringBuffer&lt;/span&gt; &lt;span class="n"&gt;buffer&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;StringBuffer&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pageData&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;hasAttribute&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Test&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;includeSuiteSetup&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;WikiPage&lt;/span&gt; &lt;span class="n"&gt;suiteSetup&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;
+                    &lt;span class="n"&gt;PageCrawlerImpl&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getInheritedPage&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;
+                            &lt;span class="n"&gt;SuiteResponder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;SUITE_SETUP_NAME&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;wikiPage&lt;/span&gt;
+                    &lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;suiteSetup&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="n"&gt;WikiPagePath&lt;/span&gt; &lt;span class="n"&gt;pagePath&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;
+                        &lt;span class="n"&gt;suiteSetup&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getPageCrawler&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;getFullPath&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;suiteSetup&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;pagePathName&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;PathParser&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;render&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pagePath&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;append&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;!include -setup .&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+                        &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;append&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pagePathName&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+                        &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;append&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;\n&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+        &lt;span class="n"&gt;WikiPage&lt;/span&gt; &lt;span class="n"&gt;setup&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;
+                &lt;span class="n"&gt;PageCrawlerImpl&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getInheritedPage&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;SetUp&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;wikiPage&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;setup&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;WikiPagePath&lt;/span&gt; &lt;span class="n"&gt;setupPath&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;
+                    &lt;span class="n"&gt;wikiPage&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getPageCrawler&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;getFullPath&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;setup&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;setupPathName&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;PathParser&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;render&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;setupPath&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;append&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;!include -setup .&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+                    &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;append&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;setupPathName&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+                    &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;append&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;\n&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;append&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pageData&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getContent&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pageData&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;hasAttribute&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Test&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;WikiPage&lt;/span&gt; &lt;span class="n"&gt;teardown&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;
+                &lt;span class="n"&gt;PageCrawlerImpl&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getInheritedPage&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;TearDown&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;wikiPage&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;teardown&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;WikiPagePath&lt;/span&gt; &lt;span class="n"&gt;tearDownPath&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;
+                    &lt;span class="n"&gt;wikiPage&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getPageCrawler&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;getFullPath&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;teardown&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;tearDownPathName&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;PathParser&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;render&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tearDownPath&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;append&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;\n&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+                    &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;append&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;!include -teardown .&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+                    &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;append&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tearDownPathName&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+                    &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;append&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;\n&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;includeSuiteSetup&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="n"&gt;WikiPage&lt;/span&gt; &lt;span class="n"&gt;suiteTeardown&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;
+                    &lt;span class="n"&gt;PageCrawlerImpl&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getInheritedPage&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;
+                            &lt;span class="n"&gt;SuiteResponder&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;SUITE_TEARDOWN_NAME&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt;
+                            &lt;span class="n"&gt;wikiPage&lt;/span&gt;
+                    &lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;suiteTeardown&lt;/span&gt; &lt;span class="o"&gt;!=&lt;/span&gt; &lt;span class="kc"&gt;null&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+                &lt;span class="n"&gt;WikiPagePath&lt;/span&gt; &lt;span class="n"&gt;pagePath&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;
+                        &lt;span class="n"&gt;suiteTeardown&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getPageCrawler&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="na"&gt;getFullPath&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;suiteTeardown&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="n"&gt;pagePathName&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;PathParser&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;render&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pagePath&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+                &lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;append&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;!include -teardown .&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+                        &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;append&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pagePathName&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+                        &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;append&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;\n&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+            &lt;span class="o"&gt;}&lt;/span&gt;
+        &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="n"&gt;pageData&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setContent&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;buffer&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;toString&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;pageData&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getHtml&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Obviously, this is not a well-written function. But what problems does it have?!&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;- Too much going on, i.e. too big
+- Many different levels of abstraction
+- Nested if statements controlled by flags
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;With little method extraction, renaming and restructuring, we can come to the better version:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;static&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="nf"&gt;renderPageWithSetupsAndTeardowns&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PageData&lt;/span&gt; &lt;span class="n"&gt;pageData&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;isSuite&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="kd"&gt;throws&lt;/span&gt; &lt;span class="n"&gt;Exception&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;isTestPage&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pageData&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;hasAttribute&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Test&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;isTestPage&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;WikiPage&lt;/span&gt; &lt;span class="n"&gt;testPage&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pageData&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getWikiPage&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;StringBuffer&lt;/span&gt; &lt;span class="n"&gt;newPageContent&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="n"&gt;StringBuffer&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+        &lt;span class="n"&gt;includeSetupPages&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;testPage&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;newPageContent&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;isSuite&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;newPageContent&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;append&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pageData&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getContent&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+        &lt;span class="n"&gt;includeTeardownPages&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;testPage&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;newPageContent&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;isSuite&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+        &lt;span class="n"&gt;pageData&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;setContent&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;newPageContent&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;toString&lt;/span&gt;&lt;span class="o"&gt;());&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;pageData&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getHtml&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, it is much better! But the main question remains: What attributes should we give our functions that 
+will a casual reader to intuit what it does easily?&lt;/p&gt;
+&lt;h2&gt;Small&lt;/h2&gt;
+&lt;p&gt;Functions should be small! They should even be smaller than that! Actually, the code above is too large and
+it should be shortened to this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kd"&gt;public&lt;/span&gt; &lt;span class="kd"&gt;static&lt;/span&gt; &lt;span class="n"&gt;String&lt;/span&gt; &lt;span class="nf"&gt;renderPageWithSetupsAndTeardowns&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PageData&lt;/span&gt; &lt;span class="n"&gt;pageData&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="kt"&gt;boolean&lt;/span&gt; &lt;span class="n"&gt;isSuite&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="kd"&gt;throws&lt;/span&gt; &lt;span class="n"&gt;Exception&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;isTestPage&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pageData&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+        &lt;span class="n"&gt;includeSetupAndTeardownPages&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pageData&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;isSuite&lt;/span&gt;&lt;span class="o"&gt;);&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;pageData&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="na"&gt;getHtml&lt;/span&gt;&lt;span class="o"&gt;();&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;How long? Uncle Bob says that they should hardly be 20 lines long.&lt;/p&gt;
+&lt;h2&gt;Do One Thing&lt;/h2&gt;
+&lt;p&gt;Functions should do one thing. They should do it well. They should do it only.&lt;/p&gt;
+&lt;p&gt;The function &lt;code&gt;testableHtml()&lt;/code&gt; is doing too many things:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;- Creating buffers
+- Fetching pages
+- Searching for inherited pages
+- Rendering paths
+- Generating HTML
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;On the other hand, the function &lt;code&gt;renderPageWithSetupsAndTeardowns()&lt;/code&gt; is doing only one thing: Including setups and teardowns into test pages!&lt;/p&gt;
+&lt;p&gt;However, it can be hard to know what that one thing is. Hence, the next rule.&lt;/p&gt;
+&lt;h2&gt;One level of abstraction per function&lt;/h2&gt;
+&lt;p&gt;Let's see the following example to understand what one level of abstraction means.
+Imagine we need to write a function that builds a house. That is, our function should answer the question of
+"What needs to be done to build a house?". The answer would roughly be: find location, design, get permits, break ground and etc...
+In code, it would look something like this: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;buildHouse&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;find_location&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;design&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;fix_documents&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;break_ground&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;build_walls_and_roof&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;etc&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This function does have only one level of abstraction. Everything inside the function is a part of the answer to the question of "how to build a house?".
+To compare, take a look at the following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;buildHouse&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;select_desirable_place&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;select_property&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;survey_property&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;consider_access_issues&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="n"&gt;consult_architect&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;design_utilities&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;design_efficiently&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="n"&gt;etc&lt;/span&gt;&lt;span class="o"&gt;...&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Do you see it? The first 4 functions is not a part of the answer to the question: "What to do to build a house?", but rather "What to do to find a location to build a house?".
+Do you see it now? They are 2 levels deep, not one! In real code, it would look much worse.&lt;/p&gt;
+&lt;h2&gt;Use descriptive names&lt;/h2&gt;
+&lt;p&gt;The title says it all. Examples: is_testable(), includePages().
+You know you are working on clean code when each function turns out to be pretty much what you expected.&lt;/p&gt;
+&lt;p&gt;In choosing a name, we should:
+    - not be afraid to make a long name
+    - not be afraid to spend time choosing a name
+    - even try several different names and read the code with each in place
+    - be consistent in our names&lt;/p&gt;
+&lt;p&gt;Follow these pieces of advice and your functions become much cleaner and more maintainable.&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="clean"></category><category term="code"></category><category term="functions"></category><category term="robert"></category><category term="martin"></category></entry><entry><title>Periodic Tasks with Celery</title><link href="http://rahmonov.github.io/posts/periodic-tasks-with-celery/" rel="alternate"></link><updated>2016-05-20T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2016-05-20:posts/periodic-tasks-with-celery/</id><summary type="html">&lt;p&gt;Celery is a task queue with focus on real-time processing, while also supporting task scheduling.
 In the &lt;a href="http://rahmonov.me/posts/indroduction-to-celery/"&gt;previous post&lt;/a&gt;, we saw how celery can be 
 used to take tasks out of main thread and process them in background. Now, we will take a look at its
 task scheduling feature.&lt;/p&gt;
