@@ -71,124 +71,61 @@
 <h2>Latest Post</h2>
 
 <h4>
-    <a href="posts/indroduction-to-celery/">
-        28 Aprel 2016
+    <a href="posts/periodic-tasks-with-celery/">
+        20 May 2016
     </a>
 </h4>
 
-<h1>Introduction to Celery</h1>
+<h1>Periodic Tasks with Celery</h1>
 
-<p>According to the <a href="http://docs.celeryproject.org/en/latest/index.html">docs</a>, Celery is a simple, 
-flexible and reliable distributed system to process vast amounts of messages, while providing 
-operations with the tools required to maintain such a system.</p>
-<p>It’s a task queue with focus on real-time processing, while also supporting task scheduling.</p>
-<h2>What is it used for?</h2>
-<p>It is mainly used for the following things:</p>
-<ul>
-<li>Running something in the background</li>
-<li>Asynchronous execution of code</li>
-<li>Scheduling periodic work</li>
-</ul>
+<p>Celery is a task queue with focus on real-time processing, while also supporting task scheduling.
+In the <a href="http://rahmonov.me/posts/indroduction-to-celery/">previous post</a>, we saw how celery can be 
+used to take tasks out of main thread and process them in background. Now, we will take a look at its
+task scheduling feature.</p>
 <h2>Use case example</h2>
-<p>Your web app needs to send an email. That is a very slow operation. While users can put up with 4 or 5
-seconds until an email is sent, it might leave a bad impression on them. Solution? Celery (singing...
-"I came in like a wrecking ball...(by Miley Cyrus)")! It will take this operation out of the main thread and executes it
-in the background. This gives the user the impression of good performance and “snappiness”, even 
-though the real work might actually take some time.</p>
-<p>Read <a href="http://decafbad.com/blog/2008/07/04/queue-everything-and-delight-everyone/">Queue everything and delight everyone</a>
-for additional info on why task queues can be useful.</p>
+<p>As part of your company's marketing campaign, you want to periodically send emails to your customers 
+informing them about new products and features. Besides, you want to send those emails at 9:30 a.m. every day
+to make sure people see them when they just arrived in their office. You don't want to be doing it manually.
+Celery to the rescue!</p>
 <h2>Get started</h2>
-<p>Now that we know what Celery is and what it is used for, let's jump in and see how to use it with Django
-(other cases should be similar). We will see how to send an email with Celery.</p>
-<p>First, create a new <code>proj/proj/celery.py</code> module that defines a Celery instance</p>
-<div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-
-<span class="kn">import</span> <span class="nn">os</span>
-
-<span class="kn">from</span> <span class="nn">celery</span> <span class="kn">import</span> <span class="n">Celery</span>
-
-<span class="c"># set the default Django settings module for the &#39;celery&#39; program.</span>
-<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s">&#39;DJANGO_SETTINGS_MODULE&#39;</span><span class="p">,</span> <span class="s">&#39;proj.settings&#39;</span><span class="p">)</span>
-
-<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>  <span class="c"># noqa</span>
-
-<span class="n">app</span> <span class="o">=</span> <span class="n">Celery</span><span class="p">(</span><span class="s">&#39;proj&#39;</span><span class="p">)</span>
-
-<span class="c"># Using a string here means the worker will not have to</span>
-<span class="c"># pickle the object when using Windows.</span>
-<span class="n">app</span><span class="o">.</span><span class="n">config_from_object</span><span class="p">(</span><span class="s">&#39;django.conf:settings&#39;</span><span class="p">)</span>
-<span class="n">app</span><span class="o">.</span><span class="n">autodiscover_tasks</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">settings</span><span class="o">.</span><span class="n">INSTALLED_APPS</span><span class="p">)</span>
+<p>Now that we know we want to accomplish, we will see a simple example. Good news is that it is extremely easy to 
+set up a periodic task.</p>
+<p>First, let's write a function that simply says <code>Hello, name</code> in proj/tasks.py:</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">say_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Hello, {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
 </pre></div>
 
 
-<p>Then, import this app in <code>proj/proj/__init__.py</code></p>
-<div class="highlight"><pre><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-
-<span class="c"># This will make sure the app is always imported when</span>
-<span class="c"># Django starts so that shared_task will use this app.</span>
-<span class="kn">from</span> <span class="nn">.celery</span> <span class="kn">import</span> <span class="n">app</span> <span class="k">as</span> <span class="n">celery_app</span>  <span class="c"># noqa</span>
+<p>Now, in your settings file, write the following down:</p>
+<div class="highlight"><pre><span class="n">CELERYBEAT_SCHEDULE</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;say-hello-every-30-seconds&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">&#39;task&#39;</span><span class="p">:</span> <span class="s">&#39;tasks.say_hello&#39;</span><span class="p">,</span>
+        <span class="s">&#39;schedule&#39;</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">30</span><span class="p">),</span>
+        <span class="s">&#39;args&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&quot;Blog reader&quot;</span><span class="p">]</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+<span class="n">CELERY_TIMEZONE</span> <span class="o">=</span> <span class="s">&#39;UTC&#39;</span>
 </pre></div>
 
 
-<p>Then, create an ordinary function</p>
-<div class="highlight"><pre><span class="k">def</span> <span class="nf">send_email</span><span class="p">():</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="n">EmailMessage</span><span class="p">(</span><span class="s">&#39;Subject&#39;</span><span class="p">,</span> <span class="s">&#39;Message&#39;</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;jrahmonov2@gmail.com&#39;</span><span class="p">])</span>  
-    <span class="n">message</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Email is sent&#39;</span><span class="p">)</span>
+<p>I guess it is pretty clear what these settings mean. They simply say that <code>tasks.say_hello</code> should be 
+executed every 30 seconds and given an argument <code>Blog reader</code>.</p>
+<p>By the way, this feature of celery is called <code>celery-beat</code>.</p>
+<p>Now, in command line, do the following:</p>
+<div class="highlight"><pre>celery -A celery_demo beat
 </pre></div>
 
 
-<p>Note that tasks are normally placed in <code>tasks.py</code> file inside django apps:</p>
-<div class="highlight"><pre>- app1/
-    - app1/tasks.py
-    - app1/models.py
-- app2/
-    - app2/tasks.py
-    - app2/models.py
+<p>and behold! Every 30 seconds you will see something like this:</p>
+<div class="highlight"><pre><span class="p">[</span><span class="mi">2016</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">14</span> <span class="mi">13</span><span class="p">:</span><span class="mo">06</span><span class="p">:</span><span class="mi">44</span><span class="p">,</span><span class="mi">087</span><span class="p">:</span> <span class="n">INFO</span><span class="o">/</span><span class="n">MainProcess</span><span class="p">]</span> <span class="n">Scheduler</span><span class="p">:</span> <span class="n">Sending</span> <span class="n">due</span> <span class="n">task</span> <span class="n">say</span><span class="o">-</span><span class="n">hello</span><span class="o">-</span><span class="n">every</span><span class="o">-</span><span class="mi">30</span><span class="o">-</span><span class="n">seconds</span> <span class="p">(</span><span class="n">tasks</span><span class="o">.</span><span class="n">say_hello</span><span class="p">)</span>
+<span class="p">[</span><span class="mi">2016</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">14</span> <span class="mi">13</span><span class="p">:</span><span class="mo">07</span><span class="p">:</span><span class="mi">14</span><span class="p">,</span><span class="mi">114</span><span class="p">:</span> <span class="n">INFO</span><span class="o">/</span><span class="n">MainProcess</span><span class="p">]</span> <span class="n">Scheduler</span><span class="p">:</span> <span class="n">Sending</span> <span class="n">due</span> <span class="n">task</span> <span class="n">say</span><span class="o">-</span><span class="n">hello</span><span class="o">-</span><span class="n">every</span><span class="o">-</span><span class="mi">30</span><span class="o">-</span><span class="n">seconds</span> <span class="p">(</span><span class="n">tasks</span><span class="o">.</span><span class="n">say_hello</span><span class="p">)</span>
 </pre></div>
 
 
-<p>However, for this simple example, I put the <code>send_email()</code> function inside <code>proj/proj/celery.py</code></p>
-<p>Now, let's check our function by executing it in the shell</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">proj.celery</span> <span class="kn">import</span> <span class="n">send_email</span> 
-<span class="o">&gt;&gt;&gt;</span> <span class="n">send_email</span><span class="p">()</span>
-</pre></div>
-
-
-<p>After a couple of seconds, you will see <code>Email is sent</code> message as long as you properly configured email settings.
-But these seconds are too long when you can easily get rid of them. To do that, we now need to transform
-this function into a celery task by simply using <code>@shared_task</code> decorator:</p>
-<div class="highlight"><pre><span class="nd">@shared_task</span><span class="p">()</span>
-<span class="k">def</span> <span class="nf">send_email</span><span class="p">():</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="n">EmailMessage</span><span class="p">(</span><span class="s">&#39;Subject&#39;</span><span class="p">,</span> <span class="s">&#39;Message&#39;</span><span class="p">,</span> <span class="n">to</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;jrahmonov2@gmail.com&#39;</span><span class="p">])</span>
-    <span class="n">message</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&#39;Email is sent&#39;</span><span class="p">)</span>
-</pre></div>
-
-
-<p>Now, we start celery in the command line by executing this:</p>
-<div class="highlight"><pre>celery -A proj worker -l info
-</pre></div>
-
-
-<p>Now, we call our task from the shell with <code>delay()</code> method of celery:</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">proj.celery</span> <span class="kn">import</span> <span class="n">send_email</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">send_email</span><span class="o">.</span><span class="n">delay</span><span class="p">()</span>
-</pre></div>
-
-
-<p>You will immediately see that the method returned! That means that users will see the results right away!
-If you check you Celery logs, you will see something like this:</p>
-<div class="highlight"><pre><span class="p">[</span><span class="mi">2016</span><span class="o">-</span><span class="mo">04</span><span class="o">-</span><span class="mi">28</span> <span class="mo">06</span><span class="p">:</span><span class="mi">54</span><span class="p">:</span><span class="mi">59</span><span class="p">,</span><span class="mi">920</span><span class="p">:</span> <span class="n">INFO</span><span class="o">/</span><span class="n">MainProcess</span><span class="p">]</span> <span class="n">Received</span> <span class="n">task</span><span class="p">:</span> <span class="n">proj</span><span class="o">.</span><span class="n">celery</span><span class="o">.</span><span class="n">send_email</span><span class="p">[</span><span class="mi">1</span><span class="n">d2b9446</span><span class="o">-</span><span class="mi">4791</span><span class="o">-</span><span class="mi">4</span><span class="n">da4</span><span class="o">-</span><span class="mi">8136</span><span class="o">-</span><span class="n">ee74d78cf394</span><span class="p">]</span>
-<span class="p">[</span><span class="mi">2016</span><span class="o">-</span><span class="mo">04</span><span class="o">-</span><span class="mi">28</span> <span class="mo">06</span><span class="p">:</span><span class="mi">55</span><span class="p">:</span><span class="mo">02</span><span class="p">,</span><span class="mi">470</span><span class="p">:</span> <span class="n">WARNING</span><span class="o">/</span><span class="n">Worker</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="n">Email</span> <span class="ow">is</span> <span class="n">sent</span>
-<span class="p">[</span><span class="mi">2016</span><span class="o">-</span><span class="mo">04</span><span class="o">-</span><span class="mi">28</span> <span class="mo">06</span><span class="p">:</span><span class="mi">55</span><span class="p">:</span><span class="mo">02</span><span class="p">,</span><span class="mi">471</span><span class="p">:</span> <span class="n">INFO</span><span class="o">/</span><span class="n">MainProcess</span><span class="p">]</span> <span class="n">Task</span> <span class="n">proj</span><span class="o">.</span><span class="n">celery</span><span class="o">.</span><span class="n">send_email</span><span class="p">[</span><span class="mi">1</span><span class="n">d2b9446</span><span class="o">-</span><span class="mi">4791</span><span class="o">-</span><span class="mi">4</span><span class="n">da4</span><span class="o">-</span><span class="mi">8136</span><span class="o">-</span><span class="n">ee74d78cf394</span><span class="p">]</span> <span class="n">succeeded</span> <span class="ow">in</span> <span class="mf">2.550240921</span><span class="n">s</span><span class="p">:</span> <span class="bp">None</span>
-</pre></div>
-
-
-<p>Awesome! Pretty fast!</p>
-<p>This was a simple example of how to use Celery. Please note that this post does not discuss the installation process of Celery (or RabbitMQ) and is only
-intended to serve as a fast introduction to the tool. </p>
-<p>In the next post, I will discuss how Celery can be used for periodic tasks (think cron jobs)</p>
+<p>Pretty awesome, huh?</p>
+<p>If you want more flexibility of when the task is executed, take a look at <a href="http://docs.celeryproject.org/en/latest/reference/celery.schedules.html#celery.schedules.crontab">crontab</a>
+With that, you can execute your tasks at any time you want. For example: Execute every ten minutes, but only between 3-4 am, 5-6 pm and 10-11 pm on Thursdays or Fridays.</p>
+<p>Told you it is very easy :)</p>
 <p>Fight on!</p>
 
 <div class="end">

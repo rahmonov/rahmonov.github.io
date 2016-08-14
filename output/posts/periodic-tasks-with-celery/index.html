@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head prefix="og: http://ogp.me/ns#">
-        <title>Jahongir Rahmonov - Articles by Jahongir Rahmonov</title>
+          <title> Periodic Tasks with Celery - Jahongir Rahmonov </title>
 
         <link rel="stylesheet" href="/static/css/main.css" />
         <link rel="stylesheet" href="/static/css/pygment.css" />
@@ -14,14 +14,24 @@
         <meta name="author" content="Jahongir Rahmonov" />
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
-        <meta property="og:title" content="Home - Jahongir Rahmonov">
-        <meta property="og:type" content="website">
-        <meta property="og:image" content="/static/images/programming.jpg">
-        <meta property="og:url" content="http://rahmonov.github.io">
-        <meta property="og:description" content="Jahongir Rahmonov's personal blog about Python, Django, AngularJS and other things.">
+<meta property="og:title" content="Periodic Tasks with Celery - Jahongir Rahmonov">
+<meta property="og:type" content="website">
+<meta property="og:image" content="/static/images/programming.jpg">
+<meta property="og:url" content="http://rahmonov.github.io/posts/periodic-tasks-with-celery/">
+<meta property="og:description" content="<p>How to implement periodic tasks with Celery</p>">
 
         <link href="http://rahmonov.github.io/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Full Atom Feed" />
         <link href="http://rahmonov.github.io/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="Jahongir Rahmonov Full RSS Feed" />
+        <link href="http://rahmonov.github.io/feeds/programming.atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Categories Atom Feed" />
+
+
+
+    <meta name="tags" content="celery" />
+    <meta name="tags" content="python" />
+    <meta name="tags" content="asynch" />
+    <meta name="tags" content="threads" />
+    <meta name="tags" content="periodic" />
+
 </head>
 
 <body id="index" class="home">
@@ -68,17 +78,12 @@
         <div class="wrap">
             <div class="content">
 
-<h2>Articles by Jahongir Rahmonov</h2>
+  <h4>Ju 20 May 2016</h4>
 
-<h4>
-    <a href="posts/periodic-tasks-with-celery/">
-        20 May 2016
-    </a>
-</h4>
+  <h1>Periodic Tasks with Celery</h1>
 
-<h1>Periodic Tasks with Celery</h1>
-
-<p>Celery is a task queue with focus on real-time processing, while also supporting task scheduling.
+  <div class="entry-content">
+    <p>Celery is a task queue with focus on real-time processing, while also supporting task scheduling.
 In the <a href="http://rahmonov.me/posts/indroduction-to-celery/">previous post</a>, we saw how celery can be 
 used to take tasks out of main thread and process them in background. Now, we will take a look at its
 task scheduling feature.</p>
@@ -127,6 +132,7 @@ executed every 30 seconds and given an argument <code>Blog reader</code>.</p>
 With that, you can execute your tasks at any time you want. For example: Execute every ten minutes, but only between 3-4 am, 5-6 pm and 10-11 pm on Thursdays or Fridays.</p>
 <p>Told you it is very easy :)</p>
 <p>Fight on!</p>
+  </div>
 
 <div class="end">
     <span>
@@ -136,6 +142,19 @@ With that, you can execute your tasks at any time you want. For example: Execute
         <a href="https://www.facebook.com/rahmonovj" target="_blank">Facebook</a>.
     </span>
 </div>
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES * * */
+        var disqus_shortname = 'jrahmonov';
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
             </div>
         </div>
     </div>
