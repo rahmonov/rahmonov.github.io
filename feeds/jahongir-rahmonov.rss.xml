@@ -6,7 +6,7 @@ Code for readability.
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Damn right! Uncle Bob Martin even mentions of a once-successful company that went bankrupt 
+&lt;p&gt;Damn right!!! Uncle Bob Martin even mentions of a once-successful company that went bankrupt 
 because of unmaintainable codebase. Clean code is that serious.&lt;/p&gt;
 &lt;p&gt;Now that we know the importance of clean code, let's take a look at how to write clean functions first.&lt;/p&gt;
 &lt;h2&gt;Clean Functions&lt;/h2&gt;
