@@ -76,7 +76,7 @@
         <div class="wrap">
             <div class="content">
 
-  <h4>Pay 01 Oktyabr 2015</h4>
+  <h4>Thu 01 October 2015</h4>
 
   <h1>"Relation 'auth_user' does not exist" bug in Django 1.8</h1>
 
@@ -88,7 +88,7 @@ my migrations. To my surprise, I got this error: <code>ProgrammingError: relatio
 were opened on this question.</p>
 <p>In short, here is how I solved it:</p>
 <p>First option is to migrate the model which others depend on, i.e. <code>auth_user</code> and then the rest:</p>
-<div class="highlight"><pre><span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">migrate</span> <span class="n">auth</span>
+<div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">migrate</span> <span class="n">auth</span>
 <span class="n">python</span> <span class="n">manage</span><span class="o">.</span><span class="n">py</span> <span class="n">migrate</span>
 </pre></div>
 

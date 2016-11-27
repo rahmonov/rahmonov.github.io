@@ -76,7 +76,7 @@
         <div class="wrap">
             <div class="content">
 
-  <h4>Yak 18 Oktyabr 2015</h4>
+  <h4>Sun 18 October 2015</h4>
 
   <h1>Customize django admin templates</h1>
 
@@ -90,7 +90,7 @@ which, in their turn, were brought by that ajax request.</p>
 <h2>Template</h2>
 <p>First, I created a <code>change_form.html</code> file in <code>/templates/admin/</code> folder. As I wanted this file to extend, 
 not replace, the default <code>change_form.html</code>, I wrote this at the beginning of the file:</p>
-<div class="highlight"><pre><span class="p">{</span><span class="o">%</span> <span class="n">extends</span> <span class="s">&#39;admin/change_form.html&#39;</span> <span class="o">%</span><span class="p">}</span>
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="n">extends</span> <span class="s1">&#39;admin/change_form.html&#39;</span> <span class="o">%</span><span class="p">}</span>
 </pre></div>
 
 
@@ -105,25 +105,25 @@ In my case, it the file was  <code>/templates/admin/enterprise/product</code>.</
 <h2>Styles, Scripts and Buttons</h2>
 <p>Where do I put them? Taking a look at <code>admin/base.html</code> did the trick. It has special blocks for extra styles and
 scripts. So I put my css and javascript files in the following way:</p>
-<div class="highlight"><pre><span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">extrastyle</span> <span class="o">%</span><span class="p">}</span>
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">extrastyle</span> <span class="o">%</span><span class="p">}</span>
     <span class="p">{{</span> <span class="n">block</span><span class="o">.</span><span class="n">super</span> <span class="p">}}</span>
 
-    <span class="o">&lt;</span><span class="n">link</span> <span class="n">rel</span><span class="o">=</span><span class="s">&quot;stylesheet&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s">&quot;{</span><span class="si">% s</span><span class="s">tatic &#39;css/enterprise/main.css&#39;%}&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">link</span> <span class="n">rel</span><span class="o">=</span><span class="s2">&quot;stylesheet&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{</span><span class="si">% s</span><span class="s2">tatic &#39;css/enterprise/main.css&#39;%}&quot;</span><span class="o">&gt;</span>
 <span class="p">{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
 
 <span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">extrahead</span> <span class="o">%</span><span class="p">}</span>
     <span class="p">{{</span> <span class="n">block</span><span class="o">.</span><span class="n">super</span> <span class="p">}}</span>
 
-    <span class="o">&lt;</span><span class="n">script</span> <span class="nb">type</span><span class="o">=</span><span class="s">&quot;text/javascript&quot;</span> <span class="n">src</span><span class="o">=</span><span class="s">&quot;{</span><span class="si">% s</span><span class="s">tatic &#39;js/enterprise/modal.js&#39;%}&quot;</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">script</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;{</span><span class="si">% s</span><span class="s2">tatic &#39;js/enterprise/modal.js&#39;%}&quot;</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
 <span class="p">{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
 </pre></div>
 
 
 <p>As for buttons, I thought a good place would be above the default buttons. So, I thought out the block of those buttons 
 and put mine right above them:</p>
-<div class="highlight"><pre><span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">submit_buttons_bottom</span> <span class="o">%</span><span class="p">}</span>
-    <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s">&quot;submit-row&quot;</span><span class="o">&gt;</span>
-        <span class="o">&lt;</span><span class="n">button</span> <span class="n">class</span><span class="o">=</span><span class="s">&quot;btn btn-danger&quot;</span><span class="o">&gt;</span><span class="n">Custom</span> <span class="n">Button</span><span class="o">&lt;/</span><span class="n">button</span><span class="o">&gt;</span>
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">submit_buttons_bottom</span> <span class="o">%</span><span class="p">}</span>
+    <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;submit-row&quot;</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">button</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;btn btn-danger&quot;</span><span class="o">&gt;</span><span class="n">Custom</span> <span class="n">Button</span><span class="o">&lt;/</span><span class="n">button</span><span class="o">&gt;</span>
     <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
 
     <span class="p">{{</span> <span class="n">block</span><span class="o">.</span><span class="n">super</span> <span class="p">}}</span>
@@ -136,7 +136,7 @@ and put mine right above them:</p>
 <h2>Additional</h2>
 <p>In the ajax request, I had to send the <code>id</code> of the product being changed. So I thought I could get it with <code>{{ product.id }}</code>
 but I was wrong. Then, I learned that I could get it like so:</p>
-<div class="highlight"><pre><span class="p">{{</span> <span class="n">original</span><span class="o">.</span><span class="n">id</span> <span class="p">}}</span>
+<div class="highlight"><pre><span></span><span class="p">{{</span> <span class="n">original</span><span class="o">.</span><span class="n">id</span> <span class="p">}}</span>
 </pre></div>
 
 
