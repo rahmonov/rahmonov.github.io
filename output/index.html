@@ -71,182 +71,132 @@
 <h2>Latest Post</h2>
 
 <h4>
-    <a href="posts/how-to-write-clean-functions/">
-        15 June 2016
+    <a href="posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/">
+        21 February 2017
     </a>
 </h4>
 
-<h1>How to write clean functions</h1>
+<h1>Run a Django app with Gunicorn in Ubuntu 16.04</h1>
 
-<p>The following is heavily influenced (99%) by one of the must-read books for any developer: <a href="https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882">Clean Code: A Handbook of Agile Software Craftsmanship</a></p>
-<h2>Clean Code</h2>
-<div class="highlight"><pre><span></span>Always code as if the guy who ends up maintaining your code will be a violent psychopath who knows where you live.
-Code for readability.
+<p>This tutorial is aimed at beginners and is a part of a series where we learn to run a django app with Gunicorn and Nginx, and manage
+it with the help of the Supervisord. Basically, we are trying to emulate a production environment.</p>
+<h2>The Problem</h2>
+<p>We are all very well aware that we can run our django app simply by executing a <code>./manage.py runserver</code> command. We also know that it is
+called a <em>development</em> server for a reason. You know it is not robust, security issues, thread issues and etc. So, how do we <em>really</em> run
+our app then?</p>
+<h2>The Solution</h2>
+<p>Enter <a href="http://gunicorn.org/">Gunicorn</a>, a simple, light and speedy Python WSGI HTTP Server for UNIX. We will see how to use gunicorn now 
+but it is not the main reason I wrote this tutorial. The main reason is this: back in the day I was terrified at the thought of anything
+related to <em>production vs development</em> stuff because I thought, you know, <strong>THESE ARE NGINX and GUNICORN</strong> which can support millions of
+requests per second and are very secure/robust/reliable and thus should be very difficult to learn and configure. I want to prevent others
+from experiencing the same and demonstrate that it is really <strong>simple</strong> and <strong>simple</strong>.</p>
+<p>Enough talk, let's fight! (YAY, always wanted to quote Kung Fu Panda)</p>
+<h2>Installation</h2>
+<p>First, let's go ahead and update/upgrade our packages:</p>
+<div class="highlight"><pre><span></span>sudo apt-get update
+sudo apt-get upgrade
 </pre></div>
 
 
-<p>Damn right!!! Uncle Bob Martin even mentions of a once-successful company that went bankrupt 
-because of unmaintainable codebase. Clean code is that serious.</p>
-<p>Now that we know the importance of clean code, let's take a look at how to write clean functions first.</p>
-<h2>Clean Functions</h2>
-<p>Functions are key players in any program and it is very important to write them well.</p>
-<p>Let's take a look at the following code:</p>
-<div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">testableHtml</span><span class="o">(</span><span class="n">PageData</span> <span class="n">pageData</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">includeSuiteSetup</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-    <span class="n">WikiPage</span> <span class="n">wikiPage</span> <span class="o">=</span> <span class="n">pageData</span><span class="o">.</span><span class="na">getWikiPage</span><span class="o">();</span>
-    <span class="n">StringBuffer</span> <span class="n">buffer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuffer</span><span class="o">();</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">pageData</span><span class="o">.</span><span class="na">hasAttribute</span><span class="o">(</span><span class="s">&quot;Test&quot;</span><span class="o">))</span> <span class="o">{</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">includeSuiteSetup</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">WikiPage</span> <span class="n">suiteSetup</span> <span class="o">=</span>
-                    <span class="n">PageCrawlerImpl</span><span class="o">.</span><span class="na">getInheritedPage</span><span class="o">(</span>
-                            <span class="n">SuiteResponder</span><span class="o">.</span><span class="na">SUITE_SETUP_NAME</span><span class="o">,</span> <span class="n">wikiPage</span>
-                    <span class="o">);</span>
-            <span class="k">if</span> <span class="o">(</span><span class="n">suiteSetup</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-                <span class="n">WikiPagePath</span> <span class="n">pagePath</span> <span class="o">=</span>
-                        <span class="n">suiteSetup</span><span class="o">.</span><span class="na">getPageCrawler</span><span class="o">().</span><span class="na">getFullPath</span><span class="o">(</span><span class="n">suiteSetup</span><span class="o">);</span>
-                <span class="n">String</span> <span class="n">pagePathName</span> <span class="o">=</span> <span class="n">PathParser</span><span class="o">.</span><span class="na">render</span><span class="o">(</span><span class="n">pagePath</span><span class="o">);</span>
-                <span class="n">buffer</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;!include -setup .&quot;</span><span class="o">)</span>
-                        <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">pagePathName</span><span class="o">)</span>
-                        <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;\n&quot;</span><span class="o">);</span>
-            <span class="o">}</span>
-        <span class="o">}</span>
-        <span class="n">WikiPage</span> <span class="n">setup</span> <span class="o">=</span>
-                <span class="n">PageCrawlerImpl</span><span class="o">.</span><span class="na">getInheritedPage</span><span class="o">(</span><span class="s">&quot;SetUp&quot;</span><span class="o">,</span> <span class="n">wikiPage</span><span class="o">);</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">setup</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">WikiPagePath</span> <span class="n">setupPath</span> <span class="o">=</span>
-                    <span class="n">wikiPage</span><span class="o">.</span><span class="na">getPageCrawler</span><span class="o">().</span><span class="na">getFullPath</span><span class="o">(</span><span class="n">setup</span><span class="o">);</span>
-            <span class="n">String</span> <span class="n">setupPathName</span> <span class="o">=</span> <span class="n">PathParser</span><span class="o">.</span><span class="na">render</span><span class="o">(</span><span class="n">setupPath</span><span class="o">);</span>
-            <span class="n">buffer</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;!include -setup .&quot;</span><span class="o">)</span>
-                    <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">setupPathName</span><span class="o">)</span>
-                    <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;\n&quot;</span><span class="o">);</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-    <span class="n">buffer</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">pageData</span><span class="o">.</span><span class="na">getContent</span><span class="o">());</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">pageData</span><span class="o">.</span><span class="na">hasAttribute</span><span class="o">(</span><span class="s">&quot;Test&quot;</span><span class="o">))</span> <span class="o">{</span>
-        <span class="n">WikiPage</span> <span class="n">teardown</span> <span class="o">=</span>
-                <span class="n">PageCrawlerImpl</span><span class="o">.</span><span class="na">getInheritedPage</span><span class="o">(</span><span class="s">&quot;TearDown&quot;</span><span class="o">,</span> <span class="n">wikiPage</span><span class="o">);</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">teardown</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">WikiPagePath</span> <span class="n">tearDownPath</span> <span class="o">=</span>
-                    <span class="n">wikiPage</span><span class="o">.</span><span class="na">getPageCrawler</span><span class="o">().</span><span class="na">getFullPath</span><span class="o">(</span><span class="n">teardown</span><span class="o">);</span>
-            <span class="n">String</span> <span class="n">tearDownPathName</span> <span class="o">=</span> <span class="n">PathParser</span><span class="o">.</span><span class="na">render</span><span class="o">(</span><span class="n">tearDownPath</span><span class="o">);</span>
-            <span class="n">buffer</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;\n&quot;</span><span class="o">)</span>
-                    <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;!include -teardown .&quot;</span><span class="o">)</span>
-                    <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">tearDownPathName</span><span class="o">)</span>
-                    <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;\n&quot;</span><span class="o">);</span>
-        <span class="o">}</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">includeSuiteSetup</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">WikiPage</span> <span class="n">suiteTeardown</span> <span class="o">=</span>
-                    <span class="n">PageCrawlerImpl</span><span class="o">.</span><span class="na">getInheritedPage</span><span class="o">(</span>
-                            <span class="n">SuiteResponder</span><span class="o">.</span><span class="na">SUITE_TEARDOWN_NAME</span><span class="o">,</span>
-                            <span class="n">wikiPage</span>
-                    <span class="o">);</span>
-            <span class="k">if</span> <span class="o">(</span><span class="n">suiteTeardown</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-                <span class="n">WikiPagePath</span> <span class="n">pagePath</span> <span class="o">=</span>
-                        <span class="n">suiteTeardown</span><span class="o">.</span><span class="na">getPageCrawler</span><span class="o">().</span><span class="na">getFullPath</span><span class="o">(</span><span class="n">suiteTeardown</span><span class="o">);</span>
-                <span class="n">String</span> <span class="n">pagePathName</span> <span class="o">=</span> <span class="n">PathParser</span><span class="o">.</span><span class="na">render</span><span class="o">(</span><span class="n">pagePath</span><span class="o">);</span>
-                <span class="n">buffer</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;!include -teardown .&quot;</span><span class="o">)</span>
-                        <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">pagePathName</span><span class="o">)</span>
-                        <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;\n&quot;</span><span class="o">);</span>
-            <span class="o">}</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-    <span class="n">pageData</span><span class="o">.</span><span class="na">setContent</span><span class="o">(</span><span class="n">buffer</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
-    <span class="k">return</span> <span class="n">pageData</span><span class="o">.</span><span class="na">getHtml</span><span class="o">();</span>
-<span class="o">}</span>
+<p>Now, install <code>pip</code>.
+If you are using python2, type the following:</p>
+<div class="highlight"><pre><span></span>sudo apt-get install python-pip
 </pre></div>
 
 
-<p>Obviously, this is not a well-written function. But what problems does it have?!</p>
-<div class="highlight"><pre><span></span>- Too much going on, i.e. too big
-- Many different levels of abstraction
-- Nested if statements controlled by flags
+<p>If you are instead using python3, type the following:</p>
+<div class="highlight"><pre><span></span>sudo apt-get install python3-pip
 </pre></div>
 
 
-<p>With little method extraction, renaming and restructuring, we can come to the better version:</p>
-<div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">renderPageWithSetupsAndTeardowns</span><span class="o">(</span><span class="n">PageData</span> <span class="n">pageData</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">isSuite</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-    <span class="kt">boolean</span> <span class="n">isTestPage</span> <span class="o">=</span> <span class="n">pageData</span><span class="o">.</span><span class="na">hasAttribute</span><span class="o">(</span><span class="s">&quot;Test&quot;</span><span class="o">);</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">isTestPage</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">WikiPage</span> <span class="n">testPage</span> <span class="o">=</span> <span class="n">pageData</span><span class="o">.</span><span class="na">getWikiPage</span><span class="o">();</span>
-        <span class="n">StringBuffer</span> <span class="n">newPageContent</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuffer</span><span class="o">();</span>
-        <span class="n">includeSetupPages</span><span class="o">(</span><span class="n">testPage</span><span class="o">,</span> <span class="n">newPageContent</span><span class="o">,</span> <span class="n">isSuite</span><span class="o">);</span>
-        <span class="n">newPageContent</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">pageData</span><span class="o">.</span><span class="na">getContent</span><span class="o">());</span>
-        <span class="n">includeTeardownPages</span><span class="o">(</span><span class="n">testPage</span><span class="o">,</span> <span class="n">newPageContent</span><span class="o">,</span> <span class="n">isSuite</span><span class="o">);</span>
-        <span class="n">pageData</span><span class="o">.</span><span class="na">setContent</span><span class="o">(</span><span class="n">newPageContent</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
-    <span class="o">}</span>
-    <span class="k">return</span> <span class="n">pageData</span><span class="o">.</span><span class="na">getHtml</span><span class="o">();</span>
-<span class="o">}</span>
+<p>Now install <code>virtualenv</code>:
+For python2:</p>
+<div class="highlight"><pre><span></span>sudo pip install virtualenv
 </pre></div>
 
 
-<p>Now, it is much better! But the main question remains: What attributes should we give our functions that 
-will a casual reader to intuit what it does easily?</p>
-<h2>Small</h2>
-<p>Functions should be small! They should even be smaller than that! Actually, the code above is too large and
-it should be shortened to this:</p>
-<div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">renderPageWithSetupsAndTeardowns</span><span class="o">(</span><span class="n">PageData</span> <span class="n">pageData</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">isSuite</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">isTestPage</span><span class="o">(</span><span class="n">pageData</span><span class="o">))</span>
-        <span class="n">includeSetupAndTeardownPages</span><span class="o">(</span><span class="n">pageData</span><span class="o">,</span> <span class="n">isSuite</span><span class="o">);</span>
-    <span class="k">return</span> <span class="n">pageData</span><span class="o">.</span><span class="na">getHtml</span><span class="o">();</span>
-<span class="o">}</span>
+<p>For python3:</p>
+<div class="highlight"><pre><span></span>sudo pip3 install virtualenv
 </pre></div>
 
 
-<p>How long? Uncle Bob says that they should hardly be 20 lines long.</p>
-<h2>Do One Thing</h2>
-<p>Functions should do one thing. They should do it well. They should do it only.</p>
-<p>The function <code>testableHtml()</code> is doing too many things:</p>
-<div class="highlight"><pre><span></span>- Creating buffers
-- Fetching pages
-- Searching for inherited pages
-- Rendering paths
-- Generating HTML
+<p>Let's go ahead now and install a virtual environment at <code>/opt/envs/myprojenv</code>. You can install it anywhere you like and in real life use 
+a more descriptive name for the virtualenv:</p>
+<div class="highlight"><pre><span></span>virtualenv /opt/envs/myprojenv
 </pre></div>
 
 
-<p>On the other hand, the function <code>renderPageWithSetupsAndTeardowns()</code> is doing only one thing: Including setups and teardowns into test pages!</p>
-<p>However, it can be hard to know what that one thing is. Hence, the next rule.</p>
-<h2>One level of abstraction per function</h2>
-<p>Let's see the following example to understand what one level of abstraction means.
-Imagine we need to write a function that builds a house. That is, our function should answer the question of
-"What needs to be done to build a house?". The answer would roughly be: find location, design, get permits, break ground and etc...
-In code, it would look something like this: </p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">buildHouse</span><span class="p">():</span>
-    <span class="n">find_location</span><span class="p">()</span>
-    <span class="n">design</span><span class="p">()</span>
-    <span class="n">fix_documents</span><span class="p">()</span>
-    <span class="n">break_ground</span><span class="p">()</span>
-    <span class="n">build_walls_and_roof</span><span class="p">()</span>
-    <span class="n">etc</span><span class="o">...</span><span class="p">()</span>
+<p>Activate it:</p>
+<div class="highlight"><pre><span></span><span class="nb">source</span> /opt/envs/myprojenv/bin/activate
 </pre></div>
 
 
-<p>This function does have only one level of abstraction. Everything inside the function is a part of the answer to the question of "how to build a house?".
-To compare, take a look at the following:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">buildHouse</span><span class="p">():</span>
-    <span class="n">select_desirable_place</span><span class="p">()</span>
-    <span class="n">select_property</span><span class="p">()</span>
-    <span class="n">survey_property</span><span class="p">()</span>
-    <span class="n">consider_access_issues</span><span class="p">()</span>
-
-    <span class="n">consult_architect</span><span class="p">()</span>
-    <span class="n">design_utilities</span><span class="p">()</span>
-    <span class="n">design_efficiently</span><span class="p">()</span>
-
-    <span class="n">etc</span><span class="o">...</span><span class="p">()</span>
+<p>You should now see <code>(myprojenv)</code> at the beginning of your command line.</p>
+<p>Now, install Django. By the way, we will only use <code>pip</code> from now on, not <code>pip3</code>, as we are inside a virtual environment:</p>
+<div class="highlight"><pre><span></span>pip install django
 </pre></div>
 
 
-<p>Do you see it? The first 4 functions is not a part of the answer to the question: "What to do to build a house?", but rather "What to do to find a location to build a house?".
-Do you see it now? They are 2 levels deep, not one! In real code, it would look much worse.</p>
-<h2>Use descriptive names</h2>
-<p>The title says it all. Examples: is_testable(), includePages().
-You know you are working on clean code when each function turns out to be pretty much what you expected.</p>
-<p>In choosing a name, we should:
-    - not be afraid to make a long name
-    - not be afraid to spend time choosing a name
-    - even try several different names and read the code with each in place
-    - be consistent in our names</p>
-<p>Follow these pieces of advice and your functions become much cleaner and more maintainable.</p>
+<p>Create a project:</p>
+<div class="highlight"><pre><span></span>django-admin startproject myproject
+</pre></div>
+
+
+<p>Apply migrations and run the development server:</p>
+<div class="highlight"><pre><span></span><span class="nb">cd</span> myproject
+./manage.py migrate
+./manage.py runserver
+</pre></div>
+
+
+<p>Go to <code>localhost:8000/admin</code> and make sure that it is running. Is it running? Cool! Easy right?!
+Now we will replace this development server with gunicorn and you will see that it is <strong>as easy</strong>.</p>
+<p>Install gunicorn:</p>
+<div class="highlight"><pre><span></span>pip install gunicorn
+</pre></div>
+
+
+<p>Run this, go to <code>localhost:8000</code>and behold the magic:</p>
+<div class="highlight"><pre><span></span>gunicorn myproject.wsgi
+</pre></div>
+
+
+<p>DO YOU SEE IT? It is this easy.</p>
+<p>Now you might be wondering what is that <code>wsgi</code> thing is. Well, it stands for Web Server Gateway Interface and basically is a way how
+apps/frameworks and servers talk to each other. If the server(like Gunicorn) has <code>wsgi</code> implemented and so has your framework(Django),
+it means that you can run your app with that server. And the entry point of communication for these two is the variable <code>application</code>,
+which is located in <code>myproject/wsgi.py</code> in our case. You can read more about this in <a href="https://www.python.org/dev/peps/pep-0333/">PEP 333</a>. </p>
+<p>Let's play with it a little bit to see what it got.</p>
+<p>We can bind it to a specific port:</p>
+<div class="highlight"><pre><span></span>gunicorn --bind 0.0.0.0:8030 myproject.wsgi
+</pre></div>
+
+
+<p>You can increase the number of workers to serve requests, which you probable will in real life as your users increase:</p>
+<div class="highlight"><pre><span></span>gunicorn --workers <span class="m">3</span> myproject.wsgi
+</pre></div>
+
+
+<p>Run it in a daemon mode:</p>
+<div class="highlight"><pre><span></span>gunicorn --daemon myproject.wsgi
+</pre></div>
+
+
+<p>Or all of them altogether(a shorter version):</p>
+<div class="highlight"><pre><span></span>gunicorn -d -b 0.0.0.0:8030 -w <span class="m">3</span> myproject.wsgi
+</pre></div>
+
+
+<p>Read more about these options <a href="http://docs.gunicorn.org/en/stable/run.html#commonly-used-arguments">in the docs</a></p>
+<p>If these options get too long, you can create an <code>ini</code> file and run it like this:</p>
+<div class="highlight"><pre><span></span>gunicorn -c /path/to/config/file myproject.wsgi
+</pre></div>
+
+
+<p>After running your app with gunicorn, go to the django admin panel at <code>localhost:8000/admin</code>. You will see that all styles are gone.
+The reason is that gunicorn is an application server and it does not serve static files. In order to solve this problem, we will take a look
+at <code>Nginx</code> next and use it as a reverse proxy for gunicorn. We will talk about what <code>reverse proxy</code> is as well so don't think about it for now.</p>
+<p>Well, that's it for now. This is a brief overview of django with gunicorn. Go to <a href="http://docs.gunicorn.org/en/stable/">docs</a> and read more.</p>
 <p>Fight on!</p>
 
 <div class="end">

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head prefix="og: http://ogp.me/ns#">
-        <title>Jahongir Rahmonov - Articles by Jahongir Rahmonov</title>
+          <title> Run a Django app with Gunicorn in Ubuntu 16.04 - Jahongir Rahmonov </title>
 
         <link rel="stylesheet" href="/static/css/main.css" />
         <link rel="stylesheet" href="/static/css/pygment.css" />
@@ -14,14 +14,22 @@
         <meta name="author" content="Jahongir Rahmonov" />
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
-        <meta property="og:title" content="Home - Jahongir Rahmonov">
-        <meta property="og:type" content="website">
-        <meta property="og:image" content="/static/images/programming.jpg">
-        <meta property="og:url" content="http://rahmonov.github.io">
-        <meta property="og:description" content="Jahongir Rahmonov's personal blog about Python, Django, AngularJS and other things.">
+<meta property="og:title" content="Run a Django app with Gunicorn in Ubuntu 16.04 - Jahongir Rahmonov">
+<meta property="og:type" content="website">
+<meta property="og:image" content="/static/images/programming.jpg">
+<meta property="og:url" content="http://rahmonov.github.io/posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/">
+<meta property="og:description" content="<p>How to run a Django app with Gunicorn instead of a development server</p>">
 
         <link href="http://rahmonov.github.io/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Full Atom Feed" />
         <link href="http://rahmonov.github.io/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="Jahongir Rahmonov Full RSS Feed" />
+        <link href="http://rahmonov.github.io/feeds/programming.atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Categories Atom Feed" />
+
+
+
+    <meta name="tags" content="python" />
+    <meta name="tags" content="django" />
+    <meta name="tags" content="gunicorn" />
+
 </head>
 
 <body id="index" class="home">
@@ -68,17 +76,12 @@
         <div class="wrap">
             <div class="content">
 
-<h2>Articles by Jahongir Rahmonov</h2>
+  <h4>Tue 21 February 2017</h4>
 
-<h4>
-    <a href="posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/">
-        21 February 2017
-    </a>
-</h4>
+  <h1>Run a Django app with Gunicorn in Ubuntu 16.04</h1>
 
-<h1>Run a Django app with Gunicorn in Ubuntu 16.04</h1>
-
-<p>This tutorial is aimed at beginners and is a part of a series where we learn to run a django app with Gunicorn and Nginx, and manage
+  <div class="entry-content">
+    <p>This tutorial is aimed at beginners and is a part of a series where we learn to run a django app with Gunicorn and Nginx, and manage
 it with the help of the Supervisord. Basically, we are trying to emulate a production environment.</p>
 <h2>The Problem</h2>
 <p>We are all very well aware that we can run our django app simply by executing a <code>./manage.py runserver</code> command. We also know that it is
@@ -198,6 +201,7 @@ The reason is that gunicorn is an application server and it does not serve stati
 at <code>Nginx</code> next and use it as a reverse proxy for gunicorn. We will talk about what <code>reverse proxy</code> is as well so don't think about it for now.</p>
 <p>Well, that's it for now. This is a brief overview of django with gunicorn. Go to <a href="http://docs.gunicorn.org/en/stable/">docs</a> and read more.</p>
 <p>Fight on!</p>
+  </div>
 
 <div class="end">
     <span>
@@ -207,6 +211,19 @@ at <code>Nginx</code> next and use it as a reverse proxy for gunicorn. We will t
         <a href="https://www.facebook.com/rahmonovj" target="_blank">Facebook</a>.
     </span>
 </div>
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES * * */
+        var disqus_shortname = 'jrahmonov';
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
             </div>
         </div>
     </div>

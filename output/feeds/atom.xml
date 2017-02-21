@@ -1,5 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2016-06-15T20:10:00+05:00</updated><entry><title>How to write clean functions</title><link href="http://rahmonov.github.io/posts/how-to-write-clean-functions/" rel="alternate"></link><published>2016-06-15T20:10:00+05:00</published><updated>2016-06-15T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2016-06-15:posts/how-to-write-clean-functions/</id><summary type="html">&lt;p&gt;The following is heavily influenced (99%) by one of the must-read books for any developer: &lt;a href="https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882"&gt;Clean Code: A Handbook of Agile Software Craftsmanship&lt;/a&gt;&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2017-02-21T20:10:00+05:00</updated><entry><title>Run a Django app with Gunicorn in Ubuntu 16.04</title><link href="http://rahmonov.github.io/posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/" rel="alternate"></link><published>2017-02-21T20:10:00+05:00</published><updated>2017-02-21T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2017-02-21:posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/</id><summary type="html">&lt;p&gt;This tutorial is aimed at beginners and is a part of a series where we learn to run a django app with Gunicorn and Nginx, and manage
+it with the help of the Supervisord. Basically, we are trying to emulate a production environment.&lt;/p&gt;
+&lt;h2&gt;The Problem&lt;/h2&gt;
+&lt;p&gt;We are all very well aware that we can run our django app simply by executing a &lt;code&gt;./manage.py runserver&lt;/code&gt; command. We also know that it is
+called a &lt;em&gt;development&lt;/em&gt; server for a reason. You know it is not robust, security issues, thread issues and etc. So, how do we &lt;em&gt;really&lt;/em&gt; run
+our app then?&lt;/p&gt;
+&lt;h2&gt;The Solution&lt;/h2&gt;
+&lt;p&gt;Enter &lt;a href="http://gunicorn.org/"&gt;Gunicorn&lt;/a&gt;, a simple, light and speedy Python WSGI HTTP Server for UNIX. We will see how to use gunicorn now 
+but it is not the main reason I wrote this tutorial. The main reason is this: back in the day I was terrified at the thought of anything
+related to &lt;em&gt;production vs development&lt;/em&gt; stuff because I thought, you know, &lt;strong&gt;THESE ARE NGINX and GUNICORN&lt;/strong&gt; which can support millions of
+requests per second and are very secure/robust/reliable and thus should be very difficult to learn and configure. I want to prevent others
+from experiencing the same and demonstrate that it is really &lt;strong&gt;simple&lt;/strong&gt; and &lt;strong&gt;simple&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Enough talk, let's fight! (YAY, always wanted to quote Kung Fu Panda)&lt;/p&gt;
+&lt;h2&gt;Installation&lt;/h2&gt;
+&lt;p&gt;First, let's go ahead and update/upgrade our packages:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo apt-get update
+sudo apt-get upgrade
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, install &lt;code&gt;pip&lt;/code&gt;.
+If you are using python2, type the following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo apt-get install python-pip
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If you are instead using python3, type the following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo apt-get install python3-pip
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now install &lt;code&gt;virtualenv&lt;/code&gt;:
+For python2:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo pip install virtualenv
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;For python3:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo pip3 install virtualenv
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Let's go ahead now and install a virtual environment at &lt;code&gt;/opt/envs/myprojenv&lt;/code&gt;. You can install it anywhere you like and in real life use 
+a more descriptive name for the virtualenv:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;virtualenv /opt/envs/myprojenv
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Activate it:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;source&lt;/span&gt; /opt/envs/myprojenv/bin/activate
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You should now see &lt;code&gt;(myprojenv)&lt;/code&gt; at the beginning of your command line.&lt;/p&gt;
+&lt;p&gt;Now, install Django. By the way, we will only use &lt;code&gt;pip&lt;/code&gt; from now on, not &lt;code&gt;pip3&lt;/code&gt;, as we are inside a virtual environment:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install django
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Create a project:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;django-admin startproject myproject
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Apply migrations and run the development server:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; myproject
+./manage.py migrate
+./manage.py runserver
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Go to &lt;code&gt;localhost:8000/admin&lt;/code&gt; and make sure that it is running. Is it running? Cool! Easy right?!
+Now we will replace this development server with gunicorn and you will see that it is &lt;strong&gt;as easy&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Install gunicorn:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install gunicorn
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Run this, go to &lt;code&gt;localhost:8000&lt;/code&gt;and behold the magic:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;gunicorn myproject.wsgi
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;DO YOU SEE IT? It is this easy.&lt;/p&gt;
+&lt;p&gt;Now you might be wondering what is that &lt;code&gt;wsgi&lt;/code&gt; thing is. Well, it stands for Web Server Gateway Interface and basically is a way how
+apps/frameworks and servers talk to each other. If the server(like Gunicorn) has &lt;code&gt;wsgi&lt;/code&gt; implemented and so has your framework(Django),
+it means that you can run your app with that server. And the entry point of communication for these two is the variable &lt;code&gt;application&lt;/code&gt;,
+which is located in &lt;code&gt;myproject/wsgi.py&lt;/code&gt; in our case. You can read more about this in &lt;a href="https://www.python.org/dev/peps/pep-0333/"&gt;PEP 333&lt;/a&gt;. &lt;/p&gt;
+&lt;p&gt;Let's play with it a little bit to see what it got.&lt;/p&gt;
+&lt;p&gt;We can bind it to a specific port:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;gunicorn --bind 0.0.0.0:8030 myproject.wsgi
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You can increase the number of workers to serve requests, which you probable will in real life as your users increase:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;gunicorn --workers &lt;span class="m"&gt;3&lt;/span&gt; myproject.wsgi
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Run it in a daemon mode:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;gunicorn --daemon myproject.wsgi
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Or all of them altogether(a shorter version):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;gunicorn -d -b 0.0.0.0:8030 -w &lt;span class="m"&gt;3&lt;/span&gt; myproject.wsgi
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Read more about these options &lt;a href="http://docs.gunicorn.org/en/stable/run.html#commonly-used-arguments"&gt;in the docs&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;If these options get too long, you can create an &lt;code&gt;ini&lt;/code&gt; file and run it like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;gunicorn -c /path/to/config/file myproject.wsgi
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;After running your app with gunicorn, go to the django admin panel at &lt;code&gt;localhost:8000/admin&lt;/code&gt;. You will see that all styles are gone.
+The reason is that gunicorn is an application server and it does not serve static files. In order to solve this problem, we will take a look
+at &lt;code&gt;Nginx&lt;/code&gt; next and use it as a reverse proxy for gunicorn. We will talk about what &lt;code&gt;reverse proxy&lt;/code&gt; is as well so don't think about it for now.&lt;/p&gt;
+&lt;p&gt;Well, that's it for now. This is a brief overview of django with gunicorn. Go to &lt;a href="http://docs.gunicorn.org/en/stable/"&gt;docs&lt;/a&gt; and read more.&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="python"></category><category term="django"></category><category term="gunicorn"></category></entry><entry><title>How to write clean functions</title><link href="http://rahmonov.github.io/posts/how-to-write-clean-functions/" rel="alternate"></link><published>2016-06-15T20:10:00+05:00</published><updated>2016-06-15T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2016-06-15:posts/how-to-write-clean-functions/</id><summary type="html">&lt;p&gt;The following is heavily influenced (99%) by one of the must-read books for any developer: &lt;a href="https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882"&gt;Clean Code: A Handbook of Agile Software Craftsmanship&lt;/a&gt;&lt;/p&gt;
 &lt;h2&gt;Clean Code&lt;/h2&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Always code as if the guy who ends up maintaining your code will be a violent psychopath who knows where you live.
 Code for readability.
