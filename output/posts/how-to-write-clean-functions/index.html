@@ -78,25 +78,25 @@
         <div class="wrap">
             <div class="content">
 
-  <h4>Cho 15 Iyun 2016</h4>
+  <h4>Wed 15 June 2016</h4>
 
   <h1>How to write clean functions</h1>
 
   <div class="entry-content">
     <p>The following is heavily influenced (99%) by one of the must-read books for any developer: <a href="https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882">Clean Code: A Handbook of Agile Software Craftsmanship</a></p>
 <h2>Clean Code</h2>
-<div class="highlight"><pre>Always code as if the guy who ends up maintaining your code will be a violent psychopath who knows where you live.
+<div class="highlight"><pre><span></span>Always code as if the guy who ends up maintaining your code will be a violent psychopath who knows where you live.
 Code for readability.
 </pre></div>
 
 
-<p>Damn right! Uncle Bob Martin even mentions of a once-successful company that went bankrupt 
+<p>Damn right!!! Uncle Bob Martin even mentions of a once-successful company that went bankrupt 
 because of unmaintainable codebase. Clean code is that serious.</p>
 <p>Now that we know the importance of clean code, let's take a look at how to write clean functions first.</p>
 <h2>Clean Functions</h2>
 <p>Functions are key players in any program and it is very important to write them well.</p>
 <p>Let's take a look at the following code:</p>
-<div class="highlight"><pre><span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">testableHtml</span><span class="o">(</span><span class="n">PageData</span> <span class="n">pageData</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">includeSuiteSetup</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+<div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">testableHtml</span><span class="o">(</span><span class="n">PageData</span> <span class="n">pageData</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">includeSuiteSetup</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
     <span class="n">WikiPage</span> <span class="n">wikiPage</span> <span class="o">=</span> <span class="n">pageData</span><span class="o">.</span><span class="na">getWikiPage</span><span class="o">();</span>
     <span class="n">StringBuffer</span> <span class="n">buffer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuffer</span><span class="o">();</span>
     <span class="k">if</span> <span class="o">(</span><span class="n">pageData</span><span class="o">.</span><span class="na">hasAttribute</span><span class="o">(</span><span class="s">&quot;Test&quot;</span><span class="o">))</span> <span class="o">{</span>
@@ -161,14 +161,14 @@ because of unmaintainable codebase. Clean code is that serious.</p>
 
 
 <p>Obviously, this is not a well-written function. But what problems does it have?!</p>
-<div class="highlight"><pre>- Too much going on, i.e. too big
+<div class="highlight"><pre><span></span>- Too much going on, i.e. too big
 - Many different levels of abstraction
 - Nested if statements controlled by flags
 </pre></div>
 
 
 <p>With little method extraction, renaming and restructuring, we can come to the better version:</p>
-<div class="highlight"><pre><span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">renderPageWithSetupsAndTeardowns</span><span class="o">(</span><span class="n">PageData</span> <span class="n">pageData</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">isSuite</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+<div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">renderPageWithSetupsAndTeardowns</span><span class="o">(</span><span class="n">PageData</span> <span class="n">pageData</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">isSuite</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
     <span class="kt">boolean</span> <span class="n">isTestPage</span> <span class="o">=</span> <span class="n">pageData</span><span class="o">.</span><span class="na">hasAttribute</span><span class="o">(</span><span class="s">&quot;Test&quot;</span><span class="o">);</span>
     <span class="k">if</span> <span class="o">(</span><span class="n">isTestPage</span><span class="o">)</span> <span class="o">{</span>
         <span class="n">WikiPage</span> <span class="n">testPage</span> <span class="o">=</span> <span class="n">pageData</span><span class="o">.</span><span class="na">getWikiPage</span><span class="o">();</span>
@@ -188,7 +188,7 @@ will a casual reader to intuit what it does easily?</p>
 <h2>Small</h2>
 <p>Functions should be small! They should even be smaller than that! Actually, the code above is too large and
 it should be shortened to this:</p>
-<div class="highlight"><pre><span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">renderPageWithSetupsAndTeardowns</span><span class="o">(</span><span class="n">PageData</span> <span class="n">pageData</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">isSuite</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+<div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">renderPageWithSetupsAndTeardowns</span><span class="o">(</span><span class="n">PageData</span> <span class="n">pageData</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">isSuite</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
     <span class="k">if</span> <span class="o">(</span><span class="n">isTestPage</span><span class="o">(</span><span class="n">pageData</span><span class="o">))</span>
         <span class="n">includeSetupAndTeardownPages</span><span class="o">(</span><span class="n">pageData</span><span class="o">,</span> <span class="n">isSuite</span><span class="o">);</span>
     <span class="k">return</span> <span class="n">pageData</span><span class="o">.</span><span class="na">getHtml</span><span class="o">();</span>
@@ -200,7 +200,7 @@ it should be shortened to this:</p>
 <h2>Do One Thing</h2>
 <p>Functions should do one thing. They should do it well. They should do it only.</p>
 <p>The function <code>testableHtml()</code> is doing too many things:</p>
-<div class="highlight"><pre>- Creating buffers
+<div class="highlight"><pre><span></span>- Creating buffers
 - Fetching pages
 - Searching for inherited pages
 - Rendering paths
@@ -215,7 +215,7 @@ it should be shortened to this:</p>
 Imagine we need to write a function that builds a house. That is, our function should answer the question of
 "What needs to be done to build a house?". The answer would roughly be: find location, design, get permits, break ground and etc...
 In code, it would look something like this: </p>
-<div class="highlight"><pre><span class="k">def</span> <span class="nf">buildHouse</span><span class="p">():</span>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">buildHouse</span><span class="p">():</span>
     <span class="n">find_location</span><span class="p">()</span>
     <span class="n">design</span><span class="p">()</span>
     <span class="n">fix_documents</span><span class="p">()</span>
@@ -227,7 +227,7 @@ In code, it would look something like this: </p>
 
 <p>This function does have only one level of abstraction. Everything inside the function is a part of the answer to the question of "how to build a house?".
 To compare, take a look at the following:</p>
-<div class="highlight"><pre><span class="k">def</span> <span class="nf">buildHouse</span><span class="p">():</span>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">buildHouse</span><span class="p">():</span>
     <span class="n">select_desirable_place</span><span class="p">()</span>
     <span class="n">select_property</span><span class="p">()</span>
     <span class="n">survey_property</span><span class="p">()</span>

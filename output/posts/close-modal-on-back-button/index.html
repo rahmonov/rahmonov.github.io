@@ -76,7 +76,7 @@
         <div class="wrap">
             <div class="content">
 
-  <h4>Sha 03 Oktyabr 2015</h4>
+  <h4>Sat 03 October 2015</h4>
 
   <h1>Close modal on back button in AngularJS</h1>
 
@@ -85,7 +85,7 @@
 <p>It is light, easy to use and highly customizable. <a href="https://angular-ui.github.io/bootstrap/#/modal">Bootstrap</a> is also good but 
 it is somewhat heavy.</p>
 <p>Here is how modal is opened in ngDialog:</p>
-<div class="highlight"><pre><span class="nx">ngDialog</span><span class="p">.</span><span class="nx">open</span><span class="p">({</span>
+<div class="highlight"><pre><span></span><span class="nx">ngDialog</span><span class="p">.</span><span class="nx">open</span><span class="p">({</span>
     <span class="nx">template</span><span class="o">:</span> <span class="s1">&#39;externalTemplate.html&#39;</span><span class="p">,</span>
     <span class="nx">controller</span><span class="o">:</span> <span class="s1">&#39;SomeController&#39;</span>
 <span class="p">});</span>
@@ -98,7 +98,7 @@ back in browser history. Ouch! Especially on mobile, it is really not convenient
 of the modal. That's why, I would guess, user would press the back button to close the modal.</p>
 <p>Here is how I solved the problem:</p>
 <p>First, I created a service that deals with modals and it has a flag <code>modalIsShown</code> which will be used later:</p>
-<div class="highlight"><pre><span class="nx">myApp</span><span class="p">.</span><span class="nx">service</span><span class="p">(</span><span class="s1">&#39;ModalService&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;ngDialog&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">ngDialog</span><span class="p">)</span> <span class="p">{</span>
+<div class="highlight"><pre><span></span><span class="nx">myApp</span><span class="p">.</span><span class="nx">service</span><span class="p">(</span><span class="s1">&#39;ModalService&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;ngDialog&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">ngDialog</span><span class="p">)</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">modalIsShown</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
 
   <span class="kd">var</span> <span class="nx">openModal</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">template</span><span class="p">,</span> <span class="nx">controller</span><span class="p">)</span> <span class="p">{</span>
@@ -125,7 +125,7 @@ of the modal. That's why, I would guess, user would press the back button to clo
 
 
 <p>Second, Here is how I open up a modal from my controller:</p>
-<div class="highlight"><pre><span class="nx">$scope</span><span class="p">.</span><span class="nx">contactModal</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+<div class="highlight"><pre><span></span><span class="nx">$scope</span><span class="p">.</span><span class="nx">contactModal</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
   <span class="nx">ModalService</span><span class="p">.</span><span class="nx">modalIsShown</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
   <span class="nx">ModalService</span><span class="p">.</span><span class="nx">openModal</span><span class="p">(</span><span class="s1">&#39;contactModal.html&#39;</span><span class="p">,</span> <span class="s1">&#39;FooterController&#39;</span><span class="p">);</span>
 <span class="p">};</span>
@@ -134,7 +134,7 @@ of the modal. That's why, I would guess, user would press the back button to clo
 
 <p>Basically, the function sets the flag to true and opens the modal.</p>
 <p>The most interestion part happens here:</p>
-<div class="highlight"><pre><span class="nx">myApp</span><span class="p">.</span><span class="nx">run</span><span class="p">([</span><span class="s1">&#39;$rootScope&#39;</span><span class="p">,</span> <span class="s1">&#39;$route&#39;</span><span class="p">,</span> <span class="s1">&#39;$location&#39;</span><span class="p">,</span> <span class="s1">&#39;$routeParams&#39;</span><span class="p">,</span> <span class="s1">&#39;ModalService&#39;</span><span class="p">,</span>
+<div class="highlight"><pre><span></span><span class="nx">myApp</span><span class="p">.</span><span class="nx">run</span><span class="p">([</span><span class="s1">&#39;$rootScope&#39;</span><span class="p">,</span> <span class="s1">&#39;$route&#39;</span><span class="p">,</span> <span class="s1">&#39;$location&#39;</span><span class="p">,</span> <span class="s1">&#39;$routeParams&#39;</span><span class="p">,</span> <span class="s1">&#39;ModalService&#39;</span><span class="p">,</span>
   <span class="kd">function</span><span class="p">(</span><span class="nx">$rootScope</span><span class="p">,</span> <span class="nx">$route</span><span class="p">,</span> <span class="nx">$location</span><span class="p">,</span> <span class="nx">$routeParams</span><span class="p">,</span> <span class="nx">ModalService</span><span class="p">)</span> <span class="p">{</span>
 
   <span class="nx">$rootScope</span><span class="p">.</span><span class="nx">$on</span><span class="p">(</span><span class="s1">&#39;$routeChangeStart&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">evt</span><span class="p">,</span> <span class="nx">next</span><span class="p">,</span> <span class="nx">current</span><span class="p">)</span> <span class="p">{</span>

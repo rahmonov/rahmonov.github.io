@@ -15,7 +15,7 @@ Clean Code
     Always code as if the guy who ends up maintaining your code will be a violent psychopath who knows where you live.
     Code for readability.
     
-Damn right! Uncle Bob Martin even mentions of a once-successful company that went bankrupt 
+Damn right!!! Uncle Bob Martin even mentions of a once-successful company that went bankrupt 
 because of unmaintainable codebase. Clean code is that serious.
 
 Now that we know the importance of clean code, let's take a look at how to write clean functions first.

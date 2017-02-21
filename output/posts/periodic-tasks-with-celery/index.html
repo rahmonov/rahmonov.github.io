@@ -78,7 +78,7 @@
         <div class="wrap">
             <div class="content">
 
-  <h4>Ju 20 May 2016</h4>
+  <h4>Fri 20 May 2016</h4>
 
   <h1>Periodic Tasks with Celery</h1>
 
@@ -96,20 +96,20 @@ Celery to the rescue!</p>
 <p>Now that we know we want to accomplish, we will see a simple example. Good news is that it is extremely easy to 
 set up a periodic task.</p>
 <p>First, let's write a function that simply says <code>Hello, name</code> in proj/tasks.py:</p>
-<div class="highlight"><pre><span class="k">def</span> <span class="nf">say_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;Hello, {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">say_hello</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Hello, {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
 </pre></div>
 
 
 <p>Now, in your settings file, write the following down:</p>
-<div class="highlight"><pre><span class="n">CELERYBEAT_SCHEDULE</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s">&#39;say-hello-every-30-seconds&#39;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s">&#39;task&#39;</span><span class="p">:</span> <span class="s">&#39;tasks.say_hello&#39;</span><span class="p">,</span>
-        <span class="s">&#39;schedule&#39;</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">30</span><span class="p">),</span>
-        <span class="s">&#39;args&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&quot;Blog reader&quot;</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><span class="n">CELERYBEAT_SCHEDULE</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;say-hello-every-30-seconds&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;task&#39;</span><span class="p">:</span> <span class="s1">&#39;tasks.say_hello&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;schedule&#39;</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">30</span><span class="p">),</span>
+        <span class="s1">&#39;args&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Blog reader&quot;</span><span class="p">]</span>
     <span class="p">},</span>
 <span class="p">}</span>
-<span class="n">CELERY_TIMEZONE</span> <span class="o">=</span> <span class="s">&#39;UTC&#39;</span>
+<span class="n">CELERY_TIMEZONE</span> <span class="o">=</span> <span class="s1">&#39;UTC&#39;</span>
 </pre></div>
 
 
@@ -117,12 +117,12 @@ set up a periodic task.</p>
 executed every 30 seconds and given an argument <code>Blog reader</code>.</p>
 <p>By the way, this feature of celery is called <code>celery-beat</code>.</p>
 <p>Now, in command line, do the following:</p>
-<div class="highlight"><pre>celery -A celery_demo beat
+<div class="highlight"><pre><span></span>celery -A celery_demo beat
 </pre></div>
 
 
 <p>and behold! Every 30 seconds you will see something like this:</p>
-<div class="highlight"><pre><span class="p">[</span><span class="mi">2016</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">14</span> <span class="mi">13</span><span class="p">:</span><span class="mo">06</span><span class="p">:</span><span class="mi">44</span><span class="p">,</span><span class="mi">087</span><span class="p">:</span> <span class="n">INFO</span><span class="o">/</span><span class="n">MainProcess</span><span class="p">]</span> <span class="n">Scheduler</span><span class="p">:</span> <span class="n">Sending</span> <span class="n">due</span> <span class="n">task</span> <span class="n">say</span><span class="o">-</span><span class="n">hello</span><span class="o">-</span><span class="n">every</span><span class="o">-</span><span class="mi">30</span><span class="o">-</span><span class="n">seconds</span> <span class="p">(</span><span class="n">tasks</span><span class="o">.</span><span class="n">say_hello</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><span class="p">[</span><span class="mi">2016</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">14</span> <span class="mi">13</span><span class="p">:</span><span class="mo">06</span><span class="p">:</span><span class="mi">44</span><span class="p">,</span><span class="mi">087</span><span class="p">:</span> <span class="n">INFO</span><span class="o">/</span><span class="n">MainProcess</span><span class="p">]</span> <span class="n">Scheduler</span><span class="p">:</span> <span class="n">Sending</span> <span class="n">due</span> <span class="n">task</span> <span class="n">say</span><span class="o">-</span><span class="n">hello</span><span class="o">-</span><span class="n">every</span><span class="o">-</span><span class="mi">30</span><span class="o">-</span><span class="n">seconds</span> <span class="p">(</span><span class="n">tasks</span><span class="o">.</span><span class="n">say_hello</span><span class="p">)</span>
 <span class="p">[</span><span class="mi">2016</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">14</span> <span class="mi">13</span><span class="p">:</span><span class="mo">07</span><span class="p">:</span><span class="mi">14</span><span class="p">,</span><span class="mi">114</span><span class="p">:</span> <span class="n">INFO</span><span class="o">/</span><span class="n">MainProcess</span><span class="p">]</span> <span class="n">Scheduler</span><span class="p">:</span> <span class="n">Sending</span> <span class="n">due</span> <span class="n">task</span> <span class="n">say</span><span class="o">-</span><span class="n">hello</span><span class="o">-</span><span class="n">every</span><span class="o">-</span><span class="mi">30</span><span class="o">-</span><span class="n">seconds</span> <span class="p">(</span><span class="n">tasks</span><span class="o">.</span><span class="n">say_hello</span><span class="p">)</span>
 </pre></div>
 

@@ -75,7 +75,7 @@
         <div class="wrap">
             <div class="content">
 
-  <h4>Sha 12 Sentyabr 2015</h4>
+  <h4>Sat 12 September 2015</h4>
 
   <h1>Introduction to Python Social Auth</h1>
 
@@ -94,18 +94,18 @@ bigger picture on PSA.</p>
 <p>PSA uses a mechanism called Pipeline to do the autentication. Pipeline is like a stack of functions. 
 These functions get executed one by one and return some result to the next function. 
 The default pipeline looks like this:</p>
-<div class="highlight"><pre><span class="n">SOCIAL_AUTH_PIPELINE</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s">&#39;social.pipeline.social_auth.social_details&#39;</span><span class="p">,</span>
-    <span class="s">&#39;social.pipeline.social_auth.social_uid&#39;</span><span class="p">,</span>
-    <span class="s">&#39;social.pipeline.social_auth.auth_allowed&#39;</span><span class="p">,</span>
-    <span class="s">&#39;social.pipeline.social_auth.social_user&#39;</span><span class="p">,</span>
-    <span class="s">&#39;social.pipeline.user.get_username&#39;</span><span class="p">,</span>
-    <span class="c"># &#39;social.pipeline.mail.mail_validation&#39;,</span>
-    <span class="c"># &#39;social.pipeline.social_auth.associate_by_email&#39;,</span>
-    <span class="s">&#39;social.pipeline.user.create_user&#39;</span><span class="p">,</span>
-    <span class="s">&#39;social.pipeline.social_auth.associate_user&#39;</span><span class="p">,</span>
-    <span class="s">&#39;social.pipeline.social_auth.load_extra_data&#39;</span><span class="p">,</span>
-    <span class="s">&#39;social.pipeline.user.user_details&#39;</span>
+<div class="highlight"><pre><span></span><span class="n">SOCIAL_AUTH_PIPELINE</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s1">&#39;social.pipeline.social_auth.social_details&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;social.pipeline.social_auth.social_uid&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;social.pipeline.social_auth.auth_allowed&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;social.pipeline.social_auth.social_user&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;social.pipeline.user.get_username&#39;</span><span class="p">,</span>
+    <span class="c1"># &#39;social.pipeline.mail.mail_validation&#39;,</span>
+    <span class="c1"># &#39;social.pipeline.social_auth.associate_by_email&#39;,</span>
+    <span class="s1">&#39;social.pipeline.user.create_user&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;social.pipeline.social_auth.associate_user&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;social.pipeline.social_auth.load_extra_data&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;social.pipeline.user.user_details&#39;</span>
 <span class="p">)</span>
 </pre></div>
 
@@ -121,27 +121,27 @@ apply to that too. More info on pipeline can be found
 <p>Now, you can do whatever you like with this set of functions for the pipeline and customize it however 
 you like. You can remove any of the methods, for example to create a pipeline that won't create users, 
 just accepts already registered ones:</p>
-<div class="highlight"><pre><span class="n">SOCIAL_AUTH_PIPELINE</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s">&#39;social.pipeline.social_auth.social_details&#39;</span><span class="p">,</span>
-    <span class="s">&#39;social.pipeline.social_auth.social_uid&#39;</span><span class="p">,</span>
-    <span class="s">&#39;social.pipeline.social_auth.auth_allowed&#39;</span><span class="p">,</span>
-    <span class="s">&#39;social.pipeline.social_auth.social_user&#39;</span><span class="p">,</span>
-    <span class="s">&#39;social.pipeline.social_auth.associate_user&#39;</span><span class="p">,</span>
-    <span class="s">&#39;social.pipeline.social_auth.load_extra_data&#39;</span><span class="p">,</span>
-    <span class="s">&#39;social.pipeline.user.user_details&#39;</span>
+<div class="highlight"><pre><span></span><span class="n">SOCIAL_AUTH_PIPELINE</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s1">&#39;social.pipeline.social_auth.social_details&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;social.pipeline.social_auth.social_uid&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;social.pipeline.social_auth.auth_allowed&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;social.pipeline.social_auth.social_user&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;social.pipeline.social_auth.associate_user&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;social.pipeline.social_auth.load_extra_data&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;social.pipeline.user.user_details&#39;</span>
 <span class="p">)</span>
 </pre></div>
 
 
 <p>Customize any of the methods:</p>
-<div class="highlight"><pre><span class="n">SOCIAL_AUTH_PIPELINE</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s">&#39;path.to.custom.social_details&#39;</span><span class="p">,</span>    <span class="c"># custom method</span>
-    <span class="s">&#39;social.pipeline.social_auth.social_uid&#39;</span><span class="p">,</span>
-    <span class="s">&#39;social.pipeline.social_auth.auth_allowed&#39;</span><span class="p">,</span>
-    <span class="s">&#39;social.pipeline.social_auth.social_user&#39;</span><span class="p">,</span>
-    <span class="s">&#39;social.pipeline.social_auth.associate_user&#39;</span><span class="p">,</span>
-    <span class="s">&#39;social.pipeline.social_auth.load_extra_data&#39;</span><span class="p">,</span>
-    <span class="s">&#39;social.pipeline.user.user_details&#39;</span>
+<div class="highlight"><pre><span></span><span class="n">SOCIAL_AUTH_PIPELINE</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s1">&#39;path.to.custom.social_details&#39;</span><span class="p">,</span>    <span class="c1"># custom method</span>
+    <span class="s1">&#39;social.pipeline.social_auth.social_uid&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;social.pipeline.social_auth.auth_allowed&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;social.pipeline.social_auth.social_user&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;social.pipeline.social_auth.associate_user&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;social.pipeline.social_auth.load_extra_data&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;social.pipeline.user.user_details&#39;</span>
 <span class="p">)</span>
 </pre></div>
 
@@ -152,36 +152,36 @@ just accepts already registered ones:</p>
 <p>It is also possible to cut the pipeline to ask the user for more information and resume the proccess 
 later. For example, to ensure that the user provides his email, you can write the following partial 
 pipeline:</p>
-<div class="highlight"><pre><span class="nd">@partial</span>
+<div class="highlight"><pre><span></span><span class="nd">@partial</span>
 <span class="k">def</span> <span class="nf">require_email</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="n">details</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">is_new</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">user</span> <span class="ow">and</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">:</span>
         <span class="k">return</span>
-    <span class="k">elif</span> <span class="n">is_new</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;email&#39;</span><span class="p">):</span>
-        <span class="n">email</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">.</span><span class="n">request_data</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;email&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">is_new</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">):</span>
+        <span class="n">email</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">.</span><span class="n">request_data</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">email</span><span class="p">:</span>
-            <span class="n">details</span><span class="p">[</span><span class="s">&#39;email&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">email</span>
+            <span class="n">details</span><span class="p">[</span><span class="s1">&#39;email&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">email</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">&#39;require_email&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;require_email&#39;</span><span class="p">)</span>
 </pre></div>
 
 
 <p>This method first checks whether email exists. If so, continues the pipeline. Otherwise, it will 
 redirect to <code>require_email</code> view, which looks like this:</p>
-<div class="highlight"><pre><span class="k">def</span> <span class="nf">require_email</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;path/to/template.html&#39;</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">require_email</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;path/to/template.html&#39;</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
 </pre></div>
 
 
 <p>So, it will render the template with a form. Attention: this form must be submitted to 
 <code>/complete/&lt;backend&gt;/</code> to continue the pipeline:</p>
-<div class="highlight"><pre><span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">&quot;/complete/instagram&quot;</span> <span class="na">method=</span><span class="s">&quot;post&quot;</span><span class="nt">&gt;</span>
+<div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">form</span> <span class="na">action</span><span class="o">=</span><span class="s">&quot;/complete/instagram&quot;</span> <span class="na">method</span><span class="o">=</span><span class="s">&quot;post&quot;</span><span class="p">&gt;</span>
 </pre></div>
 
 
 <p>After a user submits the form, the pipeline comes to this part of the partial pipeline code:</p>
-<div class="highlight"><pre><span class="n">email</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">.</span><span class="n">request_data</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;email&#39;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><span class="n">email</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">.</span><span class="n">request_data</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">email</span><span class="p">:</span>
-    <span class="n">details</span><span class="p">[</span><span class="s">&#39;email&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">email</span>
+    <span class="n">details</span><span class="p">[</span><span class="s1">&#39;email&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">email</span>
 </pre></div>
 
 
@@ -194,15 +194,15 @@ To provide different registration proccess for them we can do the following:</p>
 <ol>
 <li>
 <p>Provide two different links and mark one of them with a get parameter(user_type):</p>
-<div class="highlight"><pre><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;{% url &#39;social:begin&#39; &#39;facebook&#39; %}&quot;</span><span class="nt">&gt;</span>Login as SimpleUser<span class="nt">&lt;/a&gt;</span>
-<span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;{% url &#39;social:begin&#39; &#39;facebook&#39; %}?user_type=shop&quot;</span><span class="nt">&gt;</span>Login as Shop<span class="nt">&lt;/a&gt;</span>
+<div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{% url &#39;social:begin&#39; &#39;facebook&#39; %}&quot;</span><span class="p">&gt;</span>Login as SimpleUser<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{% url &#39;social:begin&#39; &#39;facebook&#39; %}?user_type=shop&quot;</span><span class="p">&gt;</span>Login as Shop<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
 </pre></div>
 
 
 </li>
 <li>
 <p>In order to access this get parameter, we will have to do this in our settings file:</p>
-<div class="highlight"><pre><span class="n">FIELDS_STORED_IN_SESSION</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;user_type&#39;</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><span class="n">FIELDS_STORED_IN_SESSION</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;user_type&#39;</span><span class="p">]</span>
 </pre></div>
 
 
@@ -210,12 +210,12 @@ To provide different registration proccess for them we can do the following:</p>
 </li>
 <li>
 <p>Then in <code>create_user</code> method of the pipeline, create different users depending on this parameter:</p>
-<div class="highlight"><pre><span class="k">def</span> <span class="nf">create_user</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="n">backend</span><span class="p">,</span> <span class="n">details</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="n">user_type</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">.</span><span class="n">session_get</span><span class="p">(</span><span class="s">&#39;type&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">user_type</span> <span class="o">==</span> <span class="s">&#39;shop&#39;</span><span class="p">:</span>
-          <span class="c"># create a shop</span>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_user</span><span class="p">(</span><span class="n">strategy</span><span class="p">,</span> <span class="n">backend</span><span class="p">,</span> <span class="n">details</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">user_type</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">.</span><span class="n">session_get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">user_type</span> <span class="o">==</span> <span class="s1">&#39;shop&#39;</span><span class="p">:</span>
+          <span class="c1"># create a shop</span>
     <span class="k">else</span><span class="p">:</span>
-          <span class="c"># create a simple user</span>
+          <span class="c1"># create a simple user</span>
 </pre></div>
 
 
