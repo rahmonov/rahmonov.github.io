@@ -71,182 +71,113 @@
 <h2>Articles by Jahongir Rahmonov</h2>
 
 <h4>
-    <a href="posts/how-to-write-clean-functions/">
-        15 June 2016
+    <a href="posts/run-a-django-app-with-nginx-and-gunicorn/">
+        26 February 2017
     </a>
 </h4>
 
-<h1>How to write clean functions</h1>
+<h1>Run a Django app with Nginx and Gunicorn in Ubuntu 16.04</h1>
 
-<p>The following is heavily influenced (99%) by one of the must-read books for any developer: <a href="https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882">Clean Code: A Handbook of Agile Software Craftsmanship</a></p>
-<h2>Clean Code</h2>
-<div class="highlight"><pre><span></span>Always code as if the guy who ends up maintaining your code will be a violent psychopath who knows where you live.
-Code for readability.
+<p>This tutorial is the continuation of <a href="http://rahmonov.me/posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/">this one</a> where we learned
+how to run a django app with gunicorn. Now we will add Nginx and Supervisord into the mix.</p>
+<h2>The reason we need Nginx</h2>
+<p>If you followed the previous tutorial, we ran our django app with Gunicorn. However, at the end, we saw that the styles of the admin
+panel were gone. The reason is that Gunicorn is an application server and just runs the app (django app in our case) and django, as we know,
+does not serve static files except in development. Nginx to the rescue! It will be a reverse proxy for Gunicorn. What the hell is a reverse proxy?
+Good question! We all know what VPNs are, right? We use them to access some website that is blocked for some reason. In this case, we access
+that website through a VPN: We -&gt; VPN -&gt; some website. This kind of proxies are called Forward Proxies. As for reverse proxies, think of
+them as forced proxies. For example, a user is trying to access our django app running in gunicorn. He thinks that he is accessing the app directly.
+However, what is happening is that he is first accessing the Nginx server which decides what to do next. If the user is accessing a static file,
+the Nginx server will serve it itself. Otherwise, it will redirect it to Gunicorn. In plain terms, http requests will be handled by
+Gunicorn and static ones by Nginx. That's why we need Nginx.</p>
+<p>Apart from that, Nginx also improves performance, reliability, security and scale.</p>
+<h2>Installation</h2>
+<p>By now we already have Django and Gunicorn ready. So, let's install Nginx now:</p>
+<div class="highlight"><pre><span></span>sudo apt-get install nginx
 </pre></div>
 
 
-<p>Damn right!!! Uncle Bob Martin even mentions of a once-successful company that went bankrupt 
-because of unmaintainable codebase. Clean code is that serious.</p>
-<p>Now that we know the importance of clean code, let's take a look at how to write clean functions first.</p>
-<h2>Clean Functions</h2>
-<p>Functions are key players in any program and it is very important to write them well.</p>
-<p>Let's take a look at the following code:</p>
-<div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">testableHtml</span><span class="o">(</span><span class="n">PageData</span> <span class="n">pageData</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">includeSuiteSetup</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-    <span class="n">WikiPage</span> <span class="n">wikiPage</span> <span class="o">=</span> <span class="n">pageData</span><span class="o">.</span><span class="na">getWikiPage</span><span class="o">();</span>
-    <span class="n">StringBuffer</span> <span class="n">buffer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuffer</span><span class="o">();</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">pageData</span><span class="o">.</span><span class="na">hasAttribute</span><span class="o">(</span><span class="s">&quot;Test&quot;</span><span class="o">))</span> <span class="o">{</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">includeSuiteSetup</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">WikiPage</span> <span class="n">suiteSetup</span> <span class="o">=</span>
-                    <span class="n">PageCrawlerImpl</span><span class="o">.</span><span class="na">getInheritedPage</span><span class="o">(</span>
-                            <span class="n">SuiteResponder</span><span class="o">.</span><span class="na">SUITE_SETUP_NAME</span><span class="o">,</span> <span class="n">wikiPage</span>
-                    <span class="o">);</span>
-            <span class="k">if</span> <span class="o">(</span><span class="n">suiteSetup</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-                <span class="n">WikiPagePath</span> <span class="n">pagePath</span> <span class="o">=</span>
-                        <span class="n">suiteSetup</span><span class="o">.</span><span class="na">getPageCrawler</span><span class="o">().</span><span class="na">getFullPath</span><span class="o">(</span><span class="n">suiteSetup</span><span class="o">);</span>
-                <span class="n">String</span> <span class="n">pagePathName</span> <span class="o">=</span> <span class="n">PathParser</span><span class="o">.</span><span class="na">render</span><span class="o">(</span><span class="n">pagePath</span><span class="o">);</span>
-                <span class="n">buffer</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;!include -setup .&quot;</span><span class="o">)</span>
-                        <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">pagePathName</span><span class="o">)</span>
-                        <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;\n&quot;</span><span class="o">);</span>
-            <span class="o">}</span>
-        <span class="o">}</span>
-        <span class="n">WikiPage</span> <span class="n">setup</span> <span class="o">=</span>
-                <span class="n">PageCrawlerImpl</span><span class="o">.</span><span class="na">getInheritedPage</span><span class="o">(</span><span class="s">&quot;SetUp&quot;</span><span class="o">,</span> <span class="n">wikiPage</span><span class="o">);</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">setup</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">WikiPagePath</span> <span class="n">setupPath</span> <span class="o">=</span>
-                    <span class="n">wikiPage</span><span class="o">.</span><span class="na">getPageCrawler</span><span class="o">().</span><span class="na">getFullPath</span><span class="o">(</span><span class="n">setup</span><span class="o">);</span>
-            <span class="n">String</span> <span class="n">setupPathName</span> <span class="o">=</span> <span class="n">PathParser</span><span class="o">.</span><span class="na">render</span><span class="o">(</span><span class="n">setupPath</span><span class="o">);</span>
-            <span class="n">buffer</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;!include -setup .&quot;</span><span class="o">)</span>
-                    <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">setupPathName</span><span class="o">)</span>
-                    <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;\n&quot;</span><span class="o">);</span>
-        <span class="o">}</span>
+<p>Now, we will configure Nginx to pass traffic to the process.</p>
+<p>Create a new server block in Nginx's <code>sites-available</code> directory and type in the following:</p>
+<div class="highlight"><pre><span></span>server <span class="o">{</span>
+    listen 8000<span class="p">;</span>
+    server_name 0.0.0.0<span class="p">;</span>
+
+    <span class="nv">location</span> <span class="o">=</span> /favicon.ico <span class="o">{</span> access_log off<span class="p">;</span> log_not_found off<span class="p">;</span> <span class="o">}</span>
+
+    location /static/ <span class="o">{</span>
+            root /home/ubuntu/myproject<span class="p">;</span>
     <span class="o">}</span>
-    <span class="n">buffer</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">pageData</span><span class="o">.</span><span class="na">getContent</span><span class="o">());</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">pageData</span><span class="o">.</span><span class="na">hasAttribute</span><span class="o">(</span><span class="s">&quot;Test&quot;</span><span class="o">))</span> <span class="o">{</span>
-        <span class="n">WikiPage</span> <span class="n">teardown</span> <span class="o">=</span>
-                <span class="n">PageCrawlerImpl</span><span class="o">.</span><span class="na">getInheritedPage</span><span class="o">(</span><span class="s">&quot;TearDown&quot;</span><span class="o">,</span> <span class="n">wikiPage</span><span class="o">);</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">teardown</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">WikiPagePath</span> <span class="n">tearDownPath</span> <span class="o">=</span>
-                    <span class="n">wikiPage</span><span class="o">.</span><span class="na">getPageCrawler</span><span class="o">().</span><span class="na">getFullPath</span><span class="o">(</span><span class="n">teardown</span><span class="o">);</span>
-            <span class="n">String</span> <span class="n">tearDownPathName</span> <span class="o">=</span> <span class="n">PathParser</span><span class="o">.</span><span class="na">render</span><span class="o">(</span><span class="n">tearDownPath</span><span class="o">);</span>
-            <span class="n">buffer</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;\n&quot;</span><span class="o">)</span>
-                    <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;!include -teardown .&quot;</span><span class="o">)</span>
-                    <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">tearDownPathName</span><span class="o">)</span>
-                    <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;\n&quot;</span><span class="o">);</span>
-        <span class="o">}</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">includeSuiteSetup</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">WikiPage</span> <span class="n">suiteTeardown</span> <span class="o">=</span>
-                    <span class="n">PageCrawlerImpl</span><span class="o">.</span><span class="na">getInheritedPage</span><span class="o">(</span>
-                            <span class="n">SuiteResponder</span><span class="o">.</span><span class="na">SUITE_TEARDOWN_NAME</span><span class="o">,</span>
-                            <span class="n">wikiPage</span>
-                    <span class="o">);</span>
-            <span class="k">if</span> <span class="o">(</span><span class="n">suiteTeardown</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-                <span class="n">WikiPagePath</span> <span class="n">pagePath</span> <span class="o">=</span>
-                        <span class="n">suiteTeardown</span><span class="o">.</span><span class="na">getPageCrawler</span><span class="o">().</span><span class="na">getFullPath</span><span class="o">(</span><span class="n">suiteTeardown</span><span class="o">);</span>
-                <span class="n">String</span> <span class="n">pagePathName</span> <span class="o">=</span> <span class="n">PathParser</span><span class="o">.</span><span class="na">render</span><span class="o">(</span><span class="n">pagePath</span><span class="o">);</span>
-                <span class="n">buffer</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;!include -teardown .&quot;</span><span class="o">)</span>
-                        <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">pagePathName</span><span class="o">)</span>
-                        <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;\n&quot;</span><span class="o">);</span>
-            <span class="o">}</span>
-        <span class="o">}</span>
+
+    location / <span class="o">{</span>
+            include proxy_params<span class="p">;</span>
+            proxy_pass http://unix:/home/ubuntu/myproject/myproject.sock<span class="p">;</span>
     <span class="o">}</span>
-    <span class="n">pageData</span><span class="o">.</span><span class="na">setContent</span><span class="o">(</span><span class="n">buffer</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
-    <span class="k">return</span> <span class="n">pageData</span><span class="o">.</span><span class="na">getHtml</span><span class="o">();</span>
 <span class="o">}</span>
 </pre></div>
 
 
-<p>Obviously, this is not a well-written function. But what problems does it have?!</p>
-<div class="highlight"><pre><span></span>- Too much going on, i.e. too big
-- Many different levels of abstraction
-- Nested if statements controlled by flags
+<p>Adjust the paths like <code>/home/ubuntu/myproject</code> to your own environment.</p>
+<p>Let's see what is going on here.</p>
+<p>The first two lines tell that it will listen to the port <code>8000</code> on <code>0.0.0.0</code>. The next line about favicon will tell Nginx to ignore
+problems with favicon.ico.</p>
+<p>The next block is very important. It says that static files, which all have a standard URI prefix of <code>static/</code> should be looked for in
+<code>~/myproject/static/</code> folder.</p>
+<p>And the last location block matches all other requests other that static ones (remember reverse proxy). One thing to note here is that Nginx and Gunicorn "talk to" 
+each other through a unix socket. That's why we will bind our gunicorn to a socket as we will see soon.</p>
+<p>Now, let's enable this file by linking it to the <code>sites-enabled</code> folder:</p>
+<div class="highlight"><pre><span></span>sudo ln -s /etc/nginx/sites-available/myproject /etc/nginx/sites-enabled
 </pre></div>
 
 
-<p>With little method extraction, renaming and restructuring, we can come to the better version:</p>
-<div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">renderPageWithSetupsAndTeardowns</span><span class="o">(</span><span class="n">PageData</span> <span class="n">pageData</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">isSuite</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-    <span class="kt">boolean</span> <span class="n">isTestPage</span> <span class="o">=</span> <span class="n">pageData</span><span class="o">.</span><span class="na">hasAttribute</span><span class="o">(</span><span class="s">&quot;Test&quot;</span><span class="o">);</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">isTestPage</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">WikiPage</span> <span class="n">testPage</span> <span class="o">=</span> <span class="n">pageData</span><span class="o">.</span><span class="na">getWikiPage</span><span class="o">();</span>
-        <span class="n">StringBuffer</span> <span class="n">newPageContent</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringBuffer</span><span class="o">();</span>
-        <span class="n">includeSetupPages</span><span class="o">(</span><span class="n">testPage</span><span class="o">,</span> <span class="n">newPageContent</span><span class="o">,</span> <span class="n">isSuite</span><span class="o">);</span>
-        <span class="n">newPageContent</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">pageData</span><span class="o">.</span><span class="na">getContent</span><span class="o">());</span>
-        <span class="n">includeTeardownPages</span><span class="o">(</span><span class="n">testPage</span><span class="o">,</span> <span class="n">newPageContent</span><span class="o">,</span> <span class="n">isSuite</span><span class="o">);</span>
-        <span class="n">pageData</span><span class="o">.</span><span class="na">setContent</span><span class="o">(</span><span class="n">newPageContent</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
-    <span class="o">}</span>
-    <span class="k">return</span> <span class="n">pageData</span><span class="o">.</span><span class="na">getHtml</span><span class="o">();</span>
-<span class="o">}</span>
+<p>and check if our configuration file was correctly written:</p>
+<div class="highlight"><pre><span></span>sudo nginx -t
 </pre></div>
 
 
-<p>Now, it is much better! But the main question remains: What attributes should we give our functions that 
-will a casual reader to intuit what it does easily?</p>
-<h2>Small</h2>
-<p>Functions should be small! They should even be smaller than that! Actually, the code above is too large and
-it should be shortened to this:</p>
-<div class="highlight"><pre><span></span><span class="kd">public</span> <span class="kd">static</span> <span class="n">String</span> <span class="nf">renderPageWithSetupsAndTeardowns</span><span class="o">(</span><span class="n">PageData</span> <span class="n">pageData</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">isSuite</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">isTestPage</span><span class="o">(</span><span class="n">pageData</span><span class="o">))</span>
-        <span class="n">includeSetupAndTeardownPages</span><span class="o">(</span><span class="n">pageData</span><span class="o">,</span> <span class="n">isSuite</span><span class="o">);</span>
-    <span class="k">return</span> <span class="n">pageData</span><span class="o">.</span><span class="na">getHtml</span><span class="o">();</span>
-<span class="o">}</span>
+<p>If everything is OK, you should see something like this:</p>
+<div class="highlight"><pre><span></span>nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf <span class="nb">test</span> is successful
 </pre></div>
 
 
-<p>How long? Uncle Bob says that they should hardly be 20 lines long.</p>
-<h2>Do One Thing</h2>
-<p>Functions should do one thing. They should do it well. They should do it only.</p>
-<p>The function <code>testableHtml()</code> is doing too many things:</p>
-<div class="highlight"><pre><span></span>- Creating buffers
-- Fetching pages
-- Searching for inherited pages
-- Rendering paths
-- Generating HTML
+<p>You may ask what all that linking and <code>sites-enabled</code> folder were about. We could have included those settings in Nginx's main settings file:
+<code>/etc/nginx/nginx.conf</code>. If we take a look at it, we will see this:</p>
+<div class="highlight"><pre><span></span>include /etc/nginx/sites-enabled/*
 </pre></div>
 
 
-<p>On the other hand, the function <code>renderPageWithSetupsAndTeardowns()</code> is doing only one thing: Including setups and teardowns into test pages!</p>
-<p>However, it can be hard to know what that one thing is. Hence, the next rule.</p>
-<h2>One level of abstraction per function</h2>
-<p>Let's see the following example to understand what one level of abstraction means.
-Imagine we need to write a function that builds a house. That is, our function should answer the question of
-"What needs to be done to build a house?". The answer would roughly be: find location, design, get permits, break ground and etc...
-In code, it would look something like this: </p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">buildHouse</span><span class="p">():</span>
-    <span class="n">find_location</span><span class="p">()</span>
-    <span class="n">design</span><span class="p">()</span>
-    <span class="n">fix_documents</span><span class="p">()</span>
-    <span class="n">break_ground</span><span class="p">()</span>
-    <span class="n">build_walls_and_roof</span><span class="p">()</span>
-    <span class="n">etc</span><span class="o">...</span><span class="p">()</span>
+<p>So, we can see that what we did makes it more modular and much easier to maintain when we have several apps being served by Nginx.</p>
+<p>OK, now that we have configured Nginx, let's see some action.</p>
+<p>First, let's move all our static files to <code>~/myproject/static/</code> because we set up Nginx to look for them there.
+Open up <code>myproject/settings.py</code> and add this:</p>
+<div class="highlight"><pre><span></span><span class="n">STATIC_ROOT</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">BASE_DIR</span><span class="p">,</span> <span class="s1">&#39;static/&#39;</span><span class="p">)</span>
 </pre></div>
 
 
-<p>This function does have only one level of abstraction. Everything inside the function is a part of the answer to the question of "how to build a house?".
-To compare, take a look at the following:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">buildHouse</span><span class="p">():</span>
-    <span class="n">select_desirable_place</span><span class="p">()</span>
-    <span class="n">select_property</span><span class="p">()</span>
-    <span class="n">survey_property</span><span class="p">()</span>
-    <span class="n">consider_access_issues</span><span class="p">()</span>
-
-    <span class="n">consult_architect</span><span class="p">()</span>
-    <span class="n">design_utilities</span><span class="p">()</span>
-    <span class="n">design_efficiently</span><span class="p">()</span>
-
-    <span class="n">etc</span><span class="o">...</span><span class="p">()</span>
+<p>Save and close. Now, let's collect them to that folder:</p>
+<div class="highlight"><pre><span></span>./manage.py collectstatic
 </pre></div>
 
 
-<p>Do you see it? The first 4 functions is not a part of the answer to the question: "What to do to build a house?", but rather "What to do to find a location to build a house?".
-Do you see it now? They are 2 levels deep, not one! In real code, it would look much worse.</p>
-<h2>Use descriptive names</h2>
-<p>The title says it all. Examples: is_testable(), includePages().
-You know you are working on clean code when each function turns out to be pretty much what you expected.</p>
-<p>In choosing a name, we should:
-    - not be afraid to make a long name
-    - not be afraid to spend time choosing a name
-    - even try several different names and read the code with each in place
-    - be consistent in our names</p>
-<p>Follow these pieces of advice and your functions become much cleaner and more maintainable.</p>
+<p>Confirm the operation and our static files should be there for Nginx to find them.</p>
+<p>Now, let's finally run our app:</p>
+<div class="highlight"><pre><span></span>gunicorn --daemon --workers <span class="m">3</span> --bind unix:/home/ubuntu/myproject/myproject.sock myproject.wsgi
+</pre></div>
+
+
+<p>As I told earlier, we are starting gunicorn a little differently now. We are binding it to a unix socket file which is needed to talk
+to Nginx. This file will be created and enable Nginx and Gunicorn to talk to each other. You may ask what about ports and ip?.
+Nginx will take care of that. Remember we configured it to listen to <code>0.0.0.0:8000</code>? Cool! Now, let's restart Nginx to make these changes
+take effect.</p>
+<div class="highlight"><pre><span></span>sudo service nginx restart
+</pre></div>
+
+
+<p>Now, go ahead and access <code>0.0.0.0:8000</code>. Great, our app is running. Let's check our admin panel now at <code>0.0.0.0:8000/admin</code>. Awesome,
+styles are there! We have achieved what we wanted. Congratulations!</p>
+<p>This is just the tip of the iceberg. You will need more stuff as your app grows. Go to <a href="https://nginx.org/en/docs/">nginx docs</a> to learn more.</p>
+<p>In the next tutorial, we will take a look at <code>supervisord</code> to make process management very easy.</p>
 <p>Fight on!</p>
 
 <div class="end">

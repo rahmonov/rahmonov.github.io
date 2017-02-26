@@ -1,5 +1,224 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/all-en.atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2016-06-15T20:10:00+05:00</updated><entry><title>How to write clean functions</title><link href="http://rahmonov.github.io/posts/how-to-write-clean-functions/" rel="alternate"></link><published>2016-06-15T20:10:00+05:00</published><updated>2016-06-15T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2016-06-15:posts/how-to-write-clean-functions/</id><summary type="html">&lt;p&gt;The following is heavily influenced (99%) by one of the must-read books for any developer: &lt;a href="https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882"&gt;Clean Code: A Handbook of Agile Software Craftsmanship&lt;/a&gt;&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/all-en.atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2017-02-26T20:10:00+05:00</updated><entry><title>Run a Django app with Nginx and Gunicorn in Ubuntu 16.04</title><link href="http://rahmonov.github.io/posts/run-a-django-app-with-nginx-and-gunicorn/" rel="alternate"></link><published>2017-02-26T20:10:00+05:00</published><updated>2017-02-26T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2017-02-26:posts/run-a-django-app-with-nginx-and-gunicorn/</id><summary type="html">&lt;p&gt;This tutorial is the continuation of &lt;a href="http://rahmonov.me/posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/"&gt;this one&lt;/a&gt; where we learned
+how to run a django app with gunicorn. Now we will add Nginx and Supervisord into the mix.&lt;/p&gt;
+&lt;h2&gt;The reason we need Nginx&lt;/h2&gt;
+&lt;p&gt;If you followed the previous tutorial, we ran our django app with Gunicorn. However, at the end, we saw that the styles of the admin
+panel were gone. The reason is that Gunicorn is an application server and just runs the app (django app in our case) and django, as we know,
+does not serve static files except in development. Nginx to the rescue! It will be a reverse proxy for Gunicorn. What the hell is a reverse proxy?
+Good question! We all know what VPNs are, right? We use them to access some website that is blocked for some reason. In this case, we access
+that website through a VPN: We -&amp;gt; VPN -&amp;gt; some website. This kind of proxies are called Forward Proxies. As for reverse proxies, think of
+them as forced proxies. For example, a user is trying to access our django app running in gunicorn. He thinks that he is accessing the app directly.
+However, what is happening is that he is first accessing the Nginx server which decides what to do next. If the user is accessing a static file,
+the Nginx server will serve it itself. Otherwise, it will redirect it to Gunicorn. In plain terms, http requests will be handled by
+Gunicorn and static ones by Nginx. That's why we need Nginx.&lt;/p&gt;
+&lt;p&gt;Apart from that, Nginx also improves performance, reliability, security and scale.&lt;/p&gt;
+&lt;h2&gt;Installation&lt;/h2&gt;
+&lt;p&gt;By now we already have Django and Gunicorn ready. So, let's install Nginx now:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo apt-get install nginx
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, we will configure Nginx to pass traffic to the process.&lt;/p&gt;
+&lt;p&gt;Create a new server block in Nginx's &lt;code&gt;sites-available&lt;/code&gt; directory and type in the following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;server &lt;span class="o"&gt;{&lt;/span&gt;
+    listen 8000&lt;span class="p"&gt;;&lt;/span&gt;
+    server_name 0.0.0.0&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="nv"&gt;location&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; /favicon.ico &lt;span class="o"&gt;{&lt;/span&gt; access_log off&lt;span class="p"&gt;;&lt;/span&gt; log_not_found off&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="o"&gt;}&lt;/span&gt;
+
+    location /static/ &lt;span class="o"&gt;{&lt;/span&gt;
+            root /home/ubuntu/myproject&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    location / &lt;span class="o"&gt;{&lt;/span&gt;
+            include proxy_params&lt;span class="p"&gt;;&lt;/span&gt;
+            proxy_pass http://unix:/home/ubuntu/myproject/myproject.sock&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Adjust the paths like &lt;code&gt;/home/ubuntu/myproject&lt;/code&gt; to your own environment.&lt;/p&gt;
+&lt;p&gt;Let's see what is going on here.&lt;/p&gt;
+&lt;p&gt;The first two lines tell that it will listen to the port &lt;code&gt;8000&lt;/code&gt; on &lt;code&gt;0.0.0.0&lt;/code&gt;. The next line about favicon will tell Nginx to ignore
+problems with favicon.ico.&lt;/p&gt;
+&lt;p&gt;The next block is very important. It says that static files, which all have a standard URI prefix of &lt;code&gt;static/&lt;/code&gt; should be looked for in
+&lt;code&gt;~/myproject/static/&lt;/code&gt; folder.&lt;/p&gt;
+&lt;p&gt;And the last location block matches all other requests other that static ones (remember reverse proxy). One thing to note here is that Nginx and Gunicorn "talk to" 
+each other through a unix socket. That's why we will bind our gunicorn to a socket as we will see soon.&lt;/p&gt;
+&lt;p&gt;Now, let's enable this file by linking it to the &lt;code&gt;sites-enabled&lt;/code&gt; folder:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo ln -s /etc/nginx/sites-available/myproject /etc/nginx/sites-enabled
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;and check if our configuration file was correctly written:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo nginx -t
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If everything is OK, you should see something like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf &lt;span class="nb"&gt;test&lt;/span&gt; is successful
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You may ask what all that linking and &lt;code&gt;sites-enabled&lt;/code&gt; folder were about. We could have included those settings in Nginx's main settings file:
+&lt;code&gt;/etc/nginx/nginx.conf&lt;/code&gt;. If we take a look at it, we will see this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;include /etc/nginx/sites-enabled/*
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So, we can see that what we did makes it more modular and much easier to maintain when we have several apps being served by Nginx.&lt;/p&gt;
+&lt;p&gt;OK, now that we have configured Nginx, let's see some action.&lt;/p&gt;
+&lt;p&gt;First, let's move all our static files to &lt;code&gt;~/myproject/static/&lt;/code&gt; because we set up Nginx to look for them there.
+Open up &lt;code&gt;myproject/settings.py&lt;/code&gt; and add this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;STATIC_ROOT&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;BASE_DIR&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;static/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Save and close. Now, let's collect them to that folder:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./manage.py collectstatic
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Confirm the operation and our static files should be there for Nginx to find them.&lt;/p&gt;
+&lt;p&gt;Now, let's finally run our app:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;gunicorn --daemon --workers &lt;span class="m"&gt;3&lt;/span&gt; --bind unix:/home/ubuntu/myproject/myproject.sock myproject.wsgi
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;As I told earlier, we are starting gunicorn a little differently now. We are binding it to a unix socket file which is needed to talk
+to Nginx. This file will be created and enable Nginx and Gunicorn to talk to each other. You may ask what about ports and ip?.
+Nginx will take care of that. Remember we configured it to listen to &lt;code&gt;0.0.0.0:8000&lt;/code&gt;? Cool! Now, let's restart Nginx to make these changes
+take effect.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo service nginx restart
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, go ahead and access &lt;code&gt;0.0.0.0:8000&lt;/code&gt;. Great, our app is running. Let's check our admin panel now at &lt;code&gt;0.0.0.0:8000/admin&lt;/code&gt;. Awesome,
+styles are there! We have achieved what we wanted. Congratulations!&lt;/p&gt;
+&lt;p&gt;This is just the tip of the iceberg. You will need more stuff as your app grows. Go to &lt;a href="https://nginx.org/en/docs/"&gt;nginx docs&lt;/a&gt; to learn more.&lt;/p&gt;
+&lt;p&gt;In the next tutorial, we will take a look at &lt;code&gt;supervisord&lt;/code&gt; to make process management very easy.&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="python"></category><category term="django"></category><category term="gunicorn"></category><category term="nginx"></category></entry><entry><title>Run a Django app with Gunicorn in Ubuntu 16.04</title><link href="http://rahmonov.github.io/posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/" rel="alternate"></link><published>2017-02-21T20:10:00+05:00</published><updated>2017-02-21T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2017-02-21:posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/</id><summary type="html">&lt;p&gt;This tutorial is aimed at beginners and is a part of a series where we learn to run a django app with Gunicorn and Nginx, and manage
+it with the help of the Supervisord. Basically, we are trying to emulate a production environment.&lt;/p&gt;
+&lt;h2&gt;The Problem&lt;/h2&gt;
+&lt;p&gt;We are all very well aware that we can run our django app simply by executing a &lt;code&gt;./manage.py runserver&lt;/code&gt; command. We also know that it is
+called a &lt;em&gt;development&lt;/em&gt; server for a reason. You know it is not robust, security issues, thread issues and etc. So, how do we &lt;em&gt;really&lt;/em&gt; run
+our app then?&lt;/p&gt;
+&lt;h2&gt;The Solution&lt;/h2&gt;
+&lt;p&gt;Enter &lt;a href="http://gunicorn.org/"&gt;Gunicorn&lt;/a&gt;, a simple, light and speedy Python WSGI HTTP Server for UNIX. We will see how to use gunicorn now 
+but it is not the main reason I wrote this tutorial. The main reason is this: back in the day I was terrified at the thought of anything
+related to &lt;em&gt;production vs development&lt;/em&gt; stuff because I thought, you know, &lt;strong&gt;THESE ARE NGINX and GUNICORN&lt;/strong&gt; which can support millions of
+requests per second and are very secure/robust/reliable and thus should be very difficult to learn and configure. I want to prevent others
+from experiencing the same and demonstrate that it is really &lt;strong&gt;simple&lt;/strong&gt; and &lt;strong&gt;simple&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Enough talk, let's fight! (YAY, always wanted to quote Kung Fu Panda)&lt;/p&gt;
+&lt;h2&gt;Installation&lt;/h2&gt;
+&lt;p&gt;First, let's go ahead and update/upgrade our packages:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo apt-get update
+sudo apt-get upgrade
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, install &lt;code&gt;pip&lt;/code&gt;.
+If you are using python2, type the following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo apt-get install python-pip
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If you are instead using python3, type the following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo apt-get install python3-pip
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now install &lt;code&gt;virtualenv&lt;/code&gt;:
+For python2:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo pip install virtualenv
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;For python3:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo pip3 install virtualenv
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Let's go ahead now and install a virtual environment at &lt;code&gt;/opt/envs/myprojenv&lt;/code&gt;. You can install it anywhere you like and in real life use 
+a more descriptive name for the virtualenv:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;virtualenv /opt/envs/myprojenv
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Activate it:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;source&lt;/span&gt; /opt/envs/myprojenv/bin/activate
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You should now see &lt;code&gt;(myprojenv)&lt;/code&gt; at the beginning of your command line.&lt;/p&gt;
+&lt;p&gt;Now, install Django. By the way, we will only use &lt;code&gt;pip&lt;/code&gt; from now on, not &lt;code&gt;pip3&lt;/code&gt;, as we are inside a virtual environment:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install django
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Create a project:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;django-admin startproject myproject
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Apply migrations and run the development server:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; myproject
+./manage.py migrate
+./manage.py runserver
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Go to &lt;code&gt;localhost:8000/admin&lt;/code&gt; and make sure that it is running. Is it running? Cool! Easy right?!
+Now we will replace this development server with gunicorn and you will see that it is &lt;strong&gt;as easy&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Install gunicorn:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install gunicorn
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Run this, go to &lt;code&gt;localhost:8000&lt;/code&gt;and behold the magic:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;gunicorn myproject.wsgi
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;DO YOU SEE IT? It is this easy.&lt;/p&gt;
+&lt;p&gt;Now you might be wondering what is that &lt;code&gt;wsgi&lt;/code&gt; thing is. Well, it stands for Web Server Gateway Interface and basically is a way how
+apps/frameworks and servers talk to each other. If the server(like Gunicorn) has &lt;code&gt;wsgi&lt;/code&gt; implemented and so has your framework(Django),
+it means that you can run your app with that server. And the entry point of communication for these two is the variable &lt;code&gt;application&lt;/code&gt;,
+which is located in &lt;code&gt;myproject/wsgi.py&lt;/code&gt; in our case. You can read more about this in &lt;a href="https://www.python.org/dev/peps/pep-0333/"&gt;PEP 333&lt;/a&gt;. &lt;/p&gt;
+&lt;p&gt;Let's play with it a little bit to see what it got.&lt;/p&gt;
+&lt;p&gt;We can bind it to a specific port:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;gunicorn --bind 0.0.0.0:8030 myproject.wsgi
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You can increase the number of workers to serve requests, which you probable will in real life as your users increase:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;gunicorn --workers &lt;span class="m"&gt;3&lt;/span&gt; myproject.wsgi
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Run it in a daemon mode:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;gunicorn --daemon myproject.wsgi
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Or all of them altogether(a shorter version):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;gunicorn -d -b 0.0.0.0:8030 -w &lt;span class="m"&gt;3&lt;/span&gt; myproject.wsgi
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Read more about these options &lt;a href="http://docs.gunicorn.org/en/stable/run.html#commonly-used-arguments"&gt;in the docs&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;If these options get too long, you can create an &lt;code&gt;ini&lt;/code&gt; file and run it like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;gunicorn -c /path/to/config/file myproject.wsgi
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;After running your app with gunicorn, go to the django admin panel at &lt;code&gt;localhost:8000/admin&lt;/code&gt;. You will see that all styles are gone.
+The reason is that gunicorn is an application server and it does not serve static files. In order to solve this problem, we will take a look
+at &lt;code&gt;Nginx&lt;/code&gt; next and use it as a reverse proxy for gunicorn. We will talk about what &lt;code&gt;reverse proxy&lt;/code&gt; is as well so don't think about it for now.&lt;/p&gt;
+&lt;p&gt;Well, that's it for now. This is a brief overview of django with gunicorn. Go to &lt;a href="http://docs.gunicorn.org/en/stable/"&gt;docs&lt;/a&gt; and read more.&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="python"></category><category term="django"></category><category term="gunicorn"></category></entry><entry><title>How to write clean functions</title><link href="http://rahmonov.github.io/posts/how-to-write-clean-functions/" rel="alternate"></link><published>2016-06-15T20:10:00+05:00</published><updated>2016-06-15T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2016-06-15:posts/how-to-write-clean-functions/</id><summary type="html">&lt;p&gt;The following is heavily influenced (99%) by one of the must-read books for any developer: &lt;a href="https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882"&gt;Clean Code: A Handbook of Agile Software Craftsmanship&lt;/a&gt;&lt;/p&gt;
 &lt;h2&gt;Clean Code&lt;/h2&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Always code as if the guy who ends up maintaining your code will be a violent psychopath who knows where you live.
 Code for readability.
