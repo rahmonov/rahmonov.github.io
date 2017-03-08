@@ -1,4 +1,4 @@
-Title: Run a Django app with Gunicorn in Ubuntu 16.04
+Title: Run a Django app with Gunicorn in Ubuntu 16.04 (Part I)
 Date: 2017-02-21 20:10
 Modified: 2017-02-21 20:10
 Category: programming
@@ -143,3 +143,7 @@ at `Nginx` next and use it as a reverse proxy for gunicorn. We will talk about w
 Well, that's it for now. This is a brief overview of django with gunicorn. Go to [docs](http://docs.gunicorn.org/en/stable/) and read more.
 
 Fight on!
+
+[Part II](http://rahmonov.me/posts/run-a-django-app-with-nginx-and-gunicorn/)
+
+[Part III](http://rahmonov.me/posts/run-a-django-app-with-nginx-gunicorn-and-supervisor/)

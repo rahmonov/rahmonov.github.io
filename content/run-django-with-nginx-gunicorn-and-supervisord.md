@@ -1,133 +1,159 @@
-Title: Run a Django app with Nginx and Gunicorn in Ubuntu 16.04
-Date: 2017-02-26 20:10
-Modified: 2017-02-26 20:10
+Title: Run a Django app with Nginx, Gunicorn and Supervisor in Ubuntu 16.04 (Part III)
+Date: 2017-03-08 20:10
+Modified: 2017-03-08 20:10
 Category: programming
-Tags: python, django, gunicorn, nginx
-Slug: run-a-django-app-with-nginx-and-gunicorn
+Tags: python, django, gunicorn, nginx, supervisord
+Slug: run-a-django-app-with-nginx-gunicorn-and-supervisor
 Authors: Jahongir Rahmonov
-Summary: How to run a Django app with Nginx and Gunicorn
+Summary: How to run a Django app with Nginx, Gunicorn and Supervisor
 
-This tutorial is the continuation of [this one](http://rahmonov.me/posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/) where we learned
-how to run a django app with gunicorn. Now we will add Nginx and Supervisord into the mix.
+This tutorial is the continuation of [this one](http://rahmonov.me/posts/run-a-django-app-with-nginx-and-gunicorn/) where we learned
+how to run a django app with nginx and gunicorn. Now we will add Supervisord into the mix.
 
-The reason we need Nginx
+The reason we need Supervisord
 ------------------------
-If you followed the previous tutorial, we ran our django app with Gunicorn. However, at the end, we saw that the styles of the admin
-panel were gone. The reason is that Gunicorn is an application server and just runs the app (django app in our case) and django, as we know,
-does not serve static files except in development. Nginx to the rescue! It will be a reverse proxy for Gunicorn. What the hell is a reverse proxy?
-Good question! We all know what VPNs are, right? We use them to access some website that is blocked for some reason. In this case, we access
-that website through a VPN: We -> VPN -> some website. This kind of proxies are called Forward Proxies. As for reverse proxies, think of
-them as forced proxies. For example, a user is trying to access our django app running in gunicorn. He thinks that he is accessing the app directly.
-However, what is happening is that he is first accessing the Nginx server which decides what to do next. If the user is accessing a static file,
-the Nginx server will serve it itself. Otherwise, it will redirect it to Gunicorn. In plain terms, http requests will be handled by
-Gunicorn and static ones by Nginx. That's why we need Nginx.
- 
-Apart from that, Nginx also improves performance, reliability, security and scale.
+Right now, we have our app running with Nginx and Gunicorn. However, every time our machine boots we have to start gunicorn and overall,
+controlling (stopping, restarting and etc) gunicorn is very difficult. What we want is an easy way of doing so.
 
+Welcome [Supervisord](http://supervisord.org/) which allows us to monitor and control a number of processes on UNIX-like operating
+systems.
 
-Installation
-------------
-By now we already have Django and Gunicorn ready. So, let's install Nginx now:
+Let's remember how we used to start our app:
 
-    :::bash
-    sudo apt-get install nginx
-
-Now, we will configure Nginx to pass traffic to the process.
-
-Create a new server block in Nginx's `sites-available` directory and type in the following:
-    
-    :::bash
-    server {
-        listen 8000;
-        server_name 0.0.0.0;
-
-        location = /favicon.ico { access_log off; log_not_found off; }
-
-        location /static/ {
-                root /home/ubuntu/myproject;
-        }
-
-        location / {
-                include proxy_params;
-                proxy_pass http://unix:/home/ubuntu/myproject/myproject.sock;
-        }
-    }
-
-Adjust the paths like `/home/ubuntu/myproject` to your own environment.
-
-Let's see what is going on here.
-
-The first two lines tell that it will listen to the port `8000` on `0.0.0.0`. The next line about favicon will tell Nginx to ignore
-problems with favicon.ico.
-
-The next block is very important. It says that static files, which all have a standard URI prefix of `static/` should be looked for in
-`~/myproject/static/` folder.
- 
-And the last location block matches all other requests other that static ones (remember reverse proxy). One thing to note here is that Nginx and Gunicorn "talk to" 
-each other through a unix socket. That's why we will bind our gunicorn to a socket as we will see soon.
-  
-Now, let's enable this file by linking it to the `sites-enabled` folder:
-  
-    :::bash
-    sudo ln -s /etc/nginx/sites-available/myproject /etc/nginx/sites-enabled
-      
-and check if our configuration file was correctly written:
-
-    :::bash
-    sudo nginx -t
-    
-If everything is OK, you should see something like this:
-
-    :::bash
-    nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
-    nginx: configuration file /etc/nginx/nginx.conf test is successful
-
-You may ask what all that linking and `sites-enabled` folder were about. We could have included those settings in Nginx's main settings file:
-`/etc/nginx/nginx.conf`. If we take a look at it, we will see this:
-
-    :::bash
-    include /etc/nginx/sites-enabled/*
-    
-So, we can see that what we did makes it more modular and much easier to maintain when we have several apps being served by Nginx.
-
-OK, now that we have configured Nginx, let's see some action.
-
-First, let's move all our static files to `~/myproject/static/` because we set up Nginx to look for them there.
-Open up `myproject/settings.py` and add this:
- 
- 
-    :::python
-    STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
-     
-     
-Save and close. Now, let's collect them to that folder:
-
-    :::bash
-    ./manage.py collectstatic
-    
-Confirm the operation and our static files should be there for Nginx to find them.
-
-Now, let's finally run our app:
- 
     :::bash
     gunicorn --daemon --workers 3 --bind unix:/home/ubuntu/myproject/myproject.sock myproject.wsgi
-
-As I told earlier, we are starting gunicorn a little differently now. We are binding it to a unix socket file which is needed to talk
-to Nginx. This file will be created and enable Nginx and Gunicorn to talk to each other. You may ask what about ports and ip?.
-Nginx will take care of that. Remember we configured it to listen to `0.0.0.0:8000`? Cool! Now, let's restart Nginx to make these changes
-take effect.
+    
+I know right?! It is very long to type and those paths are very error prone. Now, try to stop that daemon (see what I mean? :) ).
+We will have to find all those gunicorn processes and kill them, which is at least cruel.
+ 
+With supervisord at our disposal, it will be very easy and convenient to execute those commands:
+ 
+    :::bash
+    supervisorctl start myproject
+    supervisorctl stop myproject
+    supervisorctl restart myproject
+    
+You see how easy it is now?! Good. Now, let's set up this beast.
+ 
+Installation and Setup
+----------------------
+To install, type the following:
 
     :::bash
-    sudo service nginx restart
+    sudo apt-get install supervisor
+    
+Now, restart it:
 
-Now, go ahead and access `0.0.0.0:8000`. Great, our app is running. Let's check our admin panel now at `0.0.0.0:8000/admin`. Awesome,
-styles are there! We have achieved what we wanted. Congratulations!
+    :::bash
+    sudo service supervisor restart
+    
+The main configuration file of supervisord is here `/etc/supervisor/supervisord.conf`. If we take a look, we will see that it contains these lines:
 
-This is just the tip of the iceberg. You will need more stuff as your app grows. Go to [nginx docs](https://nginx.org/en/docs/) to learn more.
+    :::bash
+    [include]
+    files = /etc/supervisor/conf.d/*.conf
+    
+It means that config files of specific projects can be stored here `/etc/supervisor/conf.d/` and they will be included in that main file.
 
-In the next tutorial, we will take a look at `supervisord` to make process management very easy.
+So, let's create `myproject.conf` in `/etc/supervisor/conf.d/` folder:
 
-Fight on!
+    :::bash
+    sudo vim /etc/supervisor/conf.d/myproject.conf
+    
+and configure our project:
+
+    :::bash
+    [program:myproject]
+    command=/home/ubuntu/myprojenv/bin/gunicorn --workers 3 --bind unix:/home/ubuntu/myproject/myproject.sock myproject.wsgi
+    directory=/home/ubuntu/myproject
+    autostart=true
+    autorestart=true
+    stderr_logfile=/var/log/myproject.err.log
+    stdout_logfile=/var/log/myproject.out.log
+ 
+Let's look at the significance of each line now:
+    
+    :::bash
+    [program:myproject]
+
+Here, we are defining a program with the name `myproject`. This name will be used when we do such commands as:
+
+    :::bash
+    sudo supervisorctl start myproject
+    
+Next:
+
+    :::bash
+    command=/home/ubuntu/myprojenv/bin/gunicorn --workers 3 --bind unix:/home/ubuntu/myproject/myproject.sock myproject.wsgi
+    
+This line is used to define a command which is used when we start or restart our project. 
+
+    :::bash
+    directory=/home/ubuntu/myproject
+    
+This line indicates a path from which that command will be run.
+
+    :::bash
+    autostart=true
+    autorestart=true
+    
+These lines define certain behavior of the script under different conditions. `Autostart` tells the script to start on system boot and 
+`autorestart` tells it to restart when it exists for some reason.
+
+    :::bash
+    stderr_logfile=/var/log/myproject.err.log
+    stdout_logfile=/var/log/myproject.out.log
+    
+And these final lines define two files where different kinds of logs are stored. Obviously, error logs will be stored in `myproject.err.log`
+and others in `myproject.out.log`.
+    
+Let's save the file and execute the following commands to bring these changes into effect:
+    
+    :::bash
+    sudo supervisorctl reread
+    sudo supervisorctl update
+    
+Well, that's pretty much it. Simple, right? To verify that everything is working, type this:
+
+    :::bash
+    ps ax | grep gunicorn
+    
+You should see several gunicorn processes running. Or, you can go to `localhost:8000` and you will see your django app up and running.
+    
+Or, you can now use `supervisor` to check whether your app is running:
+
+    :::bash
+    sudo supervisorctl status myproject
+    
+Now, go ahead and play with those `supervisorctl` commands to start, stop, restart and check the status of your app.
+
+Let's do one more thing. Let's see the builtin supervisor web interface in action. Those who don't like command line to control processes
+will love this.
+ 
+Open up `/etc/supervisor/supervisor.conf` and place these lines at the beginning of the file:
+
+    :::bash
+    [inet_http_server]
+    port=0.0.0.0:9001
+    
+This will indicate that the supervisor web interface will run on `0.0.0.0:9001`.
+
+Save the file and reload supervisor:
+
+    :::bash
+    sudo supervisorctl reload
+    
+Open up your browser and go to `0.0.0.0:9001`. You will see something like this:
+
+![supervisor web interface](/static/images/supervisor.jpg)
+
+Cool, right?! Go ahead and play with it to control your project.
+
+Thanks for reading thus far. Now you have one more tool in your arsenal.
+
+[Part I](http://rahmonov.me/posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/)
+
+[Part II](http://rahmonov.me/posts/run-a-django-app-with-nginx-and-gunicorn/)
 
 
  

@@ -1,6 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/jahongir-rahmonov.atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2017-02-26T20:10:00+05:00</updated><entry><title>Run a Django app with Nginx and Gunicorn in Ubuntu 16.04</title><link href="http://rahmonov.github.io/posts/run-a-django-app-with-nginx-and-gunicorn/" rel="alternate"></link><published>2017-02-26T20:10:00+05:00</published><updated>2017-02-26T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2017-02-26:posts/run-a-django-app-with-nginx-and-gunicorn/</id><summary type="html">&lt;p&gt;This tutorial is the continuation of &lt;a href="http://rahmonov.me/posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/"&gt;this one&lt;/a&gt; where we learned
-how to run a django app with gunicorn. Now we will add Nginx and Supervisord into the mix.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/jahongir-rahmonov.atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2017-03-08T20:10:00+05:00</updated><entry><title>Run a Django app with Nginx, Gunicorn and Supervisor in Ubuntu 16.04 (Part III)</title><link href="http://rahmonov.github.io/posts/run-a-django-app-with-nginx-gunicorn-and-supervisor/" rel="alternate"></link><published>2017-03-08T20:10:00+05:00</published><updated>2017-03-08T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2017-03-08:posts/run-a-django-app-with-nginx-gunicorn-and-supervisor/</id><summary type="html">&lt;p&gt;This tutorial is the continuation of &lt;a href="http://rahmonov.me/posts/run-a-django-app-with-nginx-and-gunicorn/"&gt;this one&lt;/a&gt; where we learned
+how to run a django app with nginx and gunicorn. Now we will add Supervisord into the mix.&lt;/p&gt;
+&lt;h2&gt;The reason we need Supervisord&lt;/h2&gt;
+&lt;p&gt;Right now, we have our app running with Nginx and Gunicorn. However, every time our machine boots we have to start gunicorn and overall,
+controlling (stopping, restarting and etc) gunicorn is very difficult. What we want is an easy way of doing so.&lt;/p&gt;
+&lt;p&gt;Welcome &lt;a href="http://supervisord.org/"&gt;Supervisord&lt;/a&gt; which allows us to monitor and control a number of processes on UNIX-like operating
+systems.&lt;/p&gt;
+&lt;p&gt;Let's remember how we used to start our app:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;gunicorn --daemon --workers &lt;span class="m"&gt;3&lt;/span&gt; --bind unix:/home/ubuntu/myproject/myproject.sock myproject.wsgi
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I know right?! It is very long to type and those paths are very error prone. Now, try to stop that daemon (see what I mean? :) ).
+We will have to find all those gunicorn processes and kill them, which is at least cruel.&lt;/p&gt;
+&lt;p&gt;With supervisord at our disposal, it will be very easy and convenient to execute those commands:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;supervisorctl start myproject
+supervisorctl stop myproject
+supervisorctl restart myproject
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You see how easy it is now?! Good. Now, let's set up this beast.&lt;/p&gt;
+&lt;h2&gt;Installation and Setup&lt;/h2&gt;
+&lt;p&gt;To install, type the following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo apt-get install supervisor
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, restart it:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo service supervisor restart
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The main configuration file of supervisord is here &lt;code&gt;/etc/supervisor/supervisord.conf&lt;/code&gt;. If we take a look, we will see that it contains these lines:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;include&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="nv"&gt;files&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; /etc/supervisor/conf.d/*.conf
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It means that config files of specific projects can be stored here &lt;code&gt;/etc/supervisor/conf.d/&lt;/code&gt; and they will be included in that main file.&lt;/p&gt;
+&lt;p&gt;So, let's create &lt;code&gt;myproject.conf&lt;/code&gt; in &lt;code&gt;/etc/supervisor/conf.d/&lt;/code&gt; folder:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo vim /etc/supervisor/conf.d/myproject.conf
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;and configure our project:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;program:myproject&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="nv"&gt;command&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/home/ubuntu/myprojenv/bin/gunicorn --workers &lt;span class="m"&gt;3&lt;/span&gt; --bind unix:/home/ubuntu/myproject/myproject.sock myproject.wsgi
+&lt;span class="nv"&gt;directory&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/home/ubuntu/myproject
+&lt;span class="nv"&gt;autostart&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt;
+&lt;span class="nv"&gt;autorestart&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt;
+&lt;span class="nv"&gt;stderr_logfile&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/var/log/myproject.err.log
+&lt;span class="nv"&gt;stdout_logfile&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/var/log/myproject.out.log
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Let's look at the significance of each line now:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;program:myproject&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Here, we are defining a program with the name &lt;code&gt;myproject&lt;/code&gt;. This name will be used when we do such commands as:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo supervisorctl start myproject
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Next:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;command&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/home/ubuntu/myprojenv/bin/gunicorn --workers &lt;span class="m"&gt;3&lt;/span&gt; --bind unix:/home/ubuntu/myproject/myproject.sock myproject.wsgi
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This line is used to define a command which is used when we start or restart our project. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;directory&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/home/ubuntu/myproject
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This line indicates a path from which that command will be run.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;autostart&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt;
+&lt;span class="nv"&gt;autorestart&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;These lines define certain behavior of the script under different conditions. &lt;code&gt;Autostart&lt;/code&gt; tells the script to start on system boot and 
+&lt;code&gt;autorestart&lt;/code&gt; tells it to restart when it exists for some reason.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;stderr_logfile&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/var/log/myproject.err.log
+&lt;span class="nv"&gt;stdout_logfile&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/var/log/myproject.out.log
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And these final lines define two files where different kinds of logs are stored. Obviously, error logs will be stored in &lt;code&gt;myproject.err.log&lt;/code&gt;
+and others in &lt;code&gt;myproject.out.log&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Let's save the file and execute the following commands to bring these changes into effect:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo supervisorctl reread
+sudo supervisorctl update
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Well, that's pretty much it. Simple, right? To verify that everything is working, type this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ps ax &lt;span class="p"&gt;|&lt;/span&gt; grep gunicorn
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You should see several gunicorn processes running. Or, you can go to &lt;code&gt;localhost:8000&lt;/code&gt; and you will see your django app up and running.&lt;/p&gt;
+&lt;p&gt;Or, you can now use &lt;code&gt;supervisor&lt;/code&gt; to check whether your app is running:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo supervisorctl status myproject
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, go ahead and play with those &lt;code&gt;supervisorctl&lt;/code&gt; commands to start, stop, restart and check the status of your app.&lt;/p&gt;
+&lt;p&gt;Let's do one more thing. Let's see the builtin supervisor web interface in action. Those who don't like command line to control processes
+will love this.&lt;/p&gt;
+&lt;p&gt;Open up &lt;code&gt;/etc/supervisor/supervisor.conf&lt;/code&gt; and place these lines at the beginning of the file:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;inet_http_server&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="nv"&gt;port&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;0.0.0.0:9001
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This will indicate that the supervisor web interface will run on &lt;code&gt;0.0.0.0:9001&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Save the file and reload supervisor:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo supervisorctl reload
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Open up your browser and go to &lt;code&gt;0.0.0.0:9001&lt;/code&gt;. You will see something like this:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="supervisor web interface" src="/static/images/supervisor.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;Cool, right?! Go ahead and play with it to control your project.&lt;/p&gt;
+&lt;p&gt;Thanks for reading thus far. Now you have one more tool in your arsenal.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://rahmonov.me/posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/"&gt;Part I&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://rahmonov.me/posts/run-a-django-app-with-nginx-and-gunicorn/"&gt;Part II&lt;/a&gt;&lt;/p&gt;</summary><category term="python"></category><category term="django"></category><category term="gunicorn"></category><category term="nginx"></category><category term="supervisord"></category></entry><entry><title>Run a Django app with Nginx and Gunicorn in Ubuntu 16.04 (Part II)</title><link href="http://rahmonov.github.io/posts/run-a-django-app-with-nginx-and-gunicorn/" rel="alternate"></link><published>2017-02-26T20:10:00+05:00</published><updated>2017-02-26T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2017-02-26:posts/run-a-django-app-with-nginx-and-gunicorn/</id><summary type="html">&lt;p&gt;This tutorial is the continuation of &lt;a href="http://rahmonov.me/posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/"&gt;this one&lt;/a&gt; where we learned
+how to run a django app with gunicorn. Now we will add Nginx into the mix.&lt;/p&gt;
 &lt;h2&gt;The reason we need Nginx&lt;/h2&gt;
 &lt;p&gt;If you followed the previous tutorial, we ran our django app with Gunicorn. However, at the end, we saw that the styles of the admin
 panel were gone. The reason is that Gunicorn is an application server and just runs the app (django app in our case) and django, as we know,
@@ -99,7 +227,9 @@ take effect.&lt;/p&gt;
 styles are there! We have achieved what we wanted. Congratulations!&lt;/p&gt;
 &lt;p&gt;This is just the tip of the iceberg. You will need more stuff as your app grows. Go to &lt;a href="https://nginx.org/en/docs/"&gt;nginx docs&lt;/a&gt; to learn more.&lt;/p&gt;
 &lt;p&gt;In the next tutorial, we will take a look at &lt;code&gt;supervisord&lt;/code&gt; to make process management very easy.&lt;/p&gt;
-&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="python"></category><category term="django"></category><category term="gunicorn"></category><category term="nginx"></category></entry><entry><title>Run a Django app with Gunicorn in Ubuntu 16.04</title><link href="http://rahmonov.github.io/posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/" rel="alternate"></link><published>2017-02-21T20:10:00+05:00</published><updated>2017-02-21T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2017-02-21:posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/</id><summary type="html">&lt;p&gt;This tutorial is aimed at beginners and is a part of a series where we learn to run a django app with Gunicorn and Nginx, and manage
+&lt;p&gt;Fight on!&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://rahmonov.me/posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/"&gt;Part I&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://rahmonov.me/posts/run-a-django-app-with-nginx-gunicorn-and-supervisor/"&gt;Part III&lt;/a&gt;&lt;/p&gt;</summary><category term="python"></category><category term="django"></category><category term="gunicorn"></category><category term="nginx"></category></entry><entry><title>Run a Django app with Gunicorn in Ubuntu 16.04 (Part I)</title><link href="http://rahmonov.github.io/posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/" rel="alternate"></link><published>2017-02-21T20:10:00+05:00</published><updated>2017-02-21T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2017-02-21:posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/</id><summary type="html">&lt;p&gt;This tutorial is aimed at beginners and is a part of a series where we learn to run a django app with Gunicorn and Nginx, and manage
 it with the help of the Supervisord. Basically, we are trying to emulate a production environment.&lt;/p&gt;
 &lt;h2&gt;The Problem&lt;/h2&gt;
 &lt;p&gt;We are all very well aware that we can run our django app simply by executing a &lt;code&gt;./manage.py runserver&lt;/code&gt; command. We also know that it is
@@ -218,7 +348,9 @@ which is located in &lt;code&gt;myproject/wsgi.py&lt;/code&gt; in our case. You 
 The reason is that gunicorn is an application server and it does not serve static files. In order to solve this problem, we will take a look
 at &lt;code&gt;Nginx&lt;/code&gt; next and use it as a reverse proxy for gunicorn. We will talk about what &lt;code&gt;reverse proxy&lt;/code&gt; is as well so don't think about it for now.&lt;/p&gt;
 &lt;p&gt;Well, that's it for now. This is a brief overview of django with gunicorn. Go to &lt;a href="http://docs.gunicorn.org/en/stable/"&gt;docs&lt;/a&gt; and read more.&lt;/p&gt;
-&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="python"></category><category term="django"></category><category term="gunicorn"></category></entry><entry><title>How to write clean functions</title><link href="http://rahmonov.github.io/posts/how-to-write-clean-functions/" rel="alternate"></link><published>2016-06-15T20:10:00+05:00</published><updated>2016-06-15T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2016-06-15:posts/how-to-write-clean-functions/</id><summary type="html">&lt;p&gt;The following is heavily influenced (99%) by one of the must-read books for any developer: &lt;a href="https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882"&gt;Clean Code: A Handbook of Agile Software Craftsmanship&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://rahmonov.me/posts/run-a-django-app-with-nginx-and-gunicorn/"&gt;Part II&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://rahmonov.me/posts/run-a-django-app-with-nginx-gunicorn-and-supervisor/"&gt;Part III&lt;/a&gt;&lt;/p&gt;</summary><category term="python"></category><category term="django"></category><category term="gunicorn"></category></entry><entry><title>How to write clean functions</title><link href="http://rahmonov.github.io/posts/how-to-write-clean-functions/" rel="alternate"></link><published>2016-06-15T20:10:00+05:00</published><updated>2016-06-15T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2016-06-15:posts/how-to-write-clean-functions/</id><summary type="html">&lt;p&gt;The following is heavily influenced (99%) by one of the must-read books for any developer: &lt;a href="https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882"&gt;Clean Code: A Handbook of Agile Software Craftsmanship&lt;/a&gt;&lt;/p&gt;
 &lt;h2&gt;Clean Code&lt;/h2&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Always code as if the guy who ends up maintaining your code will be a violent psychopath who knows where you live.
 Code for readability.
