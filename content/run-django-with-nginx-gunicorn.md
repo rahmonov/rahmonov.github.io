@@ -34,7 +34,7 @@ By now we already have Django and Gunicorn ready. So, let's install Nginx now:
 
 Now, we will configure Nginx to pass traffic to the process.
 
-Create a new server block in Nginx's `sites-available` directory and type in the following:
+Create a file `/etc/nginx/sites-available/djtrump` and type in the following:
     
     :::bash
     server {
@@ -53,7 +53,7 @@ Create a new server block in Nginx's `sites-available` directory and type in the
         }
     }
 
-Adjust the paths like `/home/ubuntu/myproject` to your own environment.
+Adjust the paths such as `/home/ubuntu/myproject` to your own environment.
 
 Let's see what is going on here.
 

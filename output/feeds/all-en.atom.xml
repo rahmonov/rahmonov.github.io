@@ -147,7 +147,7 @@ Gunicorn and static ones by Nginx. That's why we need Nginx.&lt;/p&gt;
 
 
 &lt;p&gt;Now, we will configure Nginx to pass traffic to the process.&lt;/p&gt;
-&lt;p&gt;Create a new server block in Nginx's &lt;code&gt;sites-available&lt;/code&gt; directory and type in the following:&lt;/p&gt;
+&lt;p&gt;Create a file &lt;code&gt;/etc/nginx/sites-available/djtrump&lt;/code&gt; and type in the following:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;server &lt;span class="o"&gt;{&lt;/span&gt;
     listen 8000&lt;span class="p"&gt;;&lt;/span&gt;
     server_name 0.0.0.0&lt;span class="p"&gt;;&lt;/span&gt;
@@ -166,7 +166,7 @@ Gunicorn and static ones by Nginx. That's why we need Nginx.&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Adjust the paths like &lt;code&gt;/home/ubuntu/myproject&lt;/code&gt; to your own environment.&lt;/p&gt;
+&lt;p&gt;Adjust the paths such as &lt;code&gt;/home/ubuntu/myproject&lt;/code&gt; to your own environment.&lt;/p&gt;
 &lt;p&gt;Let's see what is going on here.&lt;/p&gt;
 &lt;p&gt;The first two lines tell that it will listen to the port &lt;code&gt;8000&lt;/code&gt; on &lt;code&gt;0.0.0.0&lt;/code&gt;. The next line about favicon will tell Nginx to ignore
 problems with favicon.ico.&lt;/p&gt;
