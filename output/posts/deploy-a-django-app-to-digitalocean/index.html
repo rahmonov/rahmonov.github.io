@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head prefix="og: http://ogp.me/ns#">
-        <title>Jahongir Rahmonov - Articles by Jahongir Rahmonov</title>
+          <title> Deploy a Django app to Digital Ocean - Jahongir Rahmonov </title>
 
         <link rel="stylesheet" href="/static/css/main.css" />
         <link rel="stylesheet" href="/static/css/pygment.css" />
@@ -14,14 +14,26 @@
         <meta name="author" content="Jahongir Rahmonov" />
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
-        <meta property="og:title" content="Home - Jahongir Rahmonov">
-        <meta property="og:type" content="website">
-        <meta property="og:image" content="/static/images/programming.jpg">
-        <meta property="og:url" content="http://rahmonov.github.io">
-        <meta property="og:description" content="Jahongir Rahmonov's personal blog about Python, Django, AngularJS and other things.">
+<meta property="og:title" content="Deploy a Django app to Digital Ocean - Jahongir Rahmonov">
+<meta property="og:type" content="website">
+<meta property="og:image" content="/static/images/programming.jpg">
+<meta property="og:url" content="http://rahmonov.github.io/posts/deploy-a-django-app-to-digitalocean/">
+<meta property="og:description" content="<p>How to deploy a django application to DigitalOcean</p>">
 
         <link href="http://rahmonov.github.io/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Full Atom Feed" />
         <link href="http://rahmonov.github.io/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="Jahongir Rahmonov Full RSS Feed" />
+        <link href="http://rahmonov.github.io/feeds/programming.atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Categories Atom Feed" />
+
+
+
+    <meta name="tags" content="python" />
+    <meta name="tags" content="django" />
+    <meta name="tags" content="gunicorn" />
+    <meta name="tags" content="nginx" />
+    <meta name="tags" content="supervisord" />
+    <meta name="tags" content="digitalocean" />
+    <meta name="tags" content="deploy" />
+
 </head>
 
 <body id="index" class="home">
@@ -68,17 +80,12 @@
         <div class="wrap">
             <div class="content">
 
-<h2>Articles by Jahongir Rahmonov</h2>
+  <h4>Tue 21 March 2017</h4>
 
-<h4>
-    <a href="posts/deploy-a-django-app-to-digitalocean/">
-        21 March 2017
-    </a>
-</h4>
+  <h1>Deploy a Django app to Digital Ocean</h1>
 
-<h1>Deploy a Django app to Digital Ocean</h1>
-
-<p>In <a href="http://rahmonov.me/posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/">the</a> <a href="http://rahmonov.me/posts/run-a-django-app-with-nginx-and-gunicorn/">previous</a>
+  <div class="entry-content">
+    <p>In <a href="http://rahmonov.me/posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/">the</a> <a href="http://rahmonov.me/posts/run-a-django-app-with-nginx-and-gunicorn/">previous</a>
 <a href="http://rahmonov.me/posts/run-a-django-app-with-nginx-gunicorn-and-supervisor/">blog posts</a>, we learned how to run a django app
 with Nginx, Gunicorn and Supervisord. Now, let's make a django app available to everybody by deploying it to a <a href="https://www.digitalocean.com/">DigitalOcean</a> server.</p>
 <p>You will need a DigitalOcean account to follow along.</p>
@@ -324,6 +331,7 @@ sudo supervisorctl update
 <p>In the next tutorials, we will introduce ourselves to the world of CI and CD (Continuous Integration and Continuous Delivery). </p>
 <p>Fight on!</p>
 <p>P.S. If you want to make the style of this app better, please send a PR. I would love some help on CSS side or any other side for that matter.    </p>
+  </div>
 
 <div class="end">
     <span>
@@ -331,6 +339,19 @@ sudo supervisorctl update
         <a href="https://www.linkedin.com/in/jahongirrahmonov/">LinkedIn</a>
     </span>
 </div>
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES * * */
+        var disqus_shortname = 'jrahmonov';
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
             </div>
         </div>
     </div>

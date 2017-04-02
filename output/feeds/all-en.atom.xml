@@ -1,5 +1,250 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/all-en.atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2017-03-08T20:10:00+05:00</updated><entry><title>Run a Django app with Nginx, Gunicorn and Supervisor in Ubuntu 16.04 (Part III)</title><link href="http://rahmonov.github.io/posts/run-a-django-app-with-nginx-gunicorn-and-supervisor/" rel="alternate"></link><published>2017-03-08T20:10:00+05:00</published><updated>2017-03-08T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2017-03-08:posts/run-a-django-app-with-nginx-gunicorn-and-supervisor/</id><summary type="html">&lt;p&gt;This tutorial is the continuation of &lt;a href="http://rahmonov.me/posts/run-a-django-app-with-nginx-and-gunicorn/"&gt;this one&lt;/a&gt; where we learned
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/all-en.atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2017-03-21T20:10:00+05:00</updated><entry><title>Deploy a Django app to Digital Ocean</title><link href="http://rahmonov.github.io/posts/deploy-a-django-app-to-digitalocean/" rel="alternate"></link><published>2017-03-21T20:10:00+05:00</published><updated>2017-03-21T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2017-03-21:posts/deploy-a-django-app-to-digitalocean/</id><summary type="html">&lt;p&gt;In &lt;a href="http://rahmonov.me/posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/"&gt;the&lt;/a&gt; &lt;a href="http://rahmonov.me/posts/run-a-django-app-with-nginx-and-gunicorn/"&gt;previous&lt;/a&gt;
+&lt;a href="http://rahmonov.me/posts/run-a-django-app-with-nginx-gunicorn-and-supervisor/"&gt;blog posts&lt;/a&gt;, we learned how to run a django app
+with Nginx, Gunicorn and Supervisord. Now, let's make a django app available to everybody by deploying it to a &lt;a href="https://www.digitalocean.com/"&gt;DigitalOcean&lt;/a&gt; server.&lt;/p&gt;
+&lt;p&gt;You will need a DigitalOcean account to follow along.&lt;/p&gt;
+&lt;p&gt;For this tutorial, I have prepared a sample django app in order to simulate a real scenario. It is just a fun app which shows Donald Trump
+with his random quotes which can even be personalized. The app makes use of the &lt;a href="https://whatdoestrumpthink.com/"&gt;whatdoestrumpthink&lt;/a&gt; API.
+Please note that we are going to do almost the same stuff that we did in the previous tutorials except that we will use a real server.&lt;/p&gt;
+&lt;p&gt;Let's get started!&lt;/p&gt;
+&lt;h2&gt;Step I (creating a VPS)&lt;/h2&gt;
+&lt;p&gt;Go to &lt;code&gt;https://cloud.digitalocean.com/droplets&lt;/code&gt; and click on &lt;code&gt;Create Droplet&lt;/code&gt; button. Then, select Ubuntu 16.04:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="ubuntu16.04" src="/static/images/post-images/django-digitalocean/ubuntu1604.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Select a server:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="server" src="/static/images/post-images/django-digitalocean/size.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Select a region:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="region" src="/static/images/post-images/django-digitalocean/region.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Then, preferably add you ssh key and name your server:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="name" src="/static/images/post-images/django-digitalocean/server-name.png" /&gt;&lt;/p&gt;
+&lt;p&gt;And click on &lt;strong&gt;&lt;em&gt;Create&lt;/em&gt;&lt;/strong&gt;. After a while, you will see that your server has been created:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="created-server" src="/static/images/post-images/django-digitalocean/created-server.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Now, copy the IP address of the newly created server and ssh in:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssh root@104.236.57.112
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Replace that IP address with your own. Welcome in! You should see something like this:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="ssh-in" src="/static/images/post-images/django-digitalocean/ssh-in.png" /&gt;&lt;/p&gt;
+&lt;h2&gt;Step II (installing system-wide dependencies)&lt;/h2&gt;
+&lt;p&gt;First, let's update and upgrade the packages:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get update
+apt-get -y upgrade
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Install nginx:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install -y nginx
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Install supervisor:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install -y supervisor
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Install python virtualenv:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install -y python-virtualenv
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Install postgresql:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install -y postgresql postgresql-contrib
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Step III (configuring database)&lt;/h2&gt;
+&lt;p&gt;Switch to the postgres user:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo su - postgres
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Type this to go to the postgres interactive shell:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;psql
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Create a database:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;postgres&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="c1"&gt;# CREATE DATABASE djtrumpprod;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Create a user:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;postgres&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="c1"&gt;# CREATE USER djtrumpuser WITH password &amp;#39;djtrump&amp;#39;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Give this new user an access to administer the new database:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;postgres&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="c1"&gt;# GRANT ALL PRIVILEGES ON DATABASE djtrumpprod TO djtrumpuser;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Quit from the shell and switch back to the root user:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;postgres&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="c1"&gt;# \q&lt;/span&gt;
+postgres@djtrump:~$ &lt;span class="nb"&gt;exit&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Step IV (setting up our project and its environment)&lt;/h2&gt;
+&lt;p&gt;Clone our sample app:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/rahmonov/djtrump.git
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Create and activate a virtual environment with python3.5 (not critical to use python3.5 though):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;virtualenv djtrumpenv --python&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;which python3.5&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;source&lt;/span&gt; djtrumpenv/bin/active
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, your prompt will show that you are operating under a Python virtual environment:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;djtrumpenv&lt;span class="o"&gt;)&lt;/span&gt; root@djtrump:~#
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Go ahead and install dependencies:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; djtrump
+pip install -r requirements.txt
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now we should migrate but there is one more thing that we need to do before that. If you go to the settings folder, there are two files:
+&lt;code&gt;base.py&lt;/code&gt; and &lt;code&gt;prod.py&lt;/code&gt;. Basically, &lt;code&gt;base.py&lt;/code&gt; contains all the configurations and &lt;code&gt;prod.py&lt;/code&gt; overrides those needed in the production environment.
+For example, &lt;code&gt;DATABASES&lt;/code&gt; config is overridden in &lt;code&gt;prod.py&lt;/code&gt;. That's why, we need to tell our environment to use this &lt;code&gt;prod.py&lt;/code&gt; and not the default &lt;code&gt;base.py&lt;/code&gt;.
+This is done by setting &lt;code&gt;DJANGO_SETTINGS_MODULE&lt;/code&gt; env variable to &lt;code&gt;prod.py&lt;/code&gt; path. Open &lt;code&gt;~/.bash_profile&lt;/code&gt; and add this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;DJANGO_SETTINGS_MODULE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;djtrump.settings.prod
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Save and quit. Then, &lt;code&gt;source&lt;/code&gt; this file for our changes to take effect:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;source&lt;/span&gt; ~/.bash_profile
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, try to migrate. Most probably, it will fail and say something like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;FATAL:  Peer authentication failed &lt;span class="k"&gt;for&lt;/span&gt; user &lt;span class="s2"&gt;&amp;quot;djtrumpuser&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;That's because, postgresl uses peer authentication by default, which is it will succeed if the user with the same name as the postgres user uses it.
+In our case, there is no &lt;code&gt;djtrumpuser&lt;/code&gt; user in postgres and thus it fails. To fix it, go to &lt;code&gt;/etc/postgresql/9.5/main/pg_hba.conf&lt;/code&gt; and change the line
+that says this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;local&lt;/span&gt;   all     all      peer
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;to this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;local&lt;/span&gt;   all     all      md5
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Save and quit. This way, postgres will try to use password to authenticate the user. Now, restart postgresql for our changes to take effect:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo service postgresl restart
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Go ahead and migrate:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;python manage.py migrate
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It works now. Cool! Try to run the development server and it will work.&lt;/p&gt;
+&lt;h2&gt;Step V (configuring nginx)&lt;/h2&gt;
+&lt;p&gt;Create a new file: &lt;code&gt;/etc/nginx/sites-available/djtrump&lt;/code&gt; and add the following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;server &lt;span class="o"&gt;{&lt;/span&gt;
+    listen 80&lt;span class="p"&gt;;&lt;/span&gt;
+    server_name your_ip&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="nv"&gt;location&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; /favicon.ico &lt;span class="o"&gt;{&lt;/span&gt; access_log off&lt;span class="p"&gt;;&lt;/span&gt; log_not_found off&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="o"&gt;}&lt;/span&gt;
+
+    location /static/ &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="nb"&gt;alias&lt;/span&gt; /root/djtrump/static/&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    location / &lt;span class="o"&gt;{&lt;/span&gt;
+            include proxy_params&lt;span class="p"&gt;;&lt;/span&gt;
+            proxy_pass http://your_ip:8030&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Replace &lt;code&gt;your_ip&lt;/code&gt; with the IP address of your server. We know what this is doing from the previous tutorials. Basically, it is
+serving the static files from &lt;code&gt;/root/djtrump/static/&lt;/code&gt; and redirecting http requests to gunicorn which should be running on port 8030.&lt;/p&gt;
+&lt;p&gt;Now, let's enable this file by linking it to the sites-enabled folder:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo ln -s /etc/nginx/sites-available/djtrump /etc/nginx/sites-enabled
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Restart nginx:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo service nginx restart
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;There are two more things that we need to do before nginx works. First, we need to put all our static files in the folder &lt;code&gt;/root/djtrump/static/&lt;/code&gt;
+and run gunicorn on port 8030 as we promised in nginx config file.&lt;/p&gt;
+&lt;p&gt;First, run this to gather all static files in that folder:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;python manage.py collectstatic --noinput
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, run gunicorn:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;gunicorn --workers &lt;span class="m"&gt;3&lt;/span&gt; --bind 0.0.0.0:8030 djtrump.wsgi
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Go ahead and type in the browser the IP of your address. You will see that the app is running. Congratulations!&lt;/p&gt;
+&lt;p&gt;Please note that if you cloned the app to the user's home directory, you may face issues with static files (Permission denied error).
+One of the ways to solve it to run nginx as root. To do that, open &lt;code&gt;/etc/nginx/nginx.conf&lt;/code&gt; and change the line that says:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;user www-data&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;to this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;user root&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;and restart the nginx:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo service nginx restart
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Great! You will now see the pleasant face of Donald Trump and a random quote of his:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="donald.04" src="/static/images/post-images/django-digitalocean/donald.png" /&gt;&lt;/p&gt;
+&lt;h2&gt;Step VI (configuring supervisor)&lt;/h2&gt;
+&lt;p&gt;Create &lt;code&gt;/etc/supervisor/conf.d/djtrump.conf&lt;/code&gt; and type in the following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;program:djtrump&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="nv"&gt;command&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/root/djtrumpenv/bin/gunicorn --workers &lt;span class="m"&gt;3&lt;/span&gt; --bind 0.0.0.0:8030 djtrump.wsgi
+&lt;span class="nv"&gt;directory&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/root/djtrump
+&lt;span class="nv"&gt;autostart&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt;
+&lt;span class="nv"&gt;autorestart&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt;
+&lt;span class="nv"&gt;stderr_logfile&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/var/log/djtrump.err.log
+&lt;span class="nv"&gt;stdout_logfile&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/var/log/djtrump.out.log
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Restart, reread and update the supervisor:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo service supervisor restart
+sudo supervisorctl reread
+sudo supervisorctl update
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, you can stop, start and restart your app easily! Try this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo supervisorctl stop djtrump
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If you go to the app in the browser, it will respond  with 502 (Bad Gateway) response. Go ahead and start it:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo supervisorctl start djtrump
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Go to the app and you will see it working!&lt;/p&gt;
+&lt;p&gt;Well, this is pretty much it! Congratulations, your django app is now live and available to everybody!&lt;/p&gt;
+&lt;p&gt;In the next tutorials, we will introduce ourselves to the world of CI and CD (Continuous Integration and Continuous Delivery). &lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;
+&lt;p&gt;P.S. If you want to make the style of this app better, please send a PR. I would love some help on CSS side or any other side for that matter.    &lt;/p&gt;</summary><category term="python"></category><category term="django"></category><category term="gunicorn"></category><category term="nginx"></category><category term="supervisord"></category><category term="digitalocean"></category><category term="deploy"></category></entry><entry><title>Run a Django app with Nginx, Gunicorn and Supervisor in Ubuntu 16.04 (Part III)</title><link href="http://rahmonov.github.io/posts/run-a-django-app-with-nginx-gunicorn-and-supervisor/" rel="alternate"></link><published>2017-03-08T20:10:00+05:00</published><updated>2017-03-08T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2017-03-08:posts/run-a-django-app-with-nginx-gunicorn-and-supervisor/</id><summary type="html">&lt;p&gt;This tutorial is the continuation of &lt;a href="http://rahmonov.me/posts/run-a-django-app-with-nginx-and-gunicorn/"&gt;this one&lt;/a&gt; where we learned
 how to run a django app with nginx and gunicorn. Now we will add Supervisord into the mix.&lt;/p&gt;
 &lt;h2&gt;The reason we need Supervisord&lt;/h2&gt;
 &lt;p&gt;Right now, we have our app running with Nginx and Gunicorn. However, every time our machine boots we have to start gunicorn and overall,

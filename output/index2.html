@@ -71,142 +71,259 @@
 <h2>Latest Post</h2>
 
 <h4>
-    <a href="posts/run-a-django-app-with-nginx-gunicorn-and-supervisor/">
-        08 March 2017
+    <a href="posts/deploy-a-django-app-to-digitalocean/">
+        21 March 2017
     </a>
 </h4>
 
-<h1>Run a Django app with Nginx, Gunicorn and Supervisor in Ubuntu 16.04 (Part III)</h1>
+<h1>Deploy a Django app to Digital Ocean</h1>
 
-<p>This tutorial is the continuation of <a href="http://rahmonov.me/posts/run-a-django-app-with-nginx-and-gunicorn/">this one</a> where we learned
-how to run a django app with nginx and gunicorn. Now we will add Supervisord into the mix.</p>
-<h2>The reason we need Supervisord</h2>
-<p>Right now, we have our app running with Nginx and Gunicorn. However, every time our machine boots we have to start gunicorn and overall,
-controlling (stopping, restarting and etc) gunicorn is very difficult. What we want is an easy way of doing so.</p>
-<p>Welcome <a href="http://supervisord.org/">Supervisord</a> which allows us to monitor and control a number of processes on UNIX-like operating
-systems.</p>
-<p>Let's remember how we used to start our app:</p>
-<div class="highlight"><pre><span></span>gunicorn --daemon --workers <span class="m">3</span> --bind unix:/home/ubuntu/myproject/myproject.sock myproject.wsgi
+<p>In <a href="http://rahmonov.me/posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/">the</a> <a href="http://rahmonov.me/posts/run-a-django-app-with-nginx-and-gunicorn/">previous</a>
+<a href="http://rahmonov.me/posts/run-a-django-app-with-nginx-gunicorn-and-supervisor/">blog posts</a>, we learned how to run a django app
+with Nginx, Gunicorn and Supervisord. Now, let's make a django app available to everybody by deploying it to a <a href="https://www.digitalocean.com/">DigitalOcean</a> server.</p>
+<p>You will need a DigitalOcean account to follow along.</p>
+<p>For this tutorial, I have prepared a sample django app in order to simulate a real scenario. It is just a fun app which shows Donald Trump
+with his random quotes which can even be personalized. The app makes use of the <a href="https://whatdoestrumpthink.com/">whatdoestrumpthink</a> API.
+Please note that we are going to do almost the same stuff that we did in the previous tutorials except that we will use a real server.</p>
+<p>Let's get started!</p>
+<h2>Step I (creating a VPS)</h2>
+<p>Go to <code>https://cloud.digitalocean.com/droplets</code> and click on <code>Create Droplet</code> button. Then, select Ubuntu 16.04:</p>
+<p><img alt="ubuntu16.04" src="/static/images/post-images/django-digitalocean/ubuntu1604.png" /></p>
+<p>Select a server:</p>
+<p><img alt="server" src="/static/images/post-images/django-digitalocean/size.png" /></p>
+<p>Select a region:</p>
+<p><img alt="region" src="/static/images/post-images/django-digitalocean/region.png" /></p>
+<p>Then, preferably add you ssh key and name your server:</p>
+<p><img alt="name" src="/static/images/post-images/django-digitalocean/server-name.png" /></p>
+<p>And click on <strong><em>Create</em></strong>. After a while, you will see that your server has been created:</p>
+<p><img alt="created-server" src="/static/images/post-images/django-digitalocean/created-server.png" /></p>
+<p>Now, copy the IP address of the newly created server and ssh in:</p>
+<div class="highlight"><pre><span></span>ssh root@104.236.57.112
 </pre></div>
 
 
-<p>I know right?! It is very long to type and those paths are very error prone. Now, try to stop that daemon (see what I mean? :) ).
-We will have to find all those gunicorn processes and kill them, which is at least cruel.</p>
-<p>With supervisord at our disposal, it will be very easy and convenient to execute those commands:</p>
-<div class="highlight"><pre><span></span>supervisorctl start myproject
-supervisorctl stop myproject
-supervisorctl restart myproject
+<p>Replace that IP address with your own. Welcome in! You should see something like this:</p>
+<p><img alt="ssh-in" src="/static/images/post-images/django-digitalocean/ssh-in.png" /></p>
+<h2>Step II (installing system-wide dependencies)</h2>
+<p>First, let's update and upgrade the packages:</p>
+<div class="highlight"><pre><span></span>apt-get update
+apt-get -y upgrade
 </pre></div>
 
 
-<p>You see how easy it is now?! Good. Now, let's set up this beast.</p>
-<h2>Installation and Setup</h2>
-<p>To install, type the following:</p>
-<div class="highlight"><pre><span></span>sudo apt-get install supervisor
+<p>Install nginx:</p>
+<div class="highlight"><pre><span></span>apt-get install -y nginx
 </pre></div>
 
 
-<p>Now, restart it:</p>
-<div class="highlight"><pre><span></span>sudo service supervisor restart
+<p>Install supervisor:</p>
+<div class="highlight"><pre><span></span>apt-get install -y supervisor
 </pre></div>
 
 
-<p>The main configuration file of supervisord is here <code>/etc/supervisor/supervisord.conf</code>. If we take a look, we will see that it contains these lines:</p>
-<div class="highlight"><pre><span></span><span class="o">[</span>include<span class="o">]</span>
-<span class="nv">files</span> <span class="o">=</span> /etc/supervisor/conf.d/*.conf
+<p>Install python virtualenv:</p>
+<div class="highlight"><pre><span></span>apt-get install -y python-virtualenv
 </pre></div>
 
 
-<p>It means that config files of specific projects can be stored here <code>/etc/supervisor/conf.d/</code> and they will be included in that main file.</p>
-<p>So, let's create <code>myproject.conf</code> in <code>/etc/supervisor/conf.d/</code> folder:</p>
-<div class="highlight"><pre><span></span>sudo vim /etc/supervisor/conf.d/myproject.conf
+<p>Install postgresql:</p>
+<div class="highlight"><pre><span></span>apt-get install -y postgresql postgresql-contrib
 </pre></div>
 
 
-<p>and configure our project:</p>
-<div class="highlight"><pre><span></span><span class="o">[</span>program:myproject<span class="o">]</span>
-<span class="nv">command</span><span class="o">=</span>/home/ubuntu/myprojenv/bin/gunicorn --workers <span class="m">3</span> --bind unix:/home/ubuntu/myproject/myproject.sock myproject.wsgi
-<span class="nv">directory</span><span class="o">=</span>/home/ubuntu/myproject
+<h2>Step III (configuring database)</h2>
+<p>Switch to the postgres user:</p>
+<div class="highlight"><pre><span></span>sudo su - postgres
+</pre></div>
+
+
+<p>Type this to go to the postgres interactive shell:</p>
+<div class="highlight"><pre><span></span>psql
+</pre></div>
+
+
+<p>Create a database:</p>
+<div class="highlight"><pre><span></span><span class="nv">postgres</span><span class="o">=</span><span class="c1"># CREATE DATABASE djtrumpprod;</span>
+</pre></div>
+
+
+<p>Create a user:</p>
+<div class="highlight"><pre><span></span><span class="nv">postgres</span><span class="o">=</span><span class="c1"># CREATE USER djtrumpuser WITH password &#39;djtrump&#39;;</span>
+</pre></div>
+
+
+<p>Give this new user an access to administer the new database:</p>
+<div class="highlight"><pre><span></span><span class="nv">postgres</span><span class="o">=</span><span class="c1"># GRANT ALL PRIVILEGES ON DATABASE djtrumpprod TO djtrumpuser;</span>
+</pre></div>
+
+
+<p>Quit from the shell and switch back to the root user:</p>
+<div class="highlight"><pre><span></span><span class="nv">postgres</span><span class="o">=</span><span class="c1"># \q</span>
+postgres@djtrump:~$ <span class="nb">exit</span>
+</pre></div>
+
+
+<h2>Step IV (setting up our project and its environment)</h2>
+<p>Clone our sample app:</p>
+<div class="highlight"><pre><span></span>git clone https://github.com/rahmonov/djtrump.git
+</pre></div>
+
+
+<p>Create and activate a virtual environment with python3.5 (not critical to use python3.5 though):</p>
+<div class="highlight"><pre><span></span>virtualenv djtrumpenv --python<span class="o">=</span><span class="k">$(</span>which python3.5<span class="k">)</span>
+<span class="nb">source</span> djtrumpenv/bin/active
+</pre></div>
+
+
+<p>Now, your prompt will show that you are operating under a Python virtual environment:</p>
+<div class="highlight"><pre><span></span><span class="o">(</span>djtrumpenv<span class="o">)</span> root@djtrump:~#
+</pre></div>
+
+
+<p>Go ahead and install dependencies:</p>
+<div class="highlight"><pre><span></span><span class="nb">cd</span> djtrump
+pip install -r requirements.txt
+</pre></div>
+
+
+<p>Now we should migrate but there is one more thing that we need to do before that. If you go to the settings folder, there are two files:
+<code>base.py</code> and <code>prod.py</code>. Basically, <code>base.py</code> contains all the configurations and <code>prod.py</code> overrides those needed in the production environment.
+For example, <code>DATABASES</code> config is overridden in <code>prod.py</code>. That's why, we need to tell our environment to use this <code>prod.py</code> and not the default <code>base.py</code>.
+This is done by setting <code>DJANGO_SETTINGS_MODULE</code> env variable to <code>prod.py</code> path. Open <code>~/.bash_profile</code> and add this:</p>
+<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">DJANGO_SETTINGS_MODULE</span><span class="o">=</span>djtrump.settings.prod
+</pre></div>
+
+
+<p>Save and quit. Then, <code>source</code> this file for our changes to take effect:</p>
+<div class="highlight"><pre><span></span><span class="nb">source</span> ~/.bash_profile
+</pre></div>
+
+
+<p>Now, try to migrate. Most probably, it will fail and say something like this:</p>
+<div class="highlight"><pre><span></span>FATAL:  Peer authentication failed <span class="k">for</span> user <span class="s2">&quot;djtrumpuser&quot;</span>
+</pre></div>
+
+
+<p>That's because, postgresl uses peer authentication by default, which is it will succeed if the user with the same name as the postgres user uses it.
+In our case, there is no <code>djtrumpuser</code> user in postgres and thus it fails. To fix it, go to <code>/etc/postgresql/9.5/main/pg_hba.conf</code> and change the line
+that says this:</p>
+<div class="highlight"><pre><span></span><span class="nb">local</span>   all     all      peer
+</pre></div>
+
+
+<p>to this:</p>
+<div class="highlight"><pre><span></span><span class="nb">local</span>   all     all      md5
+</pre></div>
+
+
+<p>Save and quit. This way, postgres will try to use password to authenticate the user. Now, restart postgresql for our changes to take effect:</p>
+<div class="highlight"><pre><span></span>sudo service postgresl restart
+</pre></div>
+
+
+<p>Go ahead and migrate:</p>
+<div class="highlight"><pre><span></span>python manage.py migrate
+</pre></div>
+
+
+<p>It works now. Cool! Try to run the development server and it will work.</p>
+<h2>Step V (configuring nginx)</h2>
+<p>Create a new file: <code>/etc/nginx/sites-available/djtrump</code> and add the following:</p>
+<div class="highlight"><pre><span></span>server <span class="o">{</span>
+    listen 80<span class="p">;</span>
+    server_name your_ip<span class="p">;</span>
+
+    <span class="nv">location</span> <span class="o">=</span> /favicon.ico <span class="o">{</span> access_log off<span class="p">;</span> log_not_found off<span class="p">;</span> <span class="o">}</span>
+
+    location /static/ <span class="o">{</span>
+            <span class="nb">alias</span> /root/djtrump/static/<span class="p">;</span>
+    <span class="o">}</span>
+
+    location / <span class="o">{</span>
+            include proxy_params<span class="p">;</span>
+            proxy_pass http://your_ip:8030<span class="p">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Replace <code>your_ip</code> with the IP address of your server. We know what this is doing from the previous tutorials. Basically, it is
+serving the static files from <code>/root/djtrump/static/</code> and redirecting http requests to gunicorn which should be running on port 8030.</p>
+<p>Now, let's enable this file by linking it to the sites-enabled folder:</p>
+<div class="highlight"><pre><span></span>sudo ln -s /etc/nginx/sites-available/djtrump /etc/nginx/sites-enabled
+</pre></div>
+
+
+<p>Restart nginx:</p>
+<div class="highlight"><pre><span></span>sudo service nginx restart
+</pre></div>
+
+
+<p>There are two more things that we need to do before nginx works. First, we need to put all our static files in the folder <code>/root/djtrump/static/</code>
+and run gunicorn on port 8030 as we promised in nginx config file.</p>
+<p>First, run this to gather all static files in that folder:</p>
+<div class="highlight"><pre><span></span>python manage.py collectstatic --noinput
+</pre></div>
+
+
+<p>Now, run gunicorn:</p>
+<div class="highlight"><pre><span></span>gunicorn --workers <span class="m">3</span> --bind 0.0.0.0:8030 djtrump.wsgi
+</pre></div>
+
+
+<p>Go ahead and type in the browser the IP of your address. You will see that the app is running. Congratulations!</p>
+<p>Please note that if you cloned the app to the user's home directory, you may face issues with static files (Permission denied error).
+One of the ways to solve it to run nginx as root. To do that, open <code>/etc/nginx/nginx.conf</code> and change the line that says:</p>
+<div class="highlight"><pre><span></span>user www-data<span class="p">;</span>
+</pre></div>
+
+
+<p>to this:</p>
+<div class="highlight"><pre><span></span>user root<span class="p">;</span>
+</pre></div>
+
+
+<p>and restart the nginx:</p>
+<div class="highlight"><pre><span></span>sudo service nginx restart
+</pre></div>
+
+
+<p>Great! You will now see the pleasant face of Donald Trump and a random quote of his:</p>
+<p><img alt="donald.04" src="/static/images/post-images/django-digitalocean/donald.png" /></p>
+<h2>Step VI (configuring supervisor)</h2>
+<p>Create <code>/etc/supervisor/conf.d/djtrump.conf</code> and type in the following:</p>
+<div class="highlight"><pre><span></span><span class="o">[</span>program:djtrump<span class="o">]</span>
+<span class="nv">command</span><span class="o">=</span>/root/djtrumpenv/bin/gunicorn --workers <span class="m">3</span> --bind 0.0.0.0:8030 djtrump.wsgi
+<span class="nv">directory</span><span class="o">=</span>/root/djtrump
 <span class="nv">autostart</span><span class="o">=</span><span class="nb">true</span>
 <span class="nv">autorestart</span><span class="o">=</span><span class="nb">true</span>
-<span class="nv">stderr_logfile</span><span class="o">=</span>/var/log/myproject.err.log
-<span class="nv">stdout_logfile</span><span class="o">=</span>/var/log/myproject.out.log
+<span class="nv">stderr_logfile</span><span class="o">=</span>/var/log/djtrump.err.log
+<span class="nv">stdout_logfile</span><span class="o">=</span>/var/log/djtrump.out.log
 </pre></div>
 
 
-<p>Let's look at the significance of each line now:</p>
-<div class="highlight"><pre><span></span><span class="o">[</span>program:myproject<span class="o">]</span>
-</pre></div>
-
-
-<p>Here, we are defining a program with the name <code>myproject</code>. This name will be used when we do such commands as:</p>
-<div class="highlight"><pre><span></span>sudo supervisorctl start myproject
-</pre></div>
-
-
-<p>Next:</p>
-<div class="highlight"><pre><span></span><span class="nv">command</span><span class="o">=</span>/home/ubuntu/myprojenv/bin/gunicorn --workers <span class="m">3</span> --bind unix:/home/ubuntu/myproject/myproject.sock myproject.wsgi
-</pre></div>
-
-
-<p>This line is used to define a command which is used when we start or restart our project. </p>
-<div class="highlight"><pre><span></span><span class="nv">directory</span><span class="o">=</span>/home/ubuntu/myproject
-</pre></div>
-
-
-<p>This line indicates a path from which that command will be run.</p>
-<div class="highlight"><pre><span></span><span class="nv">autostart</span><span class="o">=</span><span class="nb">true</span>
-<span class="nv">autorestart</span><span class="o">=</span><span class="nb">true</span>
-</pre></div>
-
-
-<p>These lines define certain behavior of the script under different conditions. <code>Autostart</code> tells the script to start on system boot and 
-<code>autorestart</code> tells it to restart when it exists for some reason.</p>
-<div class="highlight"><pre><span></span><span class="nv">stderr_logfile</span><span class="o">=</span>/var/log/myproject.err.log
-<span class="nv">stdout_logfile</span><span class="o">=</span>/var/log/myproject.out.log
-</pre></div>
-
-
-<p>And these final lines define two files where different kinds of logs are stored. Obviously, error logs will be stored in <code>myproject.err.log</code>
-and others in <code>myproject.out.log</code>.</p>
-<p>Let's save the file and execute the following commands to bring these changes into effect:</p>
-<div class="highlight"><pre><span></span>sudo supervisorctl reread
+<p>Restart, reread and update the supervisor:</p>
+<div class="highlight"><pre><span></span>sudo service supervisor restart
+sudo supervisorctl reread
 sudo supervisorctl update
 </pre></div>
 
 
-<p>Well, that's pretty much it. Simple, right? To verify that everything is working, type this:</p>
-<div class="highlight"><pre><span></span>ps ax <span class="p">|</span> grep gunicorn
+<p>Now, you can stop, start and restart your app easily! Try this:</p>
+<div class="highlight"><pre><span></span>sudo supervisorctl stop djtrump
 </pre></div>
 
 
-<p>You should see several gunicorn processes running. Or, you can go to <code>localhost:8000</code> and you will see your django app up and running.</p>
-<p>Or, you can now use <code>supervisor</code> to check whether your app is running:</p>
-<div class="highlight"><pre><span></span>sudo supervisorctl status myproject
+<p>If you go to the app in the browser, it will respond  with 502 (Bad Gateway) response. Go ahead and start it:</p>
+<div class="highlight"><pre><span></span>sudo supervisorctl start djtrump
 </pre></div>
 
 
-<p>Now, go ahead and play with those <code>supervisorctl</code> commands to start, stop, restart and check the status of your app.</p>
-<p>Let's do one more thing. Let's see the builtin supervisor web interface in action. Those who don't like command line to control processes
-will love this.</p>
-<p>Open up <code>/etc/supervisor/supervisor.conf</code> and place these lines at the beginning of the file:</p>
-<div class="highlight"><pre><span></span><span class="o">[</span>inet_http_server<span class="o">]</span>
-<span class="nv">port</span><span class="o">=</span>0.0.0.0:9001
-</pre></div>
-
-
-<p>This will indicate that the supervisor web interface will run on <code>0.0.0.0:9001</code>.</p>
-<p>Save the file and reload supervisor:</p>
-<div class="highlight"><pre><span></span>sudo supervisorctl reload
-</pre></div>
-
-
-<p>Open up your browser and go to <code>0.0.0.0:9001</code>. You will see something like this:</p>
-<p><img alt="supervisor web interface" src="/static/images/supervisor.jpg" /></p>
-<p>Cool, right?! Go ahead and play with it to control your project.</p>
-<p>Thanks for reading thus far. Now you have one more tool in your arsenal.</p>
-<p><a href="http://rahmonov.me/posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/">Part I</a></p>
-<p><a href="http://rahmonov.me/posts/run-a-django-app-with-nginx-and-gunicorn/">Part II</a></p>
+<p>Go to the app and you will see it working!</p>
+<p>Well, this is pretty much it! Congratulations, your django app is now live and available to everybody!</p>
+<p>In the next tutorials, we will introduce ourselves to the world of CI and CD (Continuous Integration and Continuous Delivery). </p>
+<p>Fight on!</p>
+<p>P.S. If you want to make the style of this app better, please send a PR. I would love some help on CSS side or any other side for that matter.    </p>
 
 <div class="end">
     <span>
