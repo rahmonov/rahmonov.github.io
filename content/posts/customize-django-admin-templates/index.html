@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+          <title> Customize django admin templates - Jahongir Rahmonov </title>
+
+        <link rel="stylesheet" href="/static/css/main.css" />
+        <link rel="stylesheet" href="/static/css/pygment.css" />
+        <link rel="stylesheet" href="/static/css/font-awesome.min.css" />
+        <link href="//fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet" type="text/css">
+
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Jahongir Rahmonov's personal blog" />
+        <meta name="author" content="Jahongir Rahmonov" />
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+<meta property="og:title" content="Customize django admin templates - Jahongir Rahmonov">
+<meta property="og:type" content="website">
+<meta property="og:image" content="/static/images/programming.jpg">
+<meta property="og:url" content="http://rahmonov.github.io/posts/customize-django-admin-templates/">
+<meta property="og:description" content="<p>How to customize django admin templates</p>">
+
+        <link href="http://rahmonov.github.io/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Full Atom Feed" />
+        <link href="http://rahmonov.github.io/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="Jahongir Rahmonov Full RSS Feed" />
+        <link href="http://rahmonov.github.io/feeds/programming.atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Categories Atom Feed" />
+
+
+
+    <meta name="tags" content="python" />
+    <meta name="tags" content="django" />
+    <meta name="tags" content="admin" />
+
+</head>
+
+<body id="index" class="home">
+    <div class="container">
+
+        <button class="nav js-mobile">
+            <i class="fa fa-bars"></i>
+        </button>
+
+        <div class="side">
+            <div class="logo">
+                <a href="/"><img src="/static/images/me.jpg" class="jahon" alt="Jahongir Rahmonov"/></a>
+            </div>
+
+            <h2>Jahongir Rahmonov</h2>
+
+            <div class="paragraphs">
+<p>
+    I hold a BSc hon. in Business Information Systems from <a href="http://wiut.uz/">WIUT</a>.
+    I'm currently a Software Developer at <a href="http://mysuperdispatch.com/">Super Dispatch (TechStars '16)</a>
+</p>
+<p>
+    I write about web, books, productivity and other things that are of interest to me.
+</p>            </div>
+
+
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/pages/posts.html">Posts</a></li>
+                <li><a href="/pages/about.html">About</a></li>
+                <li><a href="/pages/about.html#contact">Contact</a></li>
+                <li><a href="/feeds/atom.xml" target="_blank">RSS <i class="fa fa-rss"></i></a></li>
+            </ul>
+
+            <p class="profiles">
+                <a title="GitHub" href="https://github.com/rahmonov" target="_blank"><i class="fa fa-github-square"></i></a>
+                <a title="Twitter" href="https://twitter.com/the_rahmonov" target="_blank"><i class="fa fa-twitter-square"></i></a>
+                <a title="Facebook" href="https://www.facebook.com/rahmonovj" target="_blank"><i class="fa fa-facebook-official"></i></a>
+                <a title="Bitbucket" href="https://bitbucket.org/Jahongir/" target="_blank"><i class="fa fa-bitbucket-square"></i></a>
+                <a title="LinkedIn" href="https://www.linkedin.com/in/jahongirrahmonov" target="_blank"><i class="fa fa-linkedin-square"></i></a>
+            </p>
+        </div>
+
+        <div class="wrap">
+            <div class="content">
+
+  <h4>Sun 18 October 2015</h4>
+
+  <h1>Customize django admin templates</h1>
+
+  <div class="entry-content">
+    <p>Quite often, we need to customize the django admin template: to add additional functionality or just 
+change its look and feel.</p>
+<p>Recently, I had the task of adding an ajax request on admin page load(specifically, change_form.html) 
+and adding two buttons, one of which would bring a modal up and the other would delete the selected items
+which, in their turn, were brought by that ajax request.</p>
+<p>Here is what I did and went through:</p>
+<h2>Template</h2>
+<p>First, I created a <code>change_form.html</code> file in <code>/templates/admin/</code> folder. As I wanted this file to extend, 
+not replace, the default <code>change_form.html</code>, I wrote this at the beginning of the file:</p>
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="n">extends</span> <span class="s1">&#39;admin/change_form.html&#39;</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+
+
+<p>This, naturally, led to <code>maximum recursin depth exceeded</code> error as it was trying to <code>extend</code> itself.</p>
+<p>Then, I read somewhere that I could put this file in <code>/templates/admin/app_name</code> folder, so that it will 
+change the templates of only this app. Voila! Recursion problem solved.</p>
+<p>Then, I added all those buttons and modals I wanted to(more on this later). Everything was working fine 
+until I found out that the buttons I added appear on the admin pages of all the models in the app. But 
+I wanted them to appear only on the admin pages of, let's say, <code>product</code> model.</p>
+<p>Turned out, the same works here. I just needed to put the file inside <code>/templates/admin/app_name/model_name</code>.
+In my case, it the file was  <code>/templates/admin/enterprise/product</code>.</p>
+<h2>Styles, Scripts and Buttons</h2>
+<p>Where do I put them? Taking a look at <code>admin/base.html</code> did the trick. It has special blocks for extra styles and
+scripts. So I put my css and javascript files in the following way:</p>
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">extrastyle</span> <span class="o">%</span><span class="p">}</span>
+    <span class="p">{{</span> <span class="n">block</span><span class="o">.</span><span class="n">super</span> <span class="p">}}</span>
+
+    <span class="o">&lt;</span><span class="n">link</span> <span class="n">rel</span><span class="o">=</span><span class="s2">&quot;stylesheet&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;{</span><span class="si">% s</span><span class="s2">tatic &#39;css/enterprise/main.css&#39;%}&quot;</span><span class="o">&gt;</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
+
+<span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">extrahead</span> <span class="o">%</span><span class="p">}</span>
+    <span class="p">{{</span> <span class="n">block</span><span class="o">.</span><span class="n">super</span> <span class="p">}}</span>
+
+    <span class="o">&lt;</span><span class="n">script</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text/javascript&quot;</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;{</span><span class="si">% s</span><span class="s2">tatic &#39;js/enterprise/modal.js&#39;%}&quot;</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+
+
+<p>As for buttons, I thought a good place would be above the default buttons. So, I thought out the block of those buttons 
+and put mine right above them:</p>
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">submit_buttons_bottom</span> <span class="o">%</span><span class="p">}</span>
+    <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;submit-row&quot;</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">button</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;btn btn-danger&quot;</span><span class="o">&gt;</span><span class="n">Custom</span> <span class="n">Button</span><span class="o">&lt;/</span><span class="n">button</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+
+    <span class="p">{{</span> <span class="n">block</span><span class="o">.</span><span class="n">super</span> <span class="p">}}</span>
+<span class="p">{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
+</pre></div>
+
+
+<p>As I was using <a href="https://github.com/django-admin-bootstrapped/django-admin-bootstrapped">django-admin-bootstrapped</a>,
+<code>submit-row</code> gave the <code>div</code> nice and natural look.</p>
+<h2>Additional</h2>
+<p>In the ajax request, I had to send the <code>id</code> of the product being changed. So I thought I could get it with <code>{{ product.id }}</code>
+but I was wrong. Then, I learned that I could get it like so:</p>
+<div class="highlight"><pre><span></span><span class="p">{{</span> <span class="n">original</span><span class="o">.</span><span class="n">id</span> <span class="p">}}</span>
+</pre></div>
+
+
+<p>So, the model instance being dealt with can be accessed with the word <code>original</code>. How original, isn't it?</p>
+<h2>Wrap up</h2>
+<p>Either I am bad at reading the documentation or it could be improved a little further. Probably first option. </p>
+<p>I hope it will help somebody save some time in the future.</p>
+<p>Fight on!</p>
+  </div>
+
+<div class="end">
+    <span>
+        If you liked what you read, I would really appreciate if you could endorse me on
+        <a href="https://www.linkedin.com/in/jahongirrahmonov/">LinkedIn</a>
+    </span>
+</div>
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES * * */
+        var disqus_shortname = 'jrahmonov';
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+            </div>
+        </div>
+    </div>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-67392250-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="/static/js/mobile.js"></script>
+
+</body>
+</html>

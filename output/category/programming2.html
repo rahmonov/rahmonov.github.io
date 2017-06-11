@@ -72,282 +72,89 @@
 <h2>Articles in the programming category</h2>
 
 <h4>
-    <a href="posts/continuous-integration-and-continous-deployment-for-django-app-with-jenkins/">
-        02 April 2017
+    <a href="posts/testcase-vs-transactiontestcase-in-django/">
+        11 June 2017
     </a>
 </h4>
 
-<h1>Set up Continuous Integration and Continuous Deployment for a Django app with Jenkins</h1>
+<h1>TestCase vs TransactionTestCase in Django</h1>
 
-<p>In this post, we are going to do something really cool. We are going to set up a CI and CD server for a django app with the 
-help of <a href="https://jenkins.io/">Jenkins</a>. But first, let's see why we need such a server.</p>
-<p>In the <a href="http://rahmonov.me/posts/deploy-a-django-app-to-digitalocean/">previous post</a>, we deployed <a href="https://github.com/rahmonov/djtrump">our application</a>
-to Digital Ocean and now it is up and running:</p>
-<p><img alt="donald.04" src="/static/images/post-images/django-digitalocean/donald.png" /></p>
-<p>Now, let's try to update it.</p>
-<p>By the way, to follow along this tutorial you should fork <a href="https://github.com/rahmonov/djtrump">this repo</a> if you didn't do so in the previous post.
-The reason is that we will play around with the app to see our CI and CD server in play later on.</p>
-<p>OK, now let's go ahead and change something in the template file <code>djtrump/templates/djtrump/index.html</code>. Find the input element whose 
-placeholder says <em>Your name</em> and change it to <em>Type your name</em>:</p>
-<div class="highlight"><pre><span></span><span class="c1"># Change this</span>
-<span class="o">&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span> <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;Your name&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;name&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;{{ name }}&quot;</span><span class="o">&gt;</span>
+<p>Based on my observation, a lot of developers don't seem to understand the difference between <code>TestCase</code> and <code>TransactionTestCase</code>
+in Django and how to use them. In this post, I will try to put the puzzle pieces together and make things clear.</p>
+<h2>TestCase class</h2>
+<p>Here is what <a href="https://docs.djangoproject.com/en/1.11/topics/testing/tools/#django.test.TestCase">the documentation</a> has to say
+about the <code>TestCase</code> class:</p>
+<blockquote>
+<p>Wraps the tests within two nested atomic() blocks: one for the whole class and one for each test.</p>
+</blockquote>
+<p>Now imagine that you have a method that must be executed inside a transaction or else it raises an error. You could write a test similar to this:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="n">SomeTestCase</span>(<span class="n">TestCase</span>):
 
-<span class="c1"># to this</span>
-<span class="o">&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span> <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;Type your name&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;name&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;{{ name }}&quot;</span><span class="o">&gt;</span>
+    <span class="n">def</span> <span class="n">test_your_method_raises_error_without_atomic_block</span>(<span class="k">self</span>):
+        <span class="n">with</span> <span class="k">self</span>.<span class="n">assertRaises</span>(<span class="n">SomeError</span>):
+            <span class="n">your_method</span>()
 </pre></div>
 
 
-<p>Commit the change and push it to the remote repo:</p>
-<div class="highlight"><pre><span></span>git commit -am <span class="s1">&#39;Change input placeholder&#39;</span>
-git push origin master
+<p>In this test, <code>your_method()</code> is called without any transaction and the test is asserting that it raises <code>SomeError</code> because of that.</p>
+<p>However, this test will unexpectedly fail! The reason is, you guessed it, TestCase wraps the tests with <code>atomic()</code> blocks 
+ALL THE TIME. Thus, <code>your_method()</code> will not raise an error, which is why this test will fail.</p>
+<h2>TransactionTestCase to the rescue</h2>
+<p>This is where <code>TransactionTestCase</code> should be used. It does not wrap the tests with <code>atomic()</code> block and thus you can test your special 
+methods that require a transaction without any problem. The above test will pass with <code>TransactionTestCase</code> now:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="n">SomeTestCase</span>(<span class="n">TransactionTestCase</span>):
+
+    <span class="n">def</span> <span class="n">test_your_method_raises_error_without_atomic_block</span>(<span class="k">self</span>):
+        <span class="n">with</span> <span class="k">self</span>.<span class="n">assertRaises</span>(<span class="n">SomeError</span>):
+            <span class="n">your_method</span>()
 </pre></div>
 
 
-<p>Now, <em>ssh</em> into your server:</p>
-<div class="highlight"><pre><span></span>ssh root@104.236.57.112   // change this to the IP address of your own server
+<h2>Real Life example</h2>
+<p>Let's see a real example now. A queryset method called <a href="https://docs.djangoproject.com/en/1.11/ref/models/querysets/#django.db.models.query.QuerySet.select_for_update">select_for_update()</a> 
+is one of those methods that require to be inside a transaction. If you call it without any transaction, it raises an error.</p>
+<p>Let's say you have a model called <code>Item</code> and you are calling <code>select_for_update()</code>:</p>
+<div class="highlight"><pre><span></span>Item.objects.select_for_update()
 </pre></div>
 
 
-<p>Go to the project folder and pull the new code from the repo:</p>
-<div class="highlight"><pre><span></span><span class="nb">cd</span> djtrump
-git pull origin master
+<p>It will immediately raise the following error:</p>
+<div class="highlight"><pre><span></span><span class="n">TransactionManagementError</span><span class="o">:</span> <span class="n">select_for_update</span> <span class="n">cannot</span> <span class="n">be</span> <span class="n">used</span> <span class="n">outside</span> <span class="n">of</span> <span class="n">a</span> <span class="n">transaction</span><span class="o">.</span>
 </pre></div>
 
 
-<p>Make sure <em>origin</em> refers to your fork of the app. Now, open the browser and type the server IP and you will see that the placeholder changed.
-Now, this is a very simple scenario. When we make changes to models or requirements, we will also have to run migrations, install dependencies and
-restart the nginx. Besides, we are not considering tests here. In the real world, you should run tests in the prodcution server as well and make sure
-everything is working.</p>
-<p>Although, this is simple, it is very clumsy and error prone to do it manually. Wouldn't be great if you as a developer just pushed your code into the
-repository, leave the rest to be done by itself and be notified when everything is done?</p>
-<p>This is exactly what we will do now. At the end, we will make some changes to the code and push it to the remote repo. Then, our jenkins server
-will pull the code, run the tests and if they pass successfully deploy the changes to the app server. After all this, it will also notify us through <a href="https://slack.com/">Slack</a>.</p>
-<p>Cool right?!</p>
-<p>Enough talk, let's fight!</p>
-<h2>Create a new server and install Jenkins</h2>
-<p>Go through exact same steps as in the <a href="http://rahmonov.me/posts/deploy-a-django-app-to-digitalocean/">previous post</a> to create a droplet with the only difference of name.
-Name it <em>djtrump-jenkins</em>. Wait a few seconds and when your server is ready, ssh into it:</p>
-<div class="highlight"><pre><span></span>ssh root@192.241.166.116  // replace this IP address with yours
+<p>Now, let's try to write tests for it with both <code>TestCase</code> and <code>TransactionTestCase</code>:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="n">ItemTestCase</span>(<span class="n">TestCase</span>):
+    <span class="n">def</span> <span class="n">setUp</span>(<span class="k">self</span>):
+        <span class="k">self</span>.<span class="n">item</span> = <span class="n">Item</span>.<span class="n">objects</span>.<span class="n">create</span>(<span class="nb">name</span>=<span class="s">&#39;hat&#39;</span>)
+
+    <span class="n">def</span> <span class="n">test_select_for_update_raises_an_error_without_transaction</span>(<span class="k">self</span>):
+        <span class="n">with</span> <span class="k">self</span>.<span class="n">assertRaises</span>(<span class="n">TransactionManagementError</span>):
+            <span class="n">items</span> = <span class="n">Items</span>.<span class="n">objects</span>.<span class="n">select_for_update</span>().<span class="n">filter</span>()
+            <span class="nb">print</span>(<span class="n">items</span>)  <span class="c c-Singleline"># needed to actually execute the query because they are lazy</span>
 </pre></div>
 
 
-<p>Install Jenkins:</p>
-<div class="highlight"><pre><span></span>wget -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key <span class="p">|</span> sudo apt-key add -
-sudo sh -c <span class="s1">&#39;echo deb http://pkg.jenkins.io/debian-stable binary/ &gt; /etc/apt/sources.list.d/jenkins.list&#39;</span>
-sudo apt-get update
-sudo apt-get upgrade
-sudo apt-get install jenkins
+<p>Try to run the test and you will get the following:</p>
+<div class="highlight"><pre><span></span><span class="n">AssertionError</span><span class="o">:</span> <span class="n">TransactionManagementError</span> <span class="n">not</span> <span class="n">raised</span>
 </pre></div>
 
 
-<p>Now, if you go to JENKINS_IP_ADDRESS:8080 on your browser, you should see Jenkins up and running:</p>
-<p><img alt="Jenkins" src="/static/images/post-images/jenkins-djtrump/jenkins-setup.png" /></p>
-<p>Open to <em>/var/lib/jenkins/secrets/initialAdminPassword</em>, copy your password and paste it on the form. Click on Continue.</p>
-<p>After a moment, <em>Customize Jenkins</em> page opens. There, click on <em>Select plugins to install</em>.</p>
-<p>On this page, search for <em>Github</em> and <em>Pipeline</em> plugins and check them. Click install:</p>
-<p><img alt="Jenkins Plugins" src="/static/images/post-images/jenkins-djtrump/jenkins-initial-plugins.png" /></p>
-<p>After everything installs, on the next page, fill in the details and create a user. Click on <em>Start using Jenkins</em>.</p>
-<h2>Set up a Jenkins Job</h2>
-<p>Click on <em>New Item</em> or <em>create new jobs</em> to get started.</p>
-<p>On the new job page, name the item <em>DJTrump</em> and choose <em>Multibranch pipeline</em>:</p>
-<p><img alt="Jenkins New Job" src="/static/images/post-images/jenkins-djtrump/jenkins-new-job.png" /></p>
-<p>On the configuration page, click on <em>Add source</em> and choose <em>Git</em>. Fill in the details of your repository in Github. Then, check <em>Periodically if not otherwise run</em> and 
-leave the interval of 1 minute:</p>
-<p><img alt="Jenkins Configure Job" src="/static/images/post-images/jenkins-djtrump/jenkins-configure-job.png" />    </p>
-<p>Click <em>Save</em>. You will see that Jenkins will immediately start to build the project. As we chose Multibranch mode, it will start to build for all branches.
-However, you will see that both branches will fail:</p>
-<p><img alt="Jenkins Failed Job" src="/static/images/post-images/jenkins-djtrump/jenkins-failed-jobs.png" /> </p>
-<p>To see what is going on, click on <em>master</em> and on the next page, click on <em>#1</em> in the <em>Build History</em> list. Then, on the next page, click on <em>Console Output</em> in the left sidebar.
-You will see the logs which show that Jenkins cloned the project and then encountered an error that says: <em>No such DSL method 'slackSend' found among steps</em>. So, it tried to notify us
-through slack that a Jenkins build started and it got this error:</p>
-<p><img alt="Jenkins Failed Logs" src="/static/images/post-images/jenkins-djtrump/jenkins-failed-logs.png" /> </p>
-<p>But wait! How did Jenkins know what to do in the first place? How did it know that it should send a slack message saying that a build started?</p>
-<p>If you go to the root folder of the project you will see a file named <em>Jenkinsfile</em>:</p>
-<div class="highlight"><pre><span></span><span class="cp">#!groovy</span>
+<p>The reason? <code>TestCase</code> wraps the tests with <code>atomic()</code> blocks ALL THE TIME. Good. Glad you remember this. </p>
+<p>Now, let's make this test pass with <code>TransactionTestCase</code>:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="n">ItemTestCase</span>(<span class="n">TransactionTestCase</span>):
+    <span class="n">def</span> <span class="n">setUp</span>(<span class="k">self</span>):
+        <span class="k">self</span>.<span class="n">item</span> = <span class="n">Item</span>.<span class="n">objects</span>.<span class="n">create</span>(<span class="nb">name</span>=<span class="s">&#39;hat&#39;</span>)
 
-<span class="n">node</span> <span class="o">{</span>
-
-    <span class="k">try</span> <span class="o">{</span>
-        <span class="n">stage</span> <span class="s1">&#39;Checkout&#39;</span>
-            <span class="n">checkout</span> <span class="n">scm</span>
-
-            <span class="n">sh</span> <span class="s1">&#39;git log HEAD^..HEAD --pretty=&quot;%h %an - %s&quot; &gt; GIT_CHANGES&#39;</span>
-            <span class="kt">def</span> <span class="n">lastChanges</span> <span class="o">=</span> <span class="n">readFile</span><span class="o">(</span><span class="s1">&#39;GIT_CHANGES&#39;</span><span class="o">)</span>
-            <span class="n">slackSend</span> <span class="nl">color:</span> <span class="s2">&quot;warning&quot;</span><span class="o">,</span> <span class="nl">message:</span> <span class="s2">&quot;Started `${env.JOB_NAME}#${env.BUILD_NUMBER}`\n\n_The changes:_\n${lastChanges}&quot;</span>
-
-        <span class="n">stage</span> <span class="s1">&#39;Test&#39;</span>
-            <span class="n">sh</span> <span class="s1">&#39;virtualenv env -p python3.5&#39;</span>
-            <span class="n">sh</span> <span class="s1">&#39;. env/bin/activate&#39;</span>
-            <span class="n">sh</span> <span class="s1">&#39;env/bin/pip install -r requirements.txt&#39;</span>
-            <span class="n">sh</span> <span class="s1">&#39;env/bin/python3.5 manage.py test --testrunner=djtrump.tests.test_runners.NoDbTestRunner&#39;</span>
-
-        <span class="n">stage</span> <span class="s1">&#39;Deploy&#39;</span>
-            <span class="n">sh</span> <span class="s1">&#39;./deployment/deploy_prod.sh&#39;</span>
-
-        <span class="n">stage</span> <span class="s1">&#39;Publish results&#39;</span>
-            <span class="n">slackSend</span> <span class="nl">color:</span> <span class="s2">&quot;good&quot;</span><span class="o">,</span> <span class="nl">message:</span> <span class="s2">&quot;Build successful: `${env.JOB_NAME}#${env.BUILD_NUMBER}` &lt;${env.BUILD_URL}|Open in Jenkins&gt;&quot;</span>
-    <span class="o">}</span>
-
-    <span class="k">catch</span> <span class="o">(</span><span class="n">err</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">slackSend</span> <span class="nl">color:</span> <span class="s2">&quot;danger&quot;</span><span class="o">,</span> <span class="nl">message:</span> <span class="s2">&quot;Build failed :face_with_head_bandage: \n`${env.JOB_NAME}#${env.BUILD_NUMBER}` &lt;${env.BUILD_URL}|Open in Jenkins&gt;&quot;</span>
-
-        <span class="k">throw</span> <span class="n">err</span>
-    <span class="o">}</span>
-
-<span class="o">}</span>
+    <span class="n">def</span> <span class="n">test_select_for_update_raises_an_error_without_transaction</span>(<span class="k">self</span>):
+        <span class="n">with</span> <span class="k">self</span>.<span class="n">assertRaises</span>(<span class="n">TransactionManagementError</span>):
+            <span class="n">items</span> = <span class="n">Items</span>.<span class="n">objects</span>.<span class="n">select_for_update</span>().<span class="n">filter</span>()
+            <span class="nb">print</span>(<span class="n">items</span>)  <span class="c c-Singleline"># needed to actually execute the query because they are lazy</span>
 </pre></div>
 
 
-<p>This is where all the steps that Jenkins should follow are described. Let's break it down.</p>
-<p>The first element you will notice is <em>node</em>. <em>Node</em> is a very crucial player which allocates an executor and workspace for the pipeline.
-Think of it as a worker that does the job. Inside node, there is one try/catch block. It is very simple. It tries to do something and if it fails it notifies us
-in Slack and throws error. Inside the <em>try</em> block, there are four stages. First, it pulls the code from the source control and notifies us in Slack that 
-a build has started and what has changed in the code. We will see the end result later. Then, it runs tests which are located in the <code>djtrump/tests</code> folder.
-They are just a couple of simple tests which are intended for demonstration purposes only. Then, it runs the deployment script <code>deployment/deploy_prod.sh</code>.
-And finally, it will notify us that the build has been successful in Slack. </p>
-<p>Now, let's see what is inside that deployment script:</p>
-<div class="highlight"><pre><span></span><span class="ch">#!/bin/sh</span>
-
-ssh root@104.236.57.112 <span class="s">&lt;&lt;EOF</span>
-<span class="s">  cd djtrump</span>
-<span class="s">  git pull</span>
-<span class="s">  source /opt/envs/djtrump/bin/activate</span>
-<span class="s">  pip install -r requirements.txt</span>
-<span class="s">  ./manage.py migrate</span>
-<span class="s">  sudo supervisorctl restart djtrump</span>
-<span class="s">  exit</span>
-<span class="s">EOF</span>
-</pre></div>
-
-
-<p>It is also very simple. We are sshing into our server, going to the project folder, pulling the code from the repository,
-activating the virtual environment, installing the requirements, running migrations and restarting the djtrump project with supervisor.
-Just like what we did when we manually updated our app in the server.</p>
-<p>Now, let's get back to what the Jenkins error message was saying. It said that it could not find <em>slackSend</em> method.
-The reason is that we have not installed the Slack plugin. This is how Jenkins works, with the help of plugins. You want to work with Github, you install Github plugin.
-You want to work with Slack, you install the Slack plugin and etc. This is how it is done: Go to the main page and click on <em>Manage Jenkins</em>.
-There, choose <em>Manage Plugins</em>. Click on the Available tab and search for the <em>Slack Notification Plugin</em>. Check it and click on <em>Install without restart</em>.
-After it gets installed, click on <em>Restart Jenkins when installation is complete and no jobs are running</em>. </p>
-<p>After it restarts, log in.</p>
-<p>We also need to install Jenkins plugin on the Slack side. Assuming you already have a slack team, go to https://my.slack.com/services/new/jenkins-ci.
-There, choose #general channel and click on <em>Add Jenkins CI integration</em>:</p>
-<p><img alt="Jenkins Slack" src="/static/images/post-images/jenkins-djtrump/jenkins-slack.jpg" /></p>
-<p>On the bottom of the next page, you will find some settings such as your Jenkins integration token. Save settings. Now, open another browser window.
-Go to your Jenkins server, navigate to <em>Manage Jenkins</em> -&gt; <em>Configure System</em> and find <em>Global Slack Notifier Settings</em> there. Fill in team subdomain, integration token
-and channel:</p>
-<p><img alt="Jenkins Slack" src="/static/images/post-images/jenkins-djtrump/jenkins-slack-config.png" /></p>
-<p>Save!     </p>
-<p>If you did everything correctly, slack messaging will work now. However, there are a couple more things we should do to avoid more errors.
-First of all, we should install virtualenv for python:</p>
-<div class="highlight"><pre><span></span>ssh root@104.236.57.112  // replace this with the IP of your own Jenkins server
-apt install python3-pip
-pip3 install virtualenv
-</pre></div>
-
-
-<p>Now, we should install postgresql and create a database so that it will not complain while running tests. If you go to <code>djtrump/settings/base.py</code>, you will
-see that our database configuration looks like this:</p>
-<div class="highlight"><pre><span></span><span class="nv">DATABASES</span> <span class="o">=</span> <span class="o">{</span>
-    <span class="s1">&#39;default&#39;</span>: <span class="o">{</span>
-        <span class="s1">&#39;ENGINE&#39;</span>: <span class="s1">&#39;django.db.backends.postgresql_psycopg2&#39;</span>,
-        <span class="s1">&#39;NAME&#39;</span>: os.environ.get<span class="o">(</span><span class="s1">&#39;DATABASE_NAME&#39;</span>, <span class="s1">&#39;djtrump&#39;</span><span class="o">)</span>,
-        <span class="s1">&#39;USER&#39;</span>: <span class="s1">&#39;djtrumpuser&#39;</span>,
-        <span class="s1">&#39;PASSWORD&#39;</span>: <span class="s1">&#39;password&#39;</span>,
-        <span class="s1">&#39;PORT&#39;</span>: <span class="s1">&#39;5432&#39;</span>,
-    <span class="o">}</span>
-<span class="o">}</span>
-</pre></div>
-
-
-<p>So, we should create a database with name <em>djtrump</em> whose owner is <em>djtrumpuser</em> with password <em>password</em>.</p>
-<p>First, install postgresql:</p>
-<div class="highlight"><pre><span></span>apt-get install postgresql postgresql-contrib
-</pre></div>
-
-
-<p>Log into the postgres interactive shell:</p>
-<div class="highlight"><pre><span></span>sudo -u postgres psql
-</pre></div>
-
-
-<p>Create the database, the user and make the user owner of that database:</p>
-<div class="highlight"><pre><span></span><span class="nv">postgres</span><span class="o">=</span><span class="c1"># CREATE DATABASE djtrump;</span>
-<span class="nv">postgres</span><span class="o">=</span><span class="c1"># CREATE USER djtrumpuser WITH PASSWORD &#39;password&#39;;</span>
-<span class="nv">postgres</span><span class="o">=</span><span class="c1"># GRANT ALL PRIVILEGES ON DATABASE djtrump TO djtrumpuser;</span>
-<span class="nv">postgres</span><span class="o">=</span><span class="c1"># \q</span>
-</pre></div>
-
-
-<p>Now open <em>/etc/postgresql/9.5/main/pg_hba.conf</em>, find the line that says the following:</p>
-<div class="highlight"><pre><span></span><span class="c1"># &quot;local&quot; is for Unix domain socket connections only</span>
-<span class="nb">local</span>   all             all                        peer
-</pre></div>
-
-
-<p>and change <em>peer</em> to <em>md5</em> because we will be using username/password combination to connect to postgresql:</p>
-<div class="highlight"><pre><span></span><span class="c1"># &quot;local&quot; is for Unix domain socket connections only</span>
-<span class="nb">local</span>   all             all                        md5
-</pre></div>
-
-
-<p>Now, restart postgresql:</p>
-<div class="highlight"><pre><span></span>sudo service postgresql restart
-</pre></div>
-
-
-<p>And there is one last thing that we should do. As we saw in the deployment script, we are sshing from the Jenkins server to the DJTrump app server.
-However, it is not allowed yet. To allow this, we need add the public key of the Jenkins server to the authorized keys of the app server.
-To do that, log in as <em>jenkins</em> user coz this is the user that will be running the jobs:</p>
-<div class="highlight"><pre><span></span>sudo su - jenkins
-</pre></div>
-
-
-<p>Type this and do not enter passphrase:</p>
-<div class="highlight"><pre><span></span>ssh-keygen -t rsa
-</pre></div>
-
-
-<p>Open ~/.ssh/id_rsa.pub and copy the content. Now, in another terminal tab ssh into the app server:</p>
-<div class="highlight"><pre><span></span>ssh root@104.236.57.112   // replace the IP
-</pre></div>
-
-
-<p>Open ~/.ssh/authorized_keys and paste the public key you copied here. Save!</p>
-<p>Now, check if you can ssh into the app server from the Jenkins server as the user <em>jenkins</em>. From the previous tab, type this:</p>
-<div class="highlight"><pre><span></span>ssh root@104.236.57.112   // replace the IP
-</pre></div>
-
-
-<p>Type yes and you should see that you are connected without any password. Congrats! We should be all set.</p>
-<p>Time to check!</p>
-<p>Navigate to <em>Jenkins root</em> -&gt; <em>DJTrump</em> -&gt; <em>master</em> and once there click on <em>Build now</em> to start a build manually:</p>
-<p><img alt="Build Now" src="/static/images/post-images/jenkins-djtrump/jenkins-build-now.png" /></p>
-<p>And you will see that it will start a build and go through all 4 stages we describe at the beginning:</p>
-<p><img alt="Successful Build" src="/static/images/post-images/jenkins-djtrump/jenkins-successful-build.png" /></p>
-<p>If you go to your Slack, you should see some messages in #general channel:</p>
-<p><img alt="Slack Notification" src="/static/images/post-images/jenkins-djtrump/jenkins-slack-notif.png" /></p>
-<p>Awesome, right?! But that is not so good if we have to make build manually, right?</p>
-<p>Fortunately, that's also taken care of. Go to your djtrump and make some kind of change. For example, change the placeholder again to read 
-<em>NNAAAMMMEEE</em> like we did at the beginning of this tutorial. Then, stage and commit the changes:</p>
-<div class="highlight"><pre><span></span>git commit -am <span class="s1">&#39;Change placeholder to read NNAAAMMMEEE&#39;</span>
-</pre></div>
-
-
-<p>In a minute, in your jenkins server you will see that the next build has started and ended successfully:</p>
-<p><img alt="Second build" src="/static/images/post-images/jenkins-djtrump/jenkins-second-build.png" /></p>
-<p>And if you visit your app, you will see that changes have taken place:</p>
-<p><img alt="New Build" src="/static/images/post-images/jenkins-djtrump/new-build.png" /></p>
-<p>Hooray! Isn't awesome? You just pushed your code and everything else happened by "itself". Ther is even more. Check your slack.
-You have been notified about the start, what has changed and the end of the build. I love this kind of automation.</p>
-<p>Now, go ahead and play around with it. Try to make one of the tests fail and you will see that the failing code will not be deployed!
-It will stop in the Test stage:</p>
-<p><img alt="Failed Test" src="/static/images/post-images/jenkins-djtrump/test-fail.png" /></p>
-<p>In Slack, you will see this fun message:</p>
-<p><img alt="Slack Failed Test" src="/static/images/post-images/jenkins-djtrump/slack-test-fail.png" /></p>
-<p>If you click on <em>Open in Jenkins</em> and you will taken to that exact failed build.</p>
-<p>Once again, I love this kind of automation! And you should too!</p>
-<p>Huh, that was quite a ride! We have learned a lot!</p>
-<p>If you encountered a problem along the way, feel free to leave a commend or email me. Will be glad to help!</p>
+<p>and voila! The test passes! Great!</p>
+<p>I hope it will clear things out for some people. Let me know in the comments if something is still not clear.</p>
 <p>Fight on!</p>
 
 <div class="end">
