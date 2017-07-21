@@ -1,5 +1,762 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2017-03-08T20:10:00+05:00</updated><entry><title>Run a Django app with Nginx, Gunicorn and Supervisor in Ubuntu 16.04 (Part III)</title><link href="http://rahmonov.github.io/posts/run-a-django-app-with-nginx-gunicorn-and-supervisor/" rel="alternate"></link><published>2017-03-08T20:10:00+05:00</published><updated>2017-03-08T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2017-03-08:posts/run-a-django-app-with-nginx-gunicorn-and-supervisor/</id><summary type="html">&lt;p&gt;This tutorial is the continuation of &lt;a href="http://rahmonov.me/posts/run-a-django-app-with-nginx-and-gunicorn/"&gt;this one&lt;/a&gt; where we learned
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2017-07-21T20:10:00+05:00</updated><entry><title>Python Collections - Counter</title><link href="http://rahmonov.github.io/posts/python-collections-counter/" rel="alternate"></link><published>2017-07-21T20:10:00+05:00</published><updated>2017-07-21T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2017-07-21:posts/python-collections-counter/</id><summary type="html">&lt;p&gt;Python has the following general purpose built-in containers: &lt;code&gt;dict&lt;/code&gt;, &lt;code&gt;list&lt;/code&gt;, &lt;code&gt;set&lt;/code&gt;, and &lt;code&gt;tuple&lt;/code&gt;. However, apart from
+them, there are specialized alternative container data types in Python's collections module. In this blog post, we will
+take a look at the &lt;code&gt;Counter&lt;/code&gt; class from this module.&lt;/p&gt;
+&lt;h2&gt;Counter&lt;/h2&gt;
+&lt;p&gt;A Counter is a child class of &lt;code&gt;dict&lt;/code&gt; which, as its name suggests, counts hashable objects. Basically, it stores elements as
+dictionary keys and their counts as dictionary values:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;collections&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Counter&lt;/span&gt;
+
+&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;my_list&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;b&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;c&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;c&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;d&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;b&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;e&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Counter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;my_list&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="n"&gt;Counter&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;c&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;b&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;e&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;d&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;As you can see that it is unordered and is basically saying there are 3 of 'a' in &lt;code&gt;my_list&lt;/code&gt; and etc.&lt;/p&gt;
+&lt;p&gt;Besides initializing from an iterable like we saw in the previous example, a Counter can also be initialized from another mapping:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Counter&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;car&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;house&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;}))&lt;/span&gt;
+&lt;span class="n"&gt;Counter&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;house&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;car&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+
+&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Counter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;car&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;house&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="n"&gt;Counter&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;house&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;car&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+
+&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Counter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;sibling&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;    &lt;span class="c1"&gt;# another iterable&lt;/span&gt;
+&lt;span class="n"&gt;Counter&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;i&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;l&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;b&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;g&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;s&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;n&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;As a &lt;code&gt;Counter&lt;/code&gt; is a child of the &lt;code&gt;dict&lt;/code&gt; class, it has &lt;code&gt;dict&lt;/code&gt;'s interface:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;7&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Counter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;my_list&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;items&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;Out&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;dict_items&lt;/span&gt;&lt;span class="p"&gt;([(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;e&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;c&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;b&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;d&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)])&lt;/span&gt;
+
+&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;9&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;keys&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;Out&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;9&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;dict_keys&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;e&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;c&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;b&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;d&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;values&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;Out&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;dict_values&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The only difference is that if you try to access a missing item, a Counter will return zero whereas a dict would raise a &lt;code&gt;KeyError&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;In [11]: c[&amp;#39;t&amp;#39;]
+Out[11]: 0
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Other than those standard &lt;code&gt;dict&lt;/code&gt; methods, a Counter has 3 more specific ones.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;most_common(n)&lt;/code&gt; - returns a list of &lt;code&gt;n&lt;/code&gt; most common elements and their counts in a tuple, ordered from the most common to the least.
+If &lt;code&gt;n&lt;/code&gt; is &lt;code&gt;None&lt;/code&gt;, then the method will return all of the elements:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;12&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Counter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;hallelujah&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;13&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;most_common&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;Out&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;13&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="p"&gt;[(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;l&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;h&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)]&lt;/span&gt;
+
+&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;14&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;most_common&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;Out&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;14&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="p"&gt;[(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;l&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;h&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;j&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;u&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;e&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;code&gt;elements()&lt;/code&gt; - returns an iterator which repeats each element as many times as its count:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;15&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="nb"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;elements&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+&lt;span class="n"&gt;Out&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;15&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;l&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;l&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;l&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;j&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;u&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;h&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;h&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;e&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;code&gt;subtract(iterable-or-mapping)&lt;/code&gt; - Counts of common elements are subtracted from each other&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;16&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Counter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;hollar&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;17&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt;
+&lt;span class="n"&gt;Out&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;17&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;Counter&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;h&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;l&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;o&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;r&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+
+&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;18&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;
+&lt;span class="n"&gt;Out&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;18&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;Counter&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;e&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;h&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;j&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;l&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;u&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+
+&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;19&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;subtract&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;
+&lt;span class="n"&gt;Out&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;Counter&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;e&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;h&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;j&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;l&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;o&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;r&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;u&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Also, some mathematical operations can be applied to combine &lt;code&gt;Counter&lt;/code&gt; objects:&lt;/p&gt;
+&lt;p&gt;Adding(+) two Counters together will perform the following on the elements: &lt;code&gt;c[x] + d[x]&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;21&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Counter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;21&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Counter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;22&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt;
+&lt;span class="n"&gt;Out&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;22&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;Counter&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;b&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Subtracting(-) is the same as the &lt;code&gt;subtract()&lt;/code&gt; method (keeps only positive counts):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;23&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt;
+&lt;span class="n"&gt;Out&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;23&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;Counter&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Intersaction(&amp;amp;) will keep only the minimum of corresponding counts: &lt;code&gt;min(c[x], d[x])&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;24&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt;
+&lt;span class="n"&gt;Out&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;24&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;Counter&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;b&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Union(|) will keep only the maximum of corresponding counts: &lt;code&gt;max(c[x], d[x])&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;25&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt;
+&lt;span class="n"&gt;Out&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;25&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;Counter&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;b&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And finally, there are shortcuts for adding an empty counter and subtracting from an empty counter:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;26&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Counter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;=-&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;27&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;                     &lt;span class="c1"&gt;# the same as: c + Counter()&lt;/span&gt;
+&lt;span class="n"&gt;Out&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;27&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;Counter&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+
+&lt;span class="n"&gt;In&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;28&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;c&lt;/span&gt;                     &lt;span class="c1"&gt;# the same as: Counter() - c&lt;/span&gt;
+&lt;span class="n"&gt;Out&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;28&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt; &lt;span class="n"&gt;Counter&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;b&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, with all this theoretical knowledge learned, let's try to apply it to solve a real problem. Let's try to tackle &lt;a href="https://www.hackerrank.com/challenges/collections-counter/problem"&gt;this problem&lt;/a&gt;
+in HackerRank, shall we? Before proceeding further, try to solve it yourself and then compare your solution with mine. Better yet, comment your solution here to discuss.&lt;/p&gt;
+&lt;p&gt;Task:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Raghu is a shoe shop owner. His shop has X number of shoes. 
+He has a list containing the size of each shoe he has in his shop. 
+There are N number of customers who are willing to pay x amount of money only if they get the shoe of their desired size.
+
+Your task is to compute how much money Raghu earned.
+
+Input Format
+
+The first line contains X, the number of shoes. 
+The second line contains the space separated list of all the shoe sizes in the shop.
+The third line contains N, the number of customers. 
+The next N lines contain the space separated values of the shoe size desired by the customer and x, the price of the shoe.
+
+Output Format
+
+Print the amount of money earned by Raghu.
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;My solution:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;collections&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Counter&lt;/span&gt;
+
+&lt;span class="n"&gt;X&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;input&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+&lt;span class="n"&gt;shoes&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;val&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;val&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;input&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split&lt;/span&gt;&lt;span class="p"&gt;()]&lt;/span&gt;
+&lt;span class="n"&gt;N&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;input&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+
+&lt;span class="n"&gt;shoe_collection&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Counter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;shoes&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;total_money&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;
+
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;money&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;val&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;val&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;input&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split&lt;/span&gt;&lt;span class="p"&gt;()]&lt;/span&gt;
+
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;shoe_collection&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;total_money&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="n"&gt;money&lt;/span&gt;
+        &lt;span class="n"&gt;shoe_collection&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;size&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;-=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;total_money&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It is pretty easy to understand but if you have any questions make sure to ask in the comments!  &lt;/p&gt;
+&lt;p&gt;Fight on!  &lt;/p&gt;</summary><category term="python"></category><category term="collections"></category><category term="counter"></category></entry><entry><title>TestCase vs TransactionTestCase in Django</title><link href="http://rahmonov.github.io/posts/testcase-vs-transactiontestcase-in-django/" rel="alternate"></link><published>2017-06-11T20:10:00+05:00</published><updated>2017-06-11T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2017-06-11:posts/testcase-vs-transactiontestcase-in-django/</id><summary type="html">&lt;p&gt;Based on my observation, a lot of developers don't seem to understand the difference between &lt;code&gt;TestCase&lt;/code&gt; and &lt;code&gt;TransactionTestCase&lt;/code&gt;
+in Django and how to use them. In this post, I will try to put the puzzle pieces together and make things clear.&lt;/p&gt;
+&lt;h2&gt;TestCase class&lt;/h2&gt;
+&lt;p&gt;Here is what &lt;a href="https://docs.djangoproject.com/en/1.11/topics/testing/tools/#django.test.TestCase"&gt;the documentation&lt;/a&gt; has to say
+about the &lt;code&gt;TestCase&lt;/code&gt; class:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Wraps the tests within two nested atomic() blocks: one for the whole class and one for each test.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Now imagine that you have a method that must be executed inside a transaction or else it raises an error. You could write a test similar to this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="n"&gt;SomeTestCase&lt;/span&gt;(&lt;span class="n"&gt;TestCase&lt;/span&gt;):
+
+    &lt;span class="n"&gt;def&lt;/span&gt; &lt;span class="n"&gt;test_your_method_raises_error_without_atomic_block&lt;/span&gt;(&lt;span class="k"&gt;self&lt;/span&gt;):
+        &lt;span class="n"&gt;with&lt;/span&gt; &lt;span class="k"&gt;self&lt;/span&gt;.&lt;span class="n"&gt;assertRaises&lt;/span&gt;(&lt;span class="n"&gt;SomeError&lt;/span&gt;):
+            &lt;span class="n"&gt;your_method&lt;/span&gt;()
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In this test, &lt;code&gt;your_method()&lt;/code&gt; is called without any transaction and the test is asserting that it raises &lt;code&gt;SomeError&lt;/code&gt; because of that.&lt;/p&gt;
+&lt;p&gt;However, this test will unexpectedly fail! The reason is, you guessed it, TestCase wraps the tests with &lt;code&gt;atomic()&lt;/code&gt; blocks 
+ALL THE TIME. Thus, &lt;code&gt;your_method()&lt;/code&gt; will not raise an error, which is why this test will fail.&lt;/p&gt;
+&lt;h2&gt;TransactionTestCase to the rescue&lt;/h2&gt;
+&lt;p&gt;This is where &lt;code&gt;TransactionTestCase&lt;/code&gt; should be used. It does not wrap the tests with &lt;code&gt;atomic()&lt;/code&gt; block and thus you can test your special 
+methods that require a transaction without any problem. The above test will pass with &lt;code&gt;TransactionTestCase&lt;/code&gt; now:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="n"&gt;SomeTestCase&lt;/span&gt;(&lt;span class="n"&gt;TransactionTestCase&lt;/span&gt;):
+
+    &lt;span class="n"&gt;def&lt;/span&gt; &lt;span class="n"&gt;test_your_method_raises_error_without_atomic_block&lt;/span&gt;(&lt;span class="k"&gt;self&lt;/span&gt;):
+        &lt;span class="n"&gt;with&lt;/span&gt; &lt;span class="k"&gt;self&lt;/span&gt;.&lt;span class="n"&gt;assertRaises&lt;/span&gt;(&lt;span class="n"&gt;SomeError&lt;/span&gt;):
+            &lt;span class="n"&gt;your_method&lt;/span&gt;()
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Real Life example&lt;/h2&gt;
+&lt;p&gt;Let's see a real example now. A queryset method called &lt;a href="https://docs.djangoproject.com/en/1.11/ref/models/querysets/#django.db.models.query.QuerySet.select_for_update"&gt;select_for_update()&lt;/a&gt; 
+is one of those methods that require to be inside a transaction. If you call it without any transaction, it raises an error.&lt;/p&gt;
+&lt;p&gt;Let's say you have a model called &lt;code&gt;Item&lt;/code&gt; and you are calling &lt;code&gt;select_for_update()&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;Item.objects.select_for_update()
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It will immediately raise the following error:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;TransactionManagementError&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;select_for_update&lt;/span&gt; &lt;span class="n"&gt;cannot&lt;/span&gt; &lt;span class="n"&gt;be&lt;/span&gt; &lt;span class="n"&gt;used&lt;/span&gt; &lt;span class="n"&gt;outside&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="n"&gt;transaction&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, let's try to write tests for it with both &lt;code&gt;TestCase&lt;/code&gt; and &lt;code&gt;TransactionTestCase&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="n"&gt;ItemTestCase&lt;/span&gt;(&lt;span class="n"&gt;TestCase&lt;/span&gt;):
+    &lt;span class="n"&gt;def&lt;/span&gt; &lt;span class="n"&gt;setUp&lt;/span&gt;(&lt;span class="k"&gt;self&lt;/span&gt;):
+        &lt;span class="k"&gt;self&lt;/span&gt;.&lt;span class="n"&gt;item&lt;/span&gt; = &lt;span class="n"&gt;Item&lt;/span&gt;.&lt;span class="n"&gt;objects&lt;/span&gt;.&lt;span class="n"&gt;create&lt;/span&gt;(&lt;span class="nb"&gt;name&lt;/span&gt;=&lt;span class="s"&gt;&amp;#39;hat&amp;#39;&lt;/span&gt;)
+
+    &lt;span class="n"&gt;def&lt;/span&gt; &lt;span class="n"&gt;test_select_for_update_raises_an_error_without_transaction&lt;/span&gt;(&lt;span class="k"&gt;self&lt;/span&gt;):
+        &lt;span class="n"&gt;with&lt;/span&gt; &lt;span class="k"&gt;self&lt;/span&gt;.&lt;span class="n"&gt;assertRaises&lt;/span&gt;(&lt;span class="n"&gt;TransactionManagementError&lt;/span&gt;):
+            &lt;span class="n"&gt;items&lt;/span&gt; = &lt;span class="n"&gt;Items&lt;/span&gt;.&lt;span class="n"&gt;objects&lt;/span&gt;.&lt;span class="n"&gt;select_for_update&lt;/span&gt;().&lt;span class="n"&gt;filter&lt;/span&gt;()
+            &lt;span class="nb"&gt;print&lt;/span&gt;(&lt;span class="n"&gt;items&lt;/span&gt;)  &lt;span class="c c-Singleline"&gt;# needed to actually execute the query because they are lazy&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Try to run the test and you will get the following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;AssertionError&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;TransactionManagementError&lt;/span&gt; &lt;span class="n"&gt;not&lt;/span&gt; &lt;span class="n"&gt;raised&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The reason? &lt;code&gt;TestCase&lt;/code&gt; wraps the tests with &lt;code&gt;atomic()&lt;/code&gt; blocks ALL THE TIME. Good. Glad you remember this. &lt;/p&gt;
+&lt;p&gt;Now, let's make this test pass with &lt;code&gt;TransactionTestCase&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="n"&gt;ItemTestCase&lt;/span&gt;(&lt;span class="n"&gt;TransactionTestCase&lt;/span&gt;):
+    &lt;span class="n"&gt;def&lt;/span&gt; &lt;span class="n"&gt;setUp&lt;/span&gt;(&lt;span class="k"&gt;self&lt;/span&gt;):
+        &lt;span class="k"&gt;self&lt;/span&gt;.&lt;span class="n"&gt;item&lt;/span&gt; = &lt;span class="n"&gt;Item&lt;/span&gt;.&lt;span class="n"&gt;objects&lt;/span&gt;.&lt;span class="n"&gt;create&lt;/span&gt;(&lt;span class="nb"&gt;name&lt;/span&gt;=&lt;span class="s"&gt;&amp;#39;hat&amp;#39;&lt;/span&gt;)
+
+    &lt;span class="n"&gt;def&lt;/span&gt; &lt;span class="n"&gt;test_select_for_update_raises_an_error_without_transaction&lt;/span&gt;(&lt;span class="k"&gt;self&lt;/span&gt;):
+        &lt;span class="n"&gt;with&lt;/span&gt; &lt;span class="k"&gt;self&lt;/span&gt;.&lt;span class="n"&gt;assertRaises&lt;/span&gt;(&lt;span class="n"&gt;TransactionManagementError&lt;/span&gt;):
+            &lt;span class="n"&gt;items&lt;/span&gt; = &lt;span class="n"&gt;Items&lt;/span&gt;.&lt;span class="n"&gt;objects&lt;/span&gt;.&lt;span class="n"&gt;select_for_update&lt;/span&gt;().&lt;span class="n"&gt;filter&lt;/span&gt;()
+            &lt;span class="nb"&gt;print&lt;/span&gt;(&lt;span class="n"&gt;items&lt;/span&gt;)  &lt;span class="c c-Singleline"&gt;# needed to actually execute the query because they are lazy&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;and voila! The test passes! Great!&lt;/p&gt;
+&lt;p&gt;I hope it will clear things out for some people. Let me know in the comments if something is still not clear.&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="python"></category><category term="django"></category><category term="unittesting"></category><category term="testing"></category></entry><entry><title>Set up Continuous Integration and Continuous Deployment for a Django app with Jenkins</title><link href="http://rahmonov.github.io/posts/continuous-integration-and-continous-deployment-for-django-app-with-jenkins/" rel="alternate"></link><published>2017-04-02T20:10:00+05:00</published><updated>2017-04-02T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2017-04-02:posts/continuous-integration-and-continous-deployment-for-django-app-with-jenkins/</id><summary type="html">&lt;p&gt;In this post, we are going to do something really cool. We are going to set up a CI and CD server for a django app with the 
+help of &lt;a href="https://jenkins.io/"&gt;Jenkins&lt;/a&gt;. But first, let's see why we need such a server.&lt;/p&gt;
+&lt;p&gt;In the &lt;a href="http://rahmonov.me/posts/deploy-a-django-app-to-digitalocean/"&gt;previous post&lt;/a&gt;, we deployed &lt;a href="https://github.com/rahmonov/djtrump"&gt;our application&lt;/a&gt;
+to Digital Ocean and now it is up and running:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="donald.04" src="/static/images/post-images/django-digitalocean/donald.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Now, let's try to update it.&lt;/p&gt;
+&lt;p&gt;By the way, to follow along this tutorial you should fork &lt;a href="https://github.com/rahmonov/djtrump"&gt;this repo&lt;/a&gt; if you didn't do so in the previous post.
+The reason is that we will play around with the app to see our CI and CD server in play later on.&lt;/p&gt;
+&lt;p&gt;OK, now let's go ahead and change something in the template file &lt;code&gt;djtrump/templates/djtrump/index.html&lt;/code&gt;. Find the input element whose 
+placeholder says &lt;em&gt;Your name&lt;/em&gt; and change it to &lt;em&gt;Type your name&lt;/em&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Change this&lt;/span&gt;
+&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nb"&gt;input&lt;/span&gt; &lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;text&amp;quot;&lt;/span&gt; &lt;span class="n"&gt;placeholder&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Your name&amp;quot;&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;name&amp;quot;&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;{{ name }}&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# to this&lt;/span&gt;
+&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="nb"&gt;input&lt;/span&gt; &lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;text&amp;quot;&lt;/span&gt; &lt;span class="n"&gt;placeholder&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Type your name&amp;quot;&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;name&amp;quot;&lt;/span&gt; &lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;{{ name }}&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Commit the change and push it to the remote repo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git commit -am &lt;span class="s1"&gt;&amp;#39;Change input placeholder&amp;#39;&lt;/span&gt;
+git push origin master
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, &lt;em&gt;ssh&lt;/em&gt; into your server:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssh root@104.236.57.112   // change this to the IP address of your own server
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Go to the project folder and pull the new code from the repo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; djtrump
+git pull origin master
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Make sure &lt;em&gt;origin&lt;/em&gt; refers to your fork of the app. Now, open the browser and type the server IP and you will see that the placeholder changed.
+Now, this is a very simple scenario. When we make changes to models or requirements, we will also have to run migrations, install dependencies and
+restart the nginx. Besides, we are not considering tests here. In the real world, you should run tests in the prodcution server as well and make sure
+everything is working.&lt;/p&gt;
+&lt;p&gt;Although, this is simple, it is very clumsy and error prone to do it manually. Wouldn't be great if you as a developer just pushed your code into the
+repository, leave the rest to be done by itself and be notified when everything is done?&lt;/p&gt;
+&lt;p&gt;This is exactly what we will do now. At the end, we will make some changes to the code and push it to the remote repo. Then, our jenkins server
+will pull the code, run the tests and if they pass successfully deploy the changes to the app server. After all this, it will also notify us through &lt;a href="https://slack.com/"&gt;Slack&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Cool right?!&lt;/p&gt;
+&lt;p&gt;Enough talk, let's fight!&lt;/p&gt;
+&lt;h2&gt;Create a new server and install Jenkins&lt;/h2&gt;
+&lt;p&gt;Go through exact same steps as in the &lt;a href="http://rahmonov.me/posts/deploy-a-django-app-to-digitalocean/"&gt;previous post&lt;/a&gt; to create a droplet with the only difference of name.
+Name it &lt;em&gt;djtrump-jenkins&lt;/em&gt;. Wait a few seconds and when your server is ready, ssh into it:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssh root@192.241.166.116  // replace this IP address with yours
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Install Jenkins:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;wget -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key &lt;span class="p"&gt;|&lt;/span&gt; sudo apt-key add -
+sudo sh -c &lt;span class="s1"&gt;&amp;#39;echo deb http://pkg.jenkins.io/debian-stable binary/ &amp;gt; /etc/apt/sources.list.d/jenkins.list&amp;#39;&lt;/span&gt;
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install jenkins
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, if you go to JENKINS_IP_ADDRESS:8080 on your browser, you should see Jenkins up and running:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Jenkins" src="/static/images/post-images/jenkins-djtrump/jenkins-setup.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Open to &lt;em&gt;/var/lib/jenkins/secrets/initialAdminPassword&lt;/em&gt;, copy your password and paste it on the form. Click on Continue.&lt;/p&gt;
+&lt;p&gt;After a moment, &lt;em&gt;Customize Jenkins&lt;/em&gt; page opens. There, click on &lt;em&gt;Select plugins to install&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;On this page, search for &lt;em&gt;Github&lt;/em&gt; and &lt;em&gt;Pipeline&lt;/em&gt; plugins and check them. Click install:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Jenkins Plugins" src="/static/images/post-images/jenkins-djtrump/jenkins-initial-plugins.png" /&gt;&lt;/p&gt;
+&lt;p&gt;After everything installs, on the next page, fill in the details and create a user. Click on &lt;em&gt;Start using Jenkins&lt;/em&gt;.&lt;/p&gt;
+&lt;h2&gt;Set up a Jenkins Job&lt;/h2&gt;
+&lt;p&gt;Click on &lt;em&gt;New Item&lt;/em&gt; or &lt;em&gt;create new jobs&lt;/em&gt; to get started.&lt;/p&gt;
+&lt;p&gt;On the new job page, name the item &lt;em&gt;DJTrump&lt;/em&gt; and choose &lt;em&gt;Multibranch pipeline&lt;/em&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Jenkins New Job" src="/static/images/post-images/jenkins-djtrump/jenkins-new-job.png" /&gt;&lt;/p&gt;
+&lt;p&gt;On the configuration page, click on &lt;em&gt;Add source&lt;/em&gt; and choose &lt;em&gt;Git&lt;/em&gt;. Fill in the details of your repository in Github. Then, check &lt;em&gt;Periodically if not otherwise run&lt;/em&gt; and 
+leave the interval of 1 minute:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Jenkins Configure Job" src="/static/images/post-images/jenkins-djtrump/jenkins-configure-job.png" /&gt;    &lt;/p&gt;
+&lt;p&gt;Click &lt;em&gt;Save&lt;/em&gt;. You will see that Jenkins will immediately start to build the project. As we chose Multibranch mode, it will start to build for all branches.
+However, you will see that both branches will fail:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Jenkins Failed Job" src="/static/images/post-images/jenkins-djtrump/jenkins-failed-jobs.png" /&gt; &lt;/p&gt;
+&lt;p&gt;To see what is going on, click on &lt;em&gt;master&lt;/em&gt; and on the next page, click on &lt;em&gt;#1&lt;/em&gt; in the &lt;em&gt;Build History&lt;/em&gt; list. Then, on the next page, click on &lt;em&gt;Console Output&lt;/em&gt; in the left sidebar.
+You will see the logs which show that Jenkins cloned the project and then encountered an error that says: &lt;em&gt;No such DSL method 'slackSend' found among steps&lt;/em&gt;. So, it tried to notify us
+through slack that a Jenkins build started and it got this error:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Jenkins Failed Logs" src="/static/images/post-images/jenkins-djtrump/jenkins-failed-logs.png" /&gt; &lt;/p&gt;
+&lt;p&gt;But wait! How did Jenkins know what to do in the first place? How did it know that it should send a slack message saying that a build started?&lt;/p&gt;
+&lt;p&gt;If you go to the root folder of the project you will see a file named &lt;em&gt;Jenkinsfile&lt;/em&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#!groovy&lt;/span&gt;
+
+&lt;span class="n"&gt;node&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+
+    &lt;span class="k"&gt;try&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;stage&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Checkout&amp;#39;&lt;/span&gt;
+            &lt;span class="n"&gt;checkout&lt;/span&gt; &lt;span class="n"&gt;scm&lt;/span&gt;
+
+            &lt;span class="n"&gt;sh&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;git log HEAD^..HEAD --pretty=&amp;quot;%h %an - %s&amp;quot; &amp;gt; GIT_CHANGES&amp;#39;&lt;/span&gt;
+            &lt;span class="kt"&gt;def&lt;/span&gt; &lt;span class="n"&gt;lastChanges&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;readFile&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;GIT_CHANGES&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+            &lt;span class="n"&gt;slackSend&lt;/span&gt; &lt;span class="nl"&gt;color:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;warning&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nl"&gt;message:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Started `${env.JOB_NAME}#${env.BUILD_NUMBER}`\n\n_The changes:_\n${lastChanges}&amp;quot;&lt;/span&gt;
+
+        &lt;span class="n"&gt;stage&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Test&amp;#39;&lt;/span&gt;
+            &lt;span class="n"&gt;sh&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;virtualenv env -p python3.5&amp;#39;&lt;/span&gt;
+            &lt;span class="n"&gt;sh&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;. env/bin/activate&amp;#39;&lt;/span&gt;
+            &lt;span class="n"&gt;sh&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;env/bin/pip install -r requirements.txt&amp;#39;&lt;/span&gt;
+            &lt;span class="n"&gt;sh&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;env/bin/python3.5 manage.py test --testrunner=djtrump.tests.test_runners.NoDbTestRunner&amp;#39;&lt;/span&gt;
+
+        &lt;span class="n"&gt;stage&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Deploy&amp;#39;&lt;/span&gt;
+            &lt;span class="n"&gt;sh&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;./deployment/deploy_prod.sh&amp;#39;&lt;/span&gt;
+
+        &lt;span class="n"&gt;stage&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Publish results&amp;#39;&lt;/span&gt;
+            &lt;span class="n"&gt;slackSend&lt;/span&gt; &lt;span class="nl"&gt;color:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;good&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nl"&gt;message:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Build successful: `${env.JOB_NAME}#${env.BUILD_NUMBER}` &amp;lt;${env.BUILD_URL}|Open in Jenkins&amp;gt;&amp;quot;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    &lt;span class="k"&gt;catch&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;err&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="n"&gt;slackSend&lt;/span&gt; &lt;span class="nl"&gt;color:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;danger&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nl"&gt;message:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;Build failed :face_with_head_bandage: \n`${env.JOB_NAME}#${env.BUILD_NUMBER}` &amp;lt;${env.BUILD_URL}|Open in Jenkins&amp;gt;&amp;quot;&lt;/span&gt;
+
+        &lt;span class="k"&gt;throw&lt;/span&gt; &lt;span class="n"&gt;err&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This is where all the steps that Jenkins should follow are described. Let's break it down.&lt;/p&gt;
+&lt;p&gt;The first element you will notice is &lt;em&gt;node&lt;/em&gt;. &lt;em&gt;Node&lt;/em&gt; is a very crucial player which allocates an executor and workspace for the pipeline.
+Think of it as a worker that does the job. Inside node, there is one try/catch block. It is very simple. It tries to do something and if it fails it notifies us
+in Slack and throws error. Inside the &lt;em&gt;try&lt;/em&gt; block, there are four stages. First, it pulls the code from the source control and notifies us in Slack that 
+a build has started and what has changed in the code. We will see the end result later. Then, it runs tests which are located in the &lt;code&gt;djtrump/tests&lt;/code&gt; folder.
+They are just a couple of simple tests which are intended for demonstration purposes only. Then, it runs the deployment script &lt;code&gt;deployment/deploy_prod.sh&lt;/code&gt;.
+And finally, it will notify us that the build has been successful in Slack. &lt;/p&gt;
+&lt;p&gt;Now, let's see what is inside that deployment script:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/bin/sh&lt;/span&gt;
+
+ssh root@104.236.57.112 &lt;span class="s"&gt;&amp;lt;&amp;lt;EOF&lt;/span&gt;
+&lt;span class="s"&gt;  cd djtrump&lt;/span&gt;
+&lt;span class="s"&gt;  git pull&lt;/span&gt;
+&lt;span class="s"&gt;  source /opt/envs/djtrump/bin/activate&lt;/span&gt;
+&lt;span class="s"&gt;  pip install -r requirements.txt&lt;/span&gt;
+&lt;span class="s"&gt;  ./manage.py migrate&lt;/span&gt;
+&lt;span class="s"&gt;  sudo supervisorctl restart djtrump&lt;/span&gt;
+&lt;span class="s"&gt;  exit&lt;/span&gt;
+&lt;span class="s"&gt;EOF&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It is also very simple. We are sshing into our server, going to the project folder, pulling the code from the repository,
+activating the virtual environment, installing the requirements, running migrations and restarting the djtrump project with supervisor.
+Just like what we did when we manually updated our app in the server.&lt;/p&gt;
+&lt;p&gt;Now, let's get back to what the Jenkins error message was saying. It said that it could not find &lt;em&gt;slackSend&lt;/em&gt; method.
+The reason is that we have not installed the Slack plugin. This is how Jenkins works, with the help of plugins. You want to work with Github, you install Github plugin.
+You want to work with Slack, you install the Slack plugin and etc. This is how it is done: Go to the main page and click on &lt;em&gt;Manage Jenkins&lt;/em&gt;.
+There, choose &lt;em&gt;Manage Plugins&lt;/em&gt;. Click on the Available tab and search for the &lt;em&gt;Slack Notification Plugin&lt;/em&gt;. Check it and click on &lt;em&gt;Install without restart&lt;/em&gt;.
+After it gets installed, click on &lt;em&gt;Restart Jenkins when installation is complete and no jobs are running&lt;/em&gt;. &lt;/p&gt;
+&lt;p&gt;After it restarts, log in.&lt;/p&gt;
+&lt;p&gt;We also need to install Jenkins plugin on the Slack side. Assuming you already have a slack team, go to https://my.slack.com/services/new/jenkins-ci.
+There, choose #general channel and click on &lt;em&gt;Add Jenkins CI integration&lt;/em&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Jenkins Slack" src="/static/images/post-images/jenkins-djtrump/jenkins-slack.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;On the bottom of the next page, you will find some settings such as your Jenkins integration token. Save settings. Now, open another browser window.
+Go to your Jenkins server, navigate to &lt;em&gt;Manage Jenkins&lt;/em&gt; -&amp;gt; &lt;em&gt;Configure System&lt;/em&gt; and find &lt;em&gt;Global Slack Notifier Settings&lt;/em&gt; there. Fill in team subdomain, integration token
+and channel:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Jenkins Slack" src="/static/images/post-images/jenkins-djtrump/jenkins-slack-config.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Save!     &lt;/p&gt;
+&lt;p&gt;If you did everything correctly, slack messaging will work now. However, there are a couple more things we should do to avoid more errors.
+First of all, we should install virtualenv for python:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssh root@104.236.57.112  // replace this with the IP of your own Jenkins server
+apt install python3-pip
+pip3 install virtualenv
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, we should install postgresql and create a database so that it will not complain while running tests. If you go to &lt;code&gt;djtrump/settings/base.py&lt;/code&gt;, you will
+see that our database configuration looks like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;DATABASES&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+    &lt;span class="s1"&gt;&amp;#39;default&amp;#39;&lt;/span&gt;: &lt;span class="o"&gt;{&lt;/span&gt;
+        &lt;span class="s1"&gt;&amp;#39;ENGINE&amp;#39;&lt;/span&gt;: &lt;span class="s1"&gt;&amp;#39;django.db.backends.postgresql_psycopg2&amp;#39;&lt;/span&gt;,
+        &lt;span class="s1"&gt;&amp;#39;NAME&amp;#39;&lt;/span&gt;: os.environ.get&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;DATABASE_NAME&amp;#39;&lt;/span&gt;, &lt;span class="s1"&gt;&amp;#39;djtrump&amp;#39;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;,
+        &lt;span class="s1"&gt;&amp;#39;USER&amp;#39;&lt;/span&gt;: &lt;span class="s1"&gt;&amp;#39;djtrumpuser&amp;#39;&lt;/span&gt;,
+        &lt;span class="s1"&gt;&amp;#39;PASSWORD&amp;#39;&lt;/span&gt;: &lt;span class="s1"&gt;&amp;#39;password&amp;#39;&lt;/span&gt;,
+        &lt;span class="s1"&gt;&amp;#39;PORT&amp;#39;&lt;/span&gt;: &lt;span class="s1"&gt;&amp;#39;5432&amp;#39;&lt;/span&gt;,
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So, we should create a database with name &lt;em&gt;djtrump&lt;/em&gt; whose owner is &lt;em&gt;djtrumpuser&lt;/em&gt; with password &lt;em&gt;password&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;First, install postgresql:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install postgresql postgresql-contrib
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Log into the postgres interactive shell:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo -u postgres psql
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Create the database, the user and make the user owner of that database:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;postgres&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="c1"&gt;# CREATE DATABASE djtrump;&lt;/span&gt;
+&lt;span class="nv"&gt;postgres&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="c1"&gt;# CREATE USER djtrumpuser WITH PASSWORD &amp;#39;password&amp;#39;;&lt;/span&gt;
+&lt;span class="nv"&gt;postgres&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="c1"&gt;# GRANT ALL PRIVILEGES ON DATABASE djtrump TO djtrumpuser;&lt;/span&gt;
+&lt;span class="nv"&gt;postgres&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="c1"&gt;# \q&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now open &lt;em&gt;/etc/postgresql/9.5/main/pg_hba.conf&lt;/em&gt;, find the line that says the following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# &amp;quot;local&amp;quot; is for Unix domain socket connections only&lt;/span&gt;
+&lt;span class="nb"&gt;local&lt;/span&gt;   all             all                        peer
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;and change &lt;em&gt;peer&lt;/em&gt; to &lt;em&gt;md5&lt;/em&gt; because we will be using username/password combination to connect to postgresql:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# &amp;quot;local&amp;quot; is for Unix domain socket connections only&lt;/span&gt;
+&lt;span class="nb"&gt;local&lt;/span&gt;   all             all                        md5
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, restart postgresql:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo service postgresql restart
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And there is one last thing that we should do. As we saw in the deployment script, we are sshing from the Jenkins server to the DJTrump app server.
+However, it is not allowed yet. To allow this, we need add the public key of the Jenkins server to the authorized keys of the app server.
+To do that, log in as &lt;em&gt;jenkins&lt;/em&gt; user coz this is the user that will be running the jobs:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo su - jenkins
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Type this and do not enter passphrase:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssh-keygen -t rsa
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Open ~/.ssh/id_rsa.pub and copy the content. Now, in another terminal tab ssh into the app server:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssh root@104.236.57.112   // replace the IP
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Open ~/.ssh/authorized_keys and paste the public key you copied here. Save!&lt;/p&gt;
+&lt;p&gt;Now, check if you can ssh into the app server from the Jenkins server as the user &lt;em&gt;jenkins&lt;/em&gt;. From the previous tab, type this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssh root@104.236.57.112   // replace the IP
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Type yes and you should see that you are connected without any password. Congrats! We should be all set.&lt;/p&gt;
+&lt;p&gt;Time to check!&lt;/p&gt;
+&lt;p&gt;Navigate to &lt;em&gt;Jenkins root&lt;/em&gt; -&amp;gt; &lt;em&gt;DJTrump&lt;/em&gt; -&amp;gt; &lt;em&gt;master&lt;/em&gt; and once there click on &lt;em&gt;Build now&lt;/em&gt; to start a build manually:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Build Now" src="/static/images/post-images/jenkins-djtrump/jenkins-build-now.png" /&gt;&lt;/p&gt;
+&lt;p&gt;And you will see that it will start a build and go through all 4 stages we describe at the beginning:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Successful Build" src="/static/images/post-images/jenkins-djtrump/jenkins-successful-build.png" /&gt;&lt;/p&gt;
+&lt;p&gt;If you go to your Slack, you should see some messages in #general channel:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Slack Notification" src="/static/images/post-images/jenkins-djtrump/jenkins-slack-notif.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Awesome, right?! But that is not so good if we have to make build manually, right?&lt;/p&gt;
+&lt;p&gt;Fortunately, that's also taken care of. Go to your djtrump and make some kind of change. For example, change the placeholder again to read 
+&lt;em&gt;NNAAAMMMEEE&lt;/em&gt; like we did at the beginning of this tutorial. Then, stage and commit the changes:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git commit -am &lt;span class="s1"&gt;&amp;#39;Change placeholder to read NNAAAMMMEEE&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In a minute, in your jenkins server you will see that the next build has started and ended successfully:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Second build" src="/static/images/post-images/jenkins-djtrump/jenkins-second-build.png" /&gt;&lt;/p&gt;
+&lt;p&gt;And if you visit your app, you will see that changes have taken place:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="New Build" src="/static/images/post-images/jenkins-djtrump/new-build.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Hooray! Isn't awesome? You just pushed your code and everything else happened by "itself". Ther is even more. Check your slack.
+You have been notified about the start, what has changed and the end of the build. I love this kind of automation.&lt;/p&gt;
+&lt;p&gt;Now, go ahead and play around with it. Try to make one of the tests fail and you will see that the failing code will not be deployed!
+It will stop in the Test stage:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Failed Test" src="/static/images/post-images/jenkins-djtrump/test-fail.png" /&gt;&lt;/p&gt;
+&lt;p&gt;In Slack, you will see this fun message:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Slack Failed Test" src="/static/images/post-images/jenkins-djtrump/slack-test-fail.png" /&gt;&lt;/p&gt;
+&lt;p&gt;If you click on &lt;em&gt;Open in Jenkins&lt;/em&gt; and you will taken to that exact failed build.&lt;/p&gt;
+&lt;p&gt;Once again, I love this kind of automation! And you should too!&lt;/p&gt;
+&lt;p&gt;Huh, that was quite a ride! We have learned a lot!&lt;/p&gt;
+&lt;p&gt;If you encountered a problem along the way, feel free to leave a commend or email me. Will be glad to help!&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="python"></category><category term="django"></category><category term="digitalocean"></category><category term="ci"></category><category term="cd"></category><category term="jenkins"></category></entry><entry><title>Deploy a Django app to Digital Ocean</title><link href="http://rahmonov.github.io/posts/deploy-a-django-app-to-digitalocean/" rel="alternate"></link><published>2017-03-21T20:10:00+05:00</published><updated>2017-03-21T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2017-03-21:posts/deploy-a-django-app-to-digitalocean/</id><summary type="html">&lt;p&gt;In &lt;a href="http://rahmonov.me/posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/"&gt;the&lt;/a&gt; &lt;a href="http://rahmonov.me/posts/run-a-django-app-with-nginx-and-gunicorn/"&gt;previous&lt;/a&gt;
+&lt;a href="http://rahmonov.me/posts/run-a-django-app-with-nginx-gunicorn-and-supervisor/"&gt;blog posts&lt;/a&gt;, we learned how to run a django app
+with Nginx, Gunicorn and Supervisord. Now, let's make a django app available to everybody by deploying it to a &lt;a href="https://www.digitalocean.com/"&gt;DigitalOcean&lt;/a&gt; server.&lt;/p&gt;
+&lt;p&gt;You will need a DigitalOcean account to follow along.&lt;/p&gt;
+&lt;p&gt;For this tutorial, I have prepared a sample django app in order to simulate a real scenario. It is just a fun app which shows Donald Trump
+with his random quotes which can even be personalized. The app makes use of the &lt;a href="https://whatdoestrumpthink.com/"&gt;whatdoestrumpthink&lt;/a&gt; API.
+Please note that we are going to do almost the same stuff that we did in the previous tutorials except that we will use a real server.&lt;/p&gt;
+&lt;p&gt;Let's get started!&lt;/p&gt;
+&lt;h2&gt;Step I (creating a VPS)&lt;/h2&gt;
+&lt;p&gt;Go to &lt;code&gt;https://cloud.digitalocean.com/droplets&lt;/code&gt; and click on &lt;code&gt;Create Droplet&lt;/code&gt; button. Then, select Ubuntu 16.04:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="ubuntu16.04" src="/static/images/post-images/django-digitalocean/ubuntu1604.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Select a server:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="server" src="/static/images/post-images/django-digitalocean/size.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Select a region:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="region" src="/static/images/post-images/django-digitalocean/region.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Then, preferably add you ssh key and name your server:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="name" src="/static/images/post-images/django-digitalocean/server-name.png" /&gt;&lt;/p&gt;
+&lt;p&gt;And click on &lt;strong&gt;&lt;em&gt;Create&lt;/em&gt;&lt;/strong&gt;. After a while, you will see that your server has been created:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="created-server" src="/static/images/post-images/django-digitalocean/created-server.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Now, copy the IP address of the newly created server and ssh in:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssh root@104.236.57.112
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Replace that IP address with your own. Welcome in! You should see something like this:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="ssh-in" src="/static/images/post-images/django-digitalocean/ssh-in.png" /&gt;&lt;/p&gt;
+&lt;h2&gt;Step II (installing system-wide dependencies)&lt;/h2&gt;
+&lt;p&gt;First, let's update and upgrade the packages:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get update
+apt-get -y upgrade
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Install nginx:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install -y nginx
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Install supervisor:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install -y supervisor
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Install python virtualenv:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install -y python-virtualenv
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Install postgresql:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get install -y postgresql postgresql-contrib
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Step III (configuring database)&lt;/h2&gt;
+&lt;p&gt;Switch to the postgres user:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo su - postgres
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Type this to go to the postgres interactive shell:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;psql
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Create a database:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;postgres&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="c1"&gt;# CREATE DATABASE djtrumpprod;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Create a user:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;postgres&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="c1"&gt;# CREATE USER djtrumpuser WITH password &amp;#39;djtrump&amp;#39;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Give this new user an access to administer the new database:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;postgres&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="c1"&gt;# GRANT ALL PRIVILEGES ON DATABASE djtrumpprod TO djtrumpuser;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Quit from the shell and switch back to the root user:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nv"&gt;postgres&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="c1"&gt;# \q&lt;/span&gt;
+postgres@djtrump:~$ &lt;span class="nb"&gt;exit&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Step IV (setting up our project and its environment)&lt;/h2&gt;
+&lt;p&gt;Clone our sample app:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/rahmonov/djtrump.git
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Create and activate a virtual environment with python3.5 (not critical to use python3.5 though):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;virtualenv djtrumpenv --python&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;which python3.5&lt;span class="k"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;source&lt;/span&gt; djtrumpenv/bin/active
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, your prompt will show that you are operating under a Python virtual environment:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;djtrumpenv&lt;span class="o"&gt;)&lt;/span&gt; root@djtrump:~#
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Go ahead and install dependencies:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; djtrump
+pip install -r requirements.txt
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now we should migrate but there is one more thing that we need to do before that. If you go to the settings folder, there are two files:
+&lt;code&gt;base.py&lt;/code&gt; and &lt;code&gt;prod.py&lt;/code&gt;. Basically, &lt;code&gt;base.py&lt;/code&gt; contains all the configurations and &lt;code&gt;prod.py&lt;/code&gt; overrides those needed in the production environment.
+For example, &lt;code&gt;DATABASES&lt;/code&gt; config is overridden in &lt;code&gt;prod.py&lt;/code&gt;. That's why, we need to tell our environment to use this &lt;code&gt;prod.py&lt;/code&gt; and not the default &lt;code&gt;base.py&lt;/code&gt;.
+This is done by setting &lt;code&gt;DJANGO_SETTINGS_MODULE&lt;/code&gt; env variable to &lt;code&gt;prod.py&lt;/code&gt; path. Open &lt;code&gt;~/.bash_profile&lt;/code&gt; and add this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;export&lt;/span&gt; &lt;span class="nv"&gt;DJANGO_SETTINGS_MODULE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;djtrump.settings.prod
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Save and quit. Then, &lt;code&gt;source&lt;/code&gt; this file for our changes to take effect:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;source&lt;/span&gt; ~/.bash_profile
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, try to migrate. Most probably, it will fail and say something like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;FATAL:  Peer authentication failed &lt;span class="k"&gt;for&lt;/span&gt; user &lt;span class="s2"&gt;&amp;quot;djtrumpuser&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;That's because, postgresl uses peer authentication by default, which is it will succeed if the user with the same name as the postgres user uses it.
+In our case, there is no &lt;code&gt;djtrumpuser&lt;/code&gt; user in postgres and thus it fails. To fix it, go to &lt;code&gt;/etc/postgresql/9.5/main/pg_hba.conf&lt;/code&gt; and change the line
+that says this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;local&lt;/span&gt;   all     all      peer
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;to this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;local&lt;/span&gt;   all     all      md5
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Save and quit. This way, postgres will try to use password to authenticate the user. Now, restart postgresql for our changes to take effect:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo service postgresl restart
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Go ahead and migrate:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;python manage.py migrate
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It works now. Cool! Try to run the development server and it will work.&lt;/p&gt;
+&lt;h2&gt;Step V (configuring nginx)&lt;/h2&gt;
+&lt;p&gt;Create a new file: &lt;code&gt;/etc/nginx/sites-available/djtrump&lt;/code&gt; and add the following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;server &lt;span class="o"&gt;{&lt;/span&gt;
+    listen 80&lt;span class="p"&gt;;&lt;/span&gt;
+    server_name your_ip&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="nv"&gt;location&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; /favicon.ico &lt;span class="o"&gt;{&lt;/span&gt; access_log off&lt;span class="p"&gt;;&lt;/span&gt; log_not_found off&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="o"&gt;}&lt;/span&gt;
+
+    location /static/ &lt;span class="o"&gt;{&lt;/span&gt;
+            &lt;span class="nb"&gt;alias&lt;/span&gt; /root/djtrump/static/&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+
+    location / &lt;span class="o"&gt;{&lt;/span&gt;
+            include proxy_params&lt;span class="p"&gt;;&lt;/span&gt;
+            proxy_pass http://your_ip:8030&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Replace &lt;code&gt;your_ip&lt;/code&gt; with the IP address of your server. We know what this is doing from the previous tutorials. Basically, it is
+serving the static files from &lt;code&gt;/root/djtrump/static/&lt;/code&gt; and redirecting http requests to gunicorn which should be running on port 8030.&lt;/p&gt;
+&lt;p&gt;Now, let's enable this file by linking it to the sites-enabled folder:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo ln -s /etc/nginx/sites-available/djtrump /etc/nginx/sites-enabled
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Restart nginx:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo service nginx restart
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;There are two more things that we need to do before nginx works. First, we need to put all our static files in the folder &lt;code&gt;/root/djtrump/static/&lt;/code&gt;
+and run gunicorn on port 8030 as we promised in nginx config file.&lt;/p&gt;
+&lt;p&gt;First, run this to gather all static files in that folder:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;python manage.py collectstatic --noinput
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, run gunicorn:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;gunicorn --workers &lt;span class="m"&gt;3&lt;/span&gt; --bind 0.0.0.0:8030 djtrump.wsgi
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Go ahead and type in the browser the IP of your address. You will see that the app is running. Congratulations!&lt;/p&gt;
+&lt;p&gt;Please note that if you cloned the app to the user's home directory, you may face issues with static files (Permission denied error).
+One of the ways to solve it to run nginx as root. To do that, open &lt;code&gt;/etc/nginx/nginx.conf&lt;/code&gt; and change the line that says:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;user www-data&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;to this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;user root&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;and restart the nginx:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo service nginx restart
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Great! You will now see the pleasant face of Donald Trump and a random quote of his:&lt;/p&gt;
+&lt;p&gt;&lt;img alt="donald.04" src="/static/images/post-images/django-digitalocean/donald.png" /&gt;&lt;/p&gt;
+&lt;h2&gt;Step VI (configuring supervisor)&lt;/h2&gt;
+&lt;p&gt;Create &lt;code&gt;/etc/supervisor/conf.d/djtrump.conf&lt;/code&gt; and type in the following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;program:djtrump&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="nv"&gt;command&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/root/djtrumpenv/bin/gunicorn --workers &lt;span class="m"&gt;3&lt;/span&gt; --bind 0.0.0.0:8030 djtrump.wsgi
+&lt;span class="nv"&gt;directory&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/root/djtrump
+&lt;span class="nv"&gt;autostart&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt;
+&lt;span class="nv"&gt;autorestart&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt;
+&lt;span class="nv"&gt;stderr_logfile&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/var/log/djtrump.err.log
+&lt;span class="nv"&gt;stdout_logfile&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/var/log/djtrump.out.log
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Restart, reread and update the supervisor:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo service supervisor restart
+sudo supervisorctl reread
+sudo supervisorctl update
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, you can stop, start and restart your app easily! Try this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo supervisorctl stop djtrump
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If you go to the app in the browser, it will respond  with 502 (Bad Gateway) response. Go ahead and start it:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo supervisorctl start djtrump
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Go to the app and you will see it working!&lt;/p&gt;
+&lt;p&gt;Well, this is pretty much it! Congratulations, your django app is now live and available to everybody!&lt;/p&gt;
+&lt;p&gt;In the next tutorials, we will introduce ourselves to the world of CI and CD (Continuous Integration and Continuous Delivery). &lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;
+&lt;p&gt;P.S. If you want to make the style of this app better, please send a PR. I would love some help on CSS side or any other side for that matter.    &lt;/p&gt;</summary><category term="python"></category><category term="django"></category><category term="gunicorn"></category><category term="nginx"></category><category term="supervisord"></category><category term="digitalocean"></category><category term="deploy"></category></entry><entry><title>Run a Django app with Nginx, Gunicorn and Supervisor in Ubuntu 16.04 (Part III)</title><link href="http://rahmonov.github.io/posts/run-a-django-app-with-nginx-gunicorn-and-supervisor/" rel="alternate"></link><published>2017-03-08T20:10:00+05:00</published><updated>2017-03-08T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2017-03-08:posts/run-a-django-app-with-nginx-gunicorn-and-supervisor/</id><summary type="html">&lt;p&gt;This tutorial is the continuation of &lt;a href="http://rahmonov.me/posts/run-a-django-app-with-nginx-and-gunicorn/"&gt;this one&lt;/a&gt; where we learned
 how to run a django app with nginx and gunicorn. Now we will add Supervisord into the mix.&lt;/p&gt;
 &lt;h2&gt;The reason we need Supervisord&lt;/h2&gt;
 &lt;p&gt;Right now, we have our app running with Nginx and Gunicorn. However, every time our machine boots we have to start gunicorn and overall,
@@ -147,7 +904,7 @@ Gunicorn and static ones by Nginx. That's why we need Nginx.&lt;/p&gt;
 
 
 &lt;p&gt;Now, we will configure Nginx to pass traffic to the process.&lt;/p&gt;
-&lt;p&gt;Create a new server block in Nginx's &lt;code&gt;sites-available&lt;/code&gt; directory and type in the following:&lt;/p&gt;
+&lt;p&gt;Create a file &lt;code&gt;/etc/nginx/sites-available/djtrump&lt;/code&gt; and type in the following:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;server &lt;span class="o"&gt;{&lt;/span&gt;
     listen 8000&lt;span class="p"&gt;;&lt;/span&gt;
     server_name 0.0.0.0&lt;span class="p"&gt;;&lt;/span&gt;
@@ -166,7 +923,7 @@ Gunicorn and static ones by Nginx. That's why we need Nginx.&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;Adjust the paths like &lt;code&gt;/home/ubuntu/myproject&lt;/code&gt; to your own environment.&lt;/p&gt;
+&lt;p&gt;Adjust the paths such as &lt;code&gt;/home/ubuntu/myproject&lt;/code&gt; to your own environment.&lt;/p&gt;
 &lt;p&gt;Let's see what is going on here.&lt;/p&gt;
 &lt;p&gt;The first two lines tell that it will listen to the port &lt;code&gt;8000&lt;/code&gt; on &lt;code&gt;0.0.0.0&lt;/code&gt;. The next line about favicon will tell Nginx to ignore
 problems with favicon.ico.&lt;/p&gt;

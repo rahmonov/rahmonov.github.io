@@ -102,7 +102,7 @@ Gunicorn and static ones by Nginx. That's why we need Nginx.</p>
 
 
 <p>Now, we will configure Nginx to pass traffic to the process.</p>
-<p>Create a new server block in Nginx's <code>sites-available</code> directory and type in the following:</p>
+<p>Create a file <code>/etc/nginx/sites-available/djtrump</code> and type in the following:</p>
 <div class="highlight"><pre><span></span>server <span class="o">{</span>
     listen 8000<span class="p">;</span>
     server_name 0.0.0.0<span class="p">;</span>
@@ -121,7 +121,7 @@ Gunicorn and static ones by Nginx. That's why we need Nginx.</p>
 </pre></div>
 
 
-<p>Adjust the paths like <code>/home/ubuntu/myproject</code> to your own environment.</p>
+<p>Adjust the paths such as <code>/home/ubuntu/myproject</code> to your own environment.</p>
 <p>Let's see what is going on here.</p>
 <p>The first two lines tell that it will listen to the port <code>8000</code> on <code>0.0.0.0</code>. The next line about favicon will tell Nginx to ignore
 problems with favicon.ico.</p>
