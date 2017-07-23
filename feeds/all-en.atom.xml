@@ -1,5 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/all-en.atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2017-07-21T20:10:00+05:00</updated><entry><title>Python Collections - Counter</title><link href="http://rahmonov.github.io/posts/python-collections-counter/" rel="alternate"></link><published>2017-07-21T20:10:00+05:00</published><updated>2017-07-21T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2017-07-21:posts/python-collections-counter/</id><summary type="html">&lt;p&gt;Python has the following general purpose built-in containers: &lt;code&gt;dict&lt;/code&gt;, &lt;code&gt;list&lt;/code&gt;, &lt;code&gt;set&lt;/code&gt;, and &lt;code&gt;tuple&lt;/code&gt;. However, apart from
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/all-en.atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2017-07-23T20:10:00+05:00</updated><entry><title>My first Open Source Project</title><link href="http://rahmonov.github.io/posts/my-first-open-source-project/" rel="alternate"></link><published>2017-07-23T20:10:00+05:00</published><updated>2017-07-23T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2017-07-23:posts/my-first-open-source-project/</id><summary type="html">&lt;p&gt;Lately, people &lt;a href="https://www.monster.com/career-advice/article/open-source-coding-can-give-your-career-an-edge"&gt;have&lt;/a&gt;
+&lt;a href="http://www.yegor256.com/2016/03/08/pimp-up-your-resume.html"&gt;been&lt;/a&gt; saying that contributing to an open source project is very important for a 
+programmer's career. I absolutely agree. That's why, I have been trying to contribute as much as I can in my free time by 
+fixing a typo here, opening an issue there and solving some small issues. I still remember this feeling of joy when my first pull request
+was merged to &lt;a href="https://falconframework.org/"&gt;the Falcon framework&lt;/a&gt; :)&lt;/p&gt;
+&lt;p&gt;&lt;img alt="first-pr" src="/static/images/post-images/first-osp/pr.jpg" /&gt;&lt;/p&gt;
+&lt;p&gt;I also wanted to do something of my own. And today, I am excited to say that I published my first open source project in the form of a &lt;a href="https://pypi.python.org/pypi/agile-crm-python"&gt;PyPI package&lt;/a&gt;. YAY!&lt;/p&gt;
+&lt;p&gt;&lt;img alt="pypi" src="/static/images/post-images/first-osp/pypi.png" /&gt;&lt;/p&gt;
+&lt;p&gt;It is nothing big. Just a Python wrapper for &lt;a href="https://www.agilecrm.com/"&gt;AgileCRM&lt;/a&gt; &lt;a href="https://github.com/agilecrm/rest-api"&gt;REST API&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;However, there are a number of reasons why I made &lt;a href="https://github.com/rahmonov/agile-crm-python"&gt;this package&lt;/a&gt;!&lt;/p&gt;
+&lt;p&gt;First of all, &lt;a href="https://github.com/agilecrm/python-api"&gt;their own package&lt;/a&gt; was not comfortable to use. The following is how you update a tag field of a contact:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;update_tag_value&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+   &lt;span class="s2"&gt;&amp;quot;id&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;5708993221623808&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+   &lt;span class="s2"&gt;&amp;quot;tags&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+       &lt;span class="s2"&gt;&amp;quot;test1&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+       &lt;span class="s2"&gt;&amp;quot;test2&amp;quot;&lt;/span&gt;
+   &lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;agileCRM&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;contacts/edit/tags&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;PUT&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;update_tag_value&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;application/json&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You have to input all these things manually such as &lt;code&gt;"application/json"&lt;/code&gt; content-type or the method. You also have to know the URL of the endpoint.
+Both of them could have easily been managed by the package itself.&lt;/p&gt;
+&lt;p&gt;The second reason is that this would decrease the readability of your code because the only method that is available is called &lt;code&gt;agileCRM()&lt;/code&gt;. It 
+is not really descriptive, is it? My colleagues would kill me for writing this kind of code. The solution is to wrap this by another method. Again, I think
+that it the package should provide this.&lt;/p&gt;
+&lt;p&gt;The most important reason, however, is installation! In order to use this package, you have to find it in Github and download the code from there.
+Very uncomfortable and raises the question of where you would put this code in your project.&lt;/p&gt;
+&lt;p&gt;Now, let's take a look at &lt;a href="https://github.com/rahmonov/agile-crm-python"&gt;my baby&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;I will just give you some examples:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;agile_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;contact&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fetch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;5649050225344512&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;agile_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;contact&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;delete&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;5649050225344512&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;agile_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;contact&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;find&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;q&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;los&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;page_size&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;15&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;agile_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;contact&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_notes&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;contact_id&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;5689413791121408&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;agile_client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;deal&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fetch&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;5719238044024832&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;client&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;contact&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add_notes&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;subject&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Second Note&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;description&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;DESCRIPTION&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;contact_id&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;contact_id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I am definitely a little biased here but it is very easy to use because you just have to input your variables and forget about
+method type, the endpoint url or the content-type. And look how readable it is. Just by reading, you know that you are fetching or updating a contact or you are
+adding a note to a contact.&lt;/p&gt;
+&lt;p&gt;As for the installation, simple:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install agile-crm-python
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;That's it!&lt;/p&gt;
+&lt;p&gt;Again, it is nothing big and probably won't be useful for a lot of people. However, I learned a lot in the process, from writing such a wrapper to making it available as a PyPI package.&lt;/p&gt;
+&lt;p&gt;If you also want to start or contribute to an open source project, I think the best advice would be taking a close look at the packages/libraries/frameworks that
+you currently use. Maybe there are things that you think need some improvement. Even a small typo in the documentation. Or the name of the function. Anything!
+Go ahead and fork the project, make improvements and send a pull request. You will see how exciting it is.&lt;/p&gt;
+&lt;p&gt;Okay, that's it from me today. If you liked what I did, please go to &lt;a href="https://github.com/rahmonov/agile-crm-python"&gt;my GitHub repo&lt;/a&gt; and star the project. 
+That would be awesome. Leave a comment if you think that something can be improved. That would be more than awesome. Thank you.&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="python"></category><category term="open"></category><category term="source"></category></entry><entry><title>Python Collections - Counter</title><link href="http://rahmonov.github.io/posts/python-collections-counter/" rel="alternate"></link><published>2017-07-21T20:10:00+05:00</published><updated>2017-07-21T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2017-07-21:posts/python-collections-counter/</id><summary type="html">&lt;p&gt;Python has the following general purpose built-in containers: &lt;code&gt;dict&lt;/code&gt;, &lt;code&gt;list&lt;/code&gt;, &lt;code&gt;set&lt;/code&gt;, and &lt;code&gt;tuple&lt;/code&gt;. However, apart from
 them, there are specialized alternative container data types in Python's collections module. In this blog post, we will
 take a look at the &lt;code&gt;Counter&lt;/code&gt; class from this module.&lt;/p&gt;
 &lt;h2&gt;Counter&lt;/h2&gt;

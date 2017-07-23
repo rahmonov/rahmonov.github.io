@@ -71,181 +71,70 @@
 <h2>Latest Post</h2>
 
 <h4>
-    <a href="posts/python-collections-counter/">
-        21 July 2017
+    <a href="posts/my-first-open-source-project/">
+        23 July 2017
     </a>
 </h4>
 
-<h1>Python Collections - Counter</h1>
+<h1>My first Open Source Project</h1>
 
-<p>Python has the following general purpose built-in containers: <code>dict</code>, <code>list</code>, <code>set</code>, and <code>tuple</code>. However, apart from
-them, there are specialized alternative container data types in Python's collections module. In this blog post, we will
-take a look at the <code>Counter</code> class from this module.</p>
-<h2>Counter</h2>
-<p>A Counter is a child class of <code>dict</code> which, as its name suggests, counts hashable objects. Basically, it stores elements as
-dictionary keys and their counts as dictionary values:</p>
-<div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<p>Lately, people <a href="https://www.monster.com/career-advice/article/open-source-coding-can-give-your-career-an-edge">have</a>
+<a href="http://www.yegor256.com/2016/03/08/pimp-up-your-resume.html">been</a> saying that contributing to an open source project is very important for a 
+programmer's career. I absolutely agree. That's why, I have been trying to contribute as much as I can in my free time by 
+fixing a typo here, opening an issue there and solving some small issues. I still remember this feeling of joy when my first pull request
+was merged to <a href="https://falconframework.org/">the Falcon framework</a> :)</p>
+<p><img alt="first-pr" src="/static/images/post-images/first-osp/pr.jpg" /></p>
+<p>I also wanted to do something of my own. And today, I am excited to say that I published my first open source project in the form of a <a href="https://pypi.python.org/pypi/agile-crm-python">PyPI package</a>. YAY!</p>
+<p><img alt="pypi" src="/static/images/post-images/first-osp/pypi.png" /></p>
+<p>It is nothing big. Just a Python wrapper for <a href="https://www.agilecrm.com/">AgileCRM</a> <a href="https://github.com/agilecrm/rest-api">REST API</a>.</p>
+<p>However, there are a number of reasons why I made <a href="https://github.com/rahmonov/agile-crm-python">this package</a>!</p>
+<p>First of all, <a href="https://github.com/agilecrm/python-api">their own package</a> was not comfortable to use. The following is how you update a tag field of a contact:</p>
+<div class="highlight"><pre><span></span><span class="n">update_tag_value</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;5708993221623808&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="p">[</span>
+       <span class="s2">&quot;test1&quot;</span><span class="p">,</span>
+       <span class="s2">&quot;test2&quot;</span>
+   <span class="p">]</span>
+<span class="p">}</span>
 
-<span class="n">In</span> <span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">my_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">]</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">3</span><span class="p">]:</span> <span class="k">print</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">my_list</span><span class="p">))</span>
-<span class="n">Counter</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
+<span class="k">print</span> <span class="n">agileCRM</span><span class="p">(</span><span class="s2">&quot;contacts/edit/tags&quot;</span><span class="p">,</span><span class="s2">&quot;PUT&quot;</span><span class="p">,</span><span class="n">update_tag_value</span><span class="p">,</span><span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
 </pre></div>
 
 
-<p>As you can see that it is unordered and is basically saying there are 3 of 'a' in <code>my_list</code> and etc.</p>
-<p>Besides initializing from an iterable like we saw in the previous example, a Counter can also be initialized from another mapping:</p>
-<div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">4</span><span class="p">]:</span> <span class="k">print</span><span class="p">(</span><span class="n">Counter</span><span class="p">({</span><span class="s1">&#39;car&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;house&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">}))</span>
-<span class="n">Counter</span><span class="p">({</span><span class="s1">&#39;house&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;car&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">})</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">5</span><span class="p">]:</span> <span class="k">print</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="n">car</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">house</span><span class="o">=</span><span class="mi">10</span><span class="p">))</span>
-<span class="n">Counter</span><span class="p">({</span><span class="s1">&#39;house&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;car&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">})</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">6</span><span class="p">]:</span> <span class="k">print</span><span class="p">(</span><span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;sibling&#39;</span><span class="p">))</span>    <span class="c1"># another iterable</span>
-<span class="n">Counter</span><span class="p">({</span><span class="s1">&#39;i&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
+<p>You have to input all these things manually such as <code>"application/json"</code> content-type or the method. You also have to know the URL of the endpoint.
+Both of them could have easily been managed by the package itself.</p>
+<p>The second reason is that this would decrease the readability of your code because the only method that is available is called <code>agileCRM()</code>. It 
+is not really descriptive, is it? My colleagues would kill me for writing this kind of code. The solution is to wrap this by another method. Again, I think
+that it the package should provide this.</p>
+<p>The most important reason, however, is installation! In order to use this package, you have to find it in Github and download the code from there.
+Very uncomfortable and raises the question of where you would put this code in your project.</p>
+<p>Now, let's take a look at <a href="https://github.com/rahmonov/agile-crm-python">my baby</a>.</p>
+<p>I will just give you some examples:</p>
+<div class="highlight"><pre><span></span><span class="n">agile_client</span><span class="o">.</span><span class="n">contact</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s1">&#39;5649050225344512&#39;</span><span class="p">)</span>
+<span class="n">agile_client</span><span class="o">.</span><span class="n">contact</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s1">&#39;5649050225344512&#39;</span><span class="p">)</span>
+<span class="n">agile_client</span><span class="o">.</span><span class="n">contact</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="s1">&#39;los&#39;</span><span class="p">,</span> <span class="n">page_size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">agile_client</span><span class="o">.</span><span class="n">contact</span><span class="o">.</span><span class="n">get_notes</span><span class="p">(</span><span class="n">contact_id</span><span class="o">=</span><span class="s1">&#39;5689413791121408&#39;</span><span class="p">)</span>
+<span class="n">agile_client</span><span class="o">.</span><span class="n">deal</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s1">&#39;5719238044024832&#39;</span><span class="p">)</span>
+<span class="n">client</span><span class="o">.</span><span class="n">contact</span><span class="o">.</span><span class="n">add_notes</span><span class="p">(</span><span class="n">subject</span><span class="o">=</span><span class="s1">&#39;Second Note&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;DESCRIPTION&#39;</span><span class="p">,</span> <span class="n">contact_id</span><span class="o">=</span><span class="n">contact_id</span><span class="p">)</span>
 </pre></div>
 
 
-<p>As a <code>Counter</code> is a child of the <code>dict</code> class, it has <code>dict</code>'s interface:</p>
-<div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">7</span><span class="p">]:</span> <span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">my_list</span><span class="p">)</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">8</span><span class="p">]:</span> <span class="n">c</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">8</span><span class="p">]:</span> <span class="n">dict_items</span><span class="p">([(</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">9</span><span class="p">]:</span> <span class="n">c</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">9</span><span class="p">]:</span> <span class="n">dict_keys</span><span class="p">([</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">])</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">10</span><span class="p">]:</span> <span class="n">c</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">10</span><span class="p">]:</span> <span class="n">dict_values</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<p>I am definitely a little biased here but it is very easy to use because you just have to input your variables and forget about
+method type, the endpoint url or the content-type. And look how readable it is. Just by reading, you know that you are fetching or updating a contact or you are
+adding a note to a contact.</p>
+<p>As for the installation, simple:</p>
+<div class="highlight"><pre><span></span>pip install agile-crm-python
 </pre></div>
 
 
-<p>The only difference is that if you try to access a missing item, a Counter will return zero whereas a dict would raise a <code>KeyError</code>:</p>
-<div class="highlight"><pre><span></span>In [11]: c[&#39;t&#39;]
-Out[11]: 0
-</pre></div>
-
-
-<p>Other than those standard <code>dict</code> methods, a Counter has 3 more specific ones.</p>
-<p><code>most_common(n)</code> - returns a list of <code>n</code> most common elements and their counts in a tuple, ordered from the most common to the least.
-If <code>n</code> is <code>None</code>, then the method will return all of the elements:</p>
-<div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">12</span><span class="p">]:</span> <span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;hallelujah&#39;</span><span class="p">)</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">13</span><span class="p">]:</span> <span class="n">c</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">13</span><span class="p">]:</span> <span class="p">[(</span><span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">14</span><span class="p">]:</span> <span class="n">c</span><span class="o">.</span><span class="n">most_common</span><span class="p">()</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">14</span><span class="p">]:</span> <span class="p">[(</span><span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;j&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span>
-</pre></div>
-
-
-<p><code>elements()</code> - returns an iterator which repeats each element as many times as its count:</p>
-<div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">15</span><span class="p">]:</span> <span class="nb">list</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">elements</span><span class="p">())</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">15</span><span class="p">]:</span> <span class="p">[</span><span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="s1">&#39;j&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">]</span>
-</pre></div>
-
-
-<p><code>subtract(iterable-or-mapping)</code> - Counts of common elements are subtracted from each other</p>
-<div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">16</span><span class="p">]:</span> <span class="n">d</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="s1">&#39;hollar&#39;</span><span class="p">)</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">17</span><span class="p">]:</span> <span class="n">d</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">17</span><span class="p">]:</span> <span class="n">Counter</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">18</span><span class="p">]:</span> <span class="n">c</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">18</span><span class="p">]:</span> <span class="n">Counter</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;j&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">19</span><span class="p">]:</span> <span class="n">c</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">20</span><span class="p">]:</span> <span class="n">c</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">20</span><span class="p">]:</span> <span class="n">Counter</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;j&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
-</pre></div>
-
-
-<p>Also, some mathematical operations can be applied to combine <code>Counter</code> objects:</p>
-<p>Adding(+) two Counters together will perform the following on the elements: <code>c[x] + d[x]</code>:</p>
-<div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">21</span><span class="p">]:</span> <span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">21</span><span class="p">]:</span> <span class="n">d</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">22</span><span class="p">]:</span> <span class="n">c</span> <span class="o">+</span> <span class="n">d</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">22</span><span class="p">]:</span> <span class="n">Counter</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">})</span>
-</pre></div>
-
-
-<p>Subtracting(-) is the same as the <code>subtract()</code> method (keeps only positive counts):</p>
-<div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">23</span><span class="p">]:</span> <span class="n">c</span> <span class="o">-</span> <span class="n">d</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">23</span><span class="p">]:</span> <span class="n">Counter</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
-</pre></div>
-
-
-<p>Intersaction(&amp;) will keep only the minimum of corresponding counts: <code>min(c[x], d[x])</code>:</p>
-<div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">24</span><span class="p">]:</span> <span class="n">c</span> <span class="o">&amp;</span> <span class="n">d</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">24</span><span class="p">]:</span> <span class="n">Counter</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
-</pre></div>
-
-
-<p>Union(|) will keep only the maximum of corresponding counts: <code>max(c[x], d[x])</code>:</p>
-<div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">25</span><span class="p">]:</span> <span class="n">c</span> <span class="o">|</span> <span class="n">d</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">25</span><span class="p">]:</span> <span class="n">Counter</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
-</pre></div>
-
-
-<p>And finally, there are shortcuts for adding an empty counter and subtracting from an empty counter:</p>
-<div class="highlight"><pre><span></span><span class="n">In</span> <span class="p">[</span><span class="mi">26</span><span class="p">]:</span> <span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">b</span><span class="o">=-</span><span class="mi">4</span><span class="p">)</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">27</span><span class="p">]:</span> <span class="o">+</span><span class="n">c</span>                     <span class="c1"># the same as: c + Counter()</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">27</span><span class="p">]:</span> <span class="n">Counter</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
-
-<span class="n">In</span> <span class="p">[</span><span class="mi">28</span><span class="p">]:</span> <span class="o">-</span><span class="n">c</span>                     <span class="c1"># the same as: Counter() - c</span>
-<span class="n">Out</span><span class="p">[</span><span class="mi">28</span><span class="p">]:</span> <span class="n">Counter</span><span class="p">({</span><span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">})</span>
-</pre></div>
-
-
-<p>Now, with all this theoretical knowledge learned, let's try to apply it to solve a real problem. Let's try to tackle <a href="https://www.hackerrank.com/challenges/collections-counter/problem">this problem</a>
-in HackerRank, shall we? Before proceeding further, try to solve it yourself and then compare your solution with mine. Better yet, comment your solution here to discuss.</p>
-<p>Task:</p>
-<div class="highlight"><pre><span></span>Raghu is a shoe shop owner. His shop has X number of shoes. 
-He has a list containing the size of each shoe he has in his shop. 
-There are N number of customers who are willing to pay x amount of money only if they get the shoe of their desired size.
-
-Your task is to compute how much money Raghu earned.
-
-Input Format
-
-The first line contains X, the number of shoes. 
-The second line contains the space separated list of all the shoe sizes in the shop.
-The third line contains N, the number of customers. 
-The next N lines contain the space separated values of the shoe size desired by the customer and x, the price of the shoe.
-
-Output Format
-
-Print the amount of money earned by Raghu.
-</pre></div>
-
-
-<p>My solution:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
-
-<span class="n">X</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">())</span>
-<span class="n">shoes</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
-<span class="n">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">())</span>
-
-<span class="n">shoe_collection</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">shoes</span><span class="p">)</span>
-<span class="n">total_money</span> <span class="o">=</span> <span class="mi">0</span>
-
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
-    <span class="n">size</span><span class="p">,</span> <span class="n">money</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
-
-    <span class="k">if</span> <span class="n">shoe_collection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
-        <span class="n">total_money</span> <span class="o">+=</span> <span class="n">money</span>
-        <span class="n">shoe_collection</span><span class="p">[</span><span class="n">size</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
-
-<span class="k">print</span><span class="p">(</span><span class="n">total_money</span><span class="p">)</span>
-</pre></div>
-
-
-<p>It is pretty easy to understand but if you have any questions make sure to ask in the comments!  </p>
-<p>Fight on!  </p>
+<p>That's it!</p>
+<p>Again, it is nothing big and probably won't be useful for a lot of people. However, I learned a lot in the process, from writing such a wrapper to making it available as a PyPI package.</p>
+<p>If you also want to start or contribute to an open source project, I think the best advice would be taking a close look at the packages/libraries/frameworks that
+you currently use. Maybe there are things that you think need some improvement. Even a small typo in the documentation. Or the name of the function. Anything!
+Go ahead and fork the project, make improvements and send a pull request. You will see how exciting it is.</p>
+<p>Okay, that's it from me today. If you liked what I did, please go to <a href="https://github.com/rahmonov/agile-crm-python">my GitHub repo</a> and star the project. 
+That would be awesome. Leave a comment if you think that something can be improved. That would be more than awesome. Thank you.</p>
+<p>Fight on!</p>
 
 <div class="end">
     <span>
