@@ -493,4 +493,8 @@ table.pretty thead tr th {
     border-bottom: 1px solid #ddd;
 }
 
+code{
+    font-size: 15px;
+}
+
 

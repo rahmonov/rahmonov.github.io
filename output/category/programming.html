@@ -72,89 +72,69 @@
 <h2>Articles in the programming category</h2>
 
 <h4>
-    <a href="posts/testcase-vs-transactiontestcase-in-django/">
-        11 June 2017
+    <a href="posts/my-first-open-source-project/">
+        23 July 2017
     </a>
 </h4>
 
-<h1>TestCase vs TransactionTestCase in Django</h1>
+<h1>My first Open Source Project</h1>
 
-<p>Based on my observation, a lot of developers don't seem to understand the difference between <code>TestCase</code> and <code>TransactionTestCase</code>
-in Django and how to use them. In this post, I will try to put the puzzle pieces together and make things clear.</p>
-<h2>TestCase class</h2>
-<p>Here is what <a href="https://docs.djangoproject.com/en/1.11/topics/testing/tools/#django.test.TestCase">the documentation</a> has to say
-about the <code>TestCase</code> class:</p>
-<blockquote>
-<p>Wraps the tests within two nested atomic() blocks: one for the whole class and one for each test.</p>
-</blockquote>
-<p>Now imagine that you have a method that must be executed inside a transaction or else it raises an error. You could write a test similar to this:</p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="n">SomeTestCase</span>(<span class="n">TestCase</span>):
+<p>Lately, people <a href="https://www.monster.com/career-advice/article/open-source-coding-can-give-your-career-an-edge">have</a>
+<a href="http://www.yegor256.com/2016/03/08/pimp-up-your-resume.html">been</a> saying that contributing to an open source project is very important for a 
+programmer's career. I absolutely agree. That's why, I have been trying to contribute as much as I can in my free time by 
+fixing a typo here, opening an issue there and solving some small issues. I still remember this feeling of joy when my first pull request
+was merged to <a href="https://falconframework.org/">the Falcon framework</a> :)</p>
+<p><img alt="first-pr" src="/static/images/post-images/first-osp/pr.jpg" /></p>
+<p>I also wanted to do something of my own. And today, I am excited to say that I published my first open source project in the form of a <a href="https://pypi.python.org/pypi/agile-crm-python">PyPI package</a>. YAY!</p>
+<p><img alt="pypi" src="/static/images/post-images/first-osp/pypi.png" /></p>
+<p>It is nothing big. Just a Python wrapper for <a href="https://www.agilecrm.com/">AgileCRM</a> <a href="https://github.com/agilecrm/rest-api">REST API</a>.</p>
+<p>However, there are a number of reasons why I made <a href="https://github.com/rahmonov/agile-crm-python">this package</a>!</p>
+<p>First of all, <a href="https://github.com/agilecrm/python-api">their own package</a> was not comfortable to use. The following is how you update a tag field of a contact:</p>
+<div class="highlight"><pre><span></span><span class="n">update_tag_value</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;5708993221623808&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="p">[</span>
+       <span class="s2">&quot;test1&quot;</span><span class="p">,</span>
+       <span class="s2">&quot;test2&quot;</span>
+   <span class="p">]</span>
+<span class="p">}</span>
 
-    <span class="n">def</span> <span class="n">test_your_method_raises_error_without_atomic_block</span>(<span class="k">self</span>):
-        <span class="n">with</span> <span class="k">self</span>.<span class="n">assertRaises</span>(<span class="n">SomeError</span>):
-            <span class="n">your_method</span>()
+<span class="k">print</span> <span class="n">agileCRM</span><span class="p">(</span><span class="s2">&quot;contacts/edit/tags&quot;</span><span class="p">,</span><span class="s2">&quot;PUT&quot;</span><span class="p">,</span><span class="n">update_tag_value</span><span class="p">,</span><span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
 </pre></div>
 
 
-<p>In this test, <code>your_method()</code> is called without any transaction and the test is asserting that it raises <code>SomeError</code> because of that.</p>
-<p>However, this test will unexpectedly fail! The reason is, you guessed it, TestCase wraps the tests with <code>atomic()</code> blocks 
-ALL THE TIME. Thus, <code>your_method()</code> will not raise an error, which is why this test will fail.</p>
-<h2>TransactionTestCase to the rescue</h2>
-<p>This is where <code>TransactionTestCase</code> should be used. It does not wrap the tests with <code>atomic()</code> block and thus you can test your special 
-methods that require a transaction without any problem. The above test will pass with <code>TransactionTestCase</code> now:</p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="n">SomeTestCase</span>(<span class="n">TransactionTestCase</span>):
-
-    <span class="n">def</span> <span class="n">test_your_method_raises_error_without_atomic_block</span>(<span class="k">self</span>):
-        <span class="n">with</span> <span class="k">self</span>.<span class="n">assertRaises</span>(<span class="n">SomeError</span>):
-            <span class="n">your_method</span>()
+<p>You have to input all these things manually such as <code>"application/json"</code> content-type or the method. You also have to know the URL of the endpoint.
+Both of them could have easily been managed by the package itself.</p>
+<p>The second reason is that this would decrease the readability of your code because the only method that is available is called <code>agileCRM()</code>. It 
+is not really descriptive, is it? My colleagues would kill me for writing this kind of code. The solution is to wrap this by another method. Again, I think
+that it the package should provide this.</p>
+<p>The most important reason, however, is installation! In order to use this package, you have to find it in Github and download the code from there.
+Very uncomfortable and raises the question of where you would put this code in your project.</p>
+<p>Now, let's take a look at <a href="https://github.com/rahmonov/agile-crm-python">my baby</a>.</p>
+<p>I will just give you some examples:</p>
+<div class="highlight"><pre><span></span><span class="n">agile_client</span><span class="o">.</span><span class="n">contact</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s1">&#39;5649050225344512&#39;</span><span class="p">)</span>
+<span class="n">agile_client</span><span class="o">.</span><span class="n">contact</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s1">&#39;5649050225344512&#39;</span><span class="p">)</span>
+<span class="n">agile_client</span><span class="o">.</span><span class="n">contact</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="s1">&#39;los&#39;</span><span class="p">,</span> <span class="n">page_size</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">agile_client</span><span class="o">.</span><span class="n">contact</span><span class="o">.</span><span class="n">get_notes</span><span class="p">(</span><span class="n">contact_id</span><span class="o">=</span><span class="s1">&#39;5689413791121408&#39;</span><span class="p">)</span>
+<span class="n">agile_client</span><span class="o">.</span><span class="n">deal</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s1">&#39;5719238044024832&#39;</span><span class="p">)</span>
+<span class="n">client</span><span class="o">.</span><span class="n">contact</span><span class="o">.</span><span class="n">add_notes</span><span class="p">(</span><span class="n">subject</span><span class="o">=</span><span class="s1">&#39;Second Note&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;DESCRIPTION&#39;</span><span class="p">,</span> <span class="n">contact_id</span><span class="o">=</span><span class="n">contact_id</span><span class="p">)</span>
 </pre></div>
 
 
-<h2>Real Life example</h2>
-<p>Let's see a real example now. A queryset method called <a href="https://docs.djangoproject.com/en/1.11/ref/models/querysets/#django.db.models.query.QuerySet.select_for_update">select_for_update()</a> 
-is one of those methods that require to be inside a transaction. If you call it without any transaction, it raises an error.</p>
-<p>Let's say you have a model called <code>Item</code> and you are calling <code>select_for_update()</code>:</p>
-<div class="highlight"><pre><span></span>Item.objects.select_for_update()
+<p>I am definitely a little biased here but it is very easy to use because you just have to input your variables and forget about
+method type, the endpoint url or the content-type. And look how readable it is. Just by reading, you know that you are fetching or updating a contact or you are
+adding a note to a contact.</p>
+<p>As for the installation, simple:</p>
+<div class="highlight"><pre><span></span>pip install agile-crm-python
 </pre></div>
 
 
-<p>It will immediately raise the following error:</p>
-<div class="highlight"><pre><span></span><span class="n">TransactionManagementError</span><span class="o">:</span> <span class="n">select_for_update</span> <span class="n">cannot</span> <span class="n">be</span> <span class="n">used</span> <span class="n">outside</span> <span class="n">of</span> <span class="n">a</span> <span class="n">transaction</span><span class="o">.</span>
-</pre></div>
-
-
-<p>Now, let's try to write tests for it with both <code>TestCase</code> and <code>TransactionTestCase</code>:</p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="n">ItemTestCase</span>(<span class="n">TestCase</span>):
-    <span class="n">def</span> <span class="n">setUp</span>(<span class="k">self</span>):
-        <span class="k">self</span>.<span class="n">item</span> = <span class="n">Item</span>.<span class="n">objects</span>.<span class="n">create</span>(<span class="nb">name</span>=<span class="s">&#39;hat&#39;</span>)
-
-    <span class="n">def</span> <span class="n">test_select_for_update_raises_an_error_without_transaction</span>(<span class="k">self</span>):
-        <span class="n">with</span> <span class="k">self</span>.<span class="n">assertRaises</span>(<span class="n">TransactionManagementError</span>):
-            <span class="n">items</span> = <span class="n">Items</span>.<span class="n">objects</span>.<span class="n">select_for_update</span>().<span class="n">filter</span>()
-            <span class="nb">print</span>(<span class="n">items</span>)  <span class="c c-Singleline"># needed to actually execute the query because they are lazy</span>
-</pre></div>
-
-
-<p>Try to run the test and you will get the following:</p>
-<div class="highlight"><pre><span></span><span class="n">AssertionError</span><span class="o">:</span> <span class="n">TransactionManagementError</span> <span class="n">not</span> <span class="n">raised</span>
-</pre></div>
-
-
-<p>The reason? <code>TestCase</code> wraps the tests with <code>atomic()</code> blocks ALL THE TIME. Good. Glad you remember this. </p>
-<p>Now, let's make this test pass with <code>TransactionTestCase</code>:</p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="n">ItemTestCase</span>(<span class="n">TransactionTestCase</span>):
-    <span class="n">def</span> <span class="n">setUp</span>(<span class="k">self</span>):
-        <span class="k">self</span>.<span class="n">item</span> = <span class="n">Item</span>.<span class="n">objects</span>.<span class="n">create</span>(<span class="nb">name</span>=<span class="s">&#39;hat&#39;</span>)
-
-    <span class="n">def</span> <span class="n">test_select_for_update_raises_an_error_without_transaction</span>(<span class="k">self</span>):
-        <span class="n">with</span> <span class="k">self</span>.<span class="n">assertRaises</span>(<span class="n">TransactionManagementError</span>):
-            <span class="n">items</span> = <span class="n">Items</span>.<span class="n">objects</span>.<span class="n">select_for_update</span>().<span class="n">filter</span>()
-            <span class="nb">print</span>(<span class="n">items</span>)  <span class="c c-Singleline"># needed to actually execute the query because they are lazy</span>
-</pre></div>
-
-
-<p>and voila! The test passes! Great!</p>
-<p>I hope it will clear things out for some people. Let me know in the comments if something is still not clear.</p>
+<p>That's it!</p>
+<p>Again, it is nothing big and probably won't be useful for a lot of people. However, I learned a lot in the process, from writing such a wrapper to making it available as a PyPI package.</p>
+<p>If you also want to start or contribute to an open source project, I think the best advice would be taking a close look at the packages/libraries/frameworks that
+you currently use. Maybe there are things that you think need some improvement. Even a small typo in the documentation. Or the name of the function. Anything!
+Go ahead and fork the project, make improvements and send a pull request. You will see how exciting it is.</p>
+<p>Okay, that's it from me today. If you liked what I did, please go to <a href="https://github.com/rahmonov/agile-crm-python">my GitHub repo</a> and star the project. 
+That would be awesome. Leave a comment if you think that something can be improved. That would be more than awesome. Thank you.</p>
 <p>Fight on!</p>
 
 <div class="end">
