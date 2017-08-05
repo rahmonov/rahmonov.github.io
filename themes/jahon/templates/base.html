@@ -68,6 +68,11 @@
                 {% include 'sidebar.html' %}
             </div>
 
+            <form method="get" action="https://www.google.com/search">
+                <input name="sitesearch" value="rahmonov.me" type="hidden">
+                <input type="text" id="search-query" class="field field-text" required="required" name="q" placeholder="Search..." autocomplete="off">
+                <input type="image" src="/static/images/search-icon.png" width="20" height="20" class="search-icon" title="Search via Google" alt="Search via Google">
+            </form>
 
             <ul class="menu">
                 <li><a href="/">Home</a></li>
