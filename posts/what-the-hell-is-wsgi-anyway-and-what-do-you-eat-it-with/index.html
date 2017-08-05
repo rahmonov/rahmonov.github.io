@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head prefix="og: http://ogp.me/ns#">
-        <title>Jahongir Rahmonov - Articles by Jahongir Rahmonov</title>
+          <title> What the hell is WSGI anyway and what do you eat it with? - Jahongir Rahmonov </title>
 
         <link rel="stylesheet" href="/static/css/main.css" />
         <link rel="stylesheet" href="/static/css/pygment.css" />
@@ -14,14 +14,23 @@
         <meta name="author" content="Jahongir Rahmonov" />
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
-        <meta property="og:title" content="Home - Jahongir Rahmonov">
-        <meta property="og:type" content="website">
-        <meta property="og:image" content="/static/images/programming.jpg">
-        <meta property="og:url" content="http://rahmonov.github.io">
-        <meta property="og:description" content="Jahongir Rahmonov's personal blog about Python, Django, AngularJS and other things.">
+<meta property="og:title" content="What the hell is WSGI anyway and what do you eat it with? - Jahongir Rahmonov">
+<meta property="og:type" content="website">
+<meta property="og:image" content="/static/images/programming.jpg">
+<meta property="og:url" content="http://rahmonov.github.io/posts/what-the-hell-is-wsgi-anyway-and-what-do-you-eat-it-with/">
+<meta property="og:description" content="<p>Have you ever wondered what that wsgi.py file doing in your project files? Let's find out</p>">
 
         <link href="http://rahmonov.github.io/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Full Atom Feed" />
         <link href="http://rahmonov.github.io/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="Jahongir Rahmonov Full RSS Feed" />
+        <link href="http://rahmonov.github.io/feeds/programming.atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Categories Atom Feed" />
+
+
+
+    <meta name="tags" content="python" />
+    <meta name="tags" content="wsgi" />
+    <meta name="tags" content="server" />
+    <meta name="tags" content="application" />
+
 </head>
 
 <body id="index" class="home">
@@ -73,17 +82,12 @@
         <div class="wrap">
             <div class="content">
 
-<h2>Articles by Jahongir Rahmonov</h2>
+  <h4>Tue 25 July 2017</h4>
 
-<h4>
-    <a href="posts/what-the-hell-is-wsgi-anyway-and-what-do-you-eat-it-with/">
-        25 July 2017
-    </a>
-</h4>
+  <h1>What the hell is WSGI anyway and what do you eat it with?</h1>
 
-<h1>What the hell is WSGI anyway and what do you eat it with?</h1>
-
-<p>Before we dive into the details of WSGI, why don't we take a bird-eye's view on what happens when a user uses our web application.</p>
+  <div class="entry-content">
+    <p>Before we dive into the details of WSGI, why don't we take a bird-eye's view on what happens when a user uses our web application.</p>
 <h3>Part I: the world through a web server's eyes</h3>
 <p>Imagine for a moment that you are a web server (e.g. a gunicorn). Your job consists of the following parts:</p>
 <ul>
@@ -290,6 +294,7 @@ all the variables listed:</p>
 <p>Alright, that's it from me today. If you want to learn more about the WSGI, please see the updated <a href="https://www.python.org/dev/peps/pep-3333/">PEP 3333</a>.
 Thanks for reading!</p>
 <p>Fight on!</p>
+  </div>
 
 <div class="end">
     <span>
@@ -297,6 +302,19 @@ Thanks for reading!</p>
         <a href="https://www.linkedin.com/in/jahongirrahmonov/">LinkedIn</a>
     </span>
 </div>
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES * * */
+        var disqus_shortname = 'jrahmonov';
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
             </div>
         </div>
     </div>

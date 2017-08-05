@@ -1,7 +1,7 @@
 html, body, . h1, h2, h3, h4, h5, h6, ul, ol, dl, li, dt, dd, p, blockquote, pre, form, fieldset, table, th, td { margin: 0; padding: 0; }
 html, body { height: 100%; }
 img { border: none; }
-ul { list-style: none; }
+ul.menu { list-style: none; }
 
 /*
  * Global Style
@@ -497,4 +497,12 @@ code{
     font-size: 15px;
 }
 
+.search-icon{
+    position: relative;
+    top: 4px;
+}
+
+#search-query{
+    padding: 3px;
+}
 

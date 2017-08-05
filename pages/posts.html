@@ -47,8 +47,13 @@
     I write about web, books, productivity and other things that are of interest to me.
 </p>            </div>
 
+            <form method="get" action="https://www.google.com/search">
+                <input name="sitesearch" value="rahmonov.me" type="hidden">
+                <input type="text" id="search-query" class="field field-text" required="required" name="q" placeholder="Search..." autocomplete="off">
+                <input type="image" src="/static/images/search-icon.png" width="20" height="20" class="search-icon" title="Search via Google" alt="Search via Google">
+            </form>
 
-            <ul>
+            <ul class="menu">
                 <li><a href="/">Home</a></li>
                 <li><a href="/pages/posts.html">Posts</a></li>
                 <li><a href="/pages/about.html">About</a></li>
@@ -72,6 +77,10 @@
 
 
 <div class="posts">
+   <span>25 July 2017</span> &mdash; <a href="/posts/what-the-hell-is-wsgi-anyway-and-what-do-you-eat-it-with/">What the hell is WSGI anyway and what do you eat it with?</a>
+    <p>
+       <p>Have you ever wondered what that wsgi.py file doing in your project files? Let's find out</p>
+    </p>
    <span>23 July 2017</span> &mdash; <a href="/posts/my-first-open-source-project/">My first Open Source Project</a>
     <p>
        <p>My first open source project as a PyPI package</p>
