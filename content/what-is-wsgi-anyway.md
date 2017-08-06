@@ -162,7 +162,12 @@ Now, let's serve our application:
 Save this file as `wsgi_demo.py` and run it `python wsgi_demo.py`. Then, go to [localhost:8000](http://localhost:8000) and you will see 
 all the variables listed:
 
-![wsgi-result](/static/images/post-images/intro-to-wsgi/wsgi-demo.png)
+<div class="gallery large">
+    <a href="/static/images/post-images/intro-to-wsgi/wsgi-demo.png" rel="lightbox" title="Headers">
+        <img src="/static/images/post-images/intro-to-wsgi/wsgi-demo.png" alt="Headers">
+        <span>All headers</span>
+    </a>
+</div>
      
 YES! This framework is going to get very popular!
      
@@ -220,8 +225,13 @@ Simple enough. If we insert this code to the example above, the full code will l
     server.serve_forever()
     
 Now, if you run it, you will see something like this:
-  
-![wsgi-result](/static/images/post-images/intro-to-wsgi/wsgi-reverse-demo.png)  
+
+<div class="gallery large">
+    <a href="/static/images/post-images/intro-to-wsgi/wsgi-reverse-demo.png" rel="lightbox" title="Reverseware middleware">
+        <img src="/static/images/post-images/intro-to-wsgi/wsgi-reverse-demo.png" alt="Reverse headers">
+        <span>All headers are displayed in reverse</span>
+    </a>
+</div>
 
 Beautiful!
 

@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="/static/css/pygment.css" />
         <link rel="stylesheet" href="/static/css/font-awesome.min.css" />
         <link href="//fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="/static/vendor/lightbox2/css/lightbox.min.css">
 
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -232,7 +233,13 @@ Python's bundled WSGI server. But if you want to learn the WSGI server interface
 
 <p>Save this file as <code>wsgi_demo.py</code> and run it <code>python wsgi_demo.py</code>. Then, go to <a href="http://localhost:8000">localhost:8000</a> and you will see 
 all the variables listed:</p>
-<p><img alt="wsgi-result" src="/static/images/post-images/intro-to-wsgi/wsgi-demo.png" /></p>
+<div class="gallery large">
+    <a href="/static/images/post-images/intro-to-wsgi/wsgi-demo.png" rel="lightbox" title="Headers">
+        <img src="/static/images/post-images/intro-to-wsgi/wsgi-demo.png" alt="Headers">
+        <span>All headers</span>
+    </a>
+</div>
+
 <p>YES! This framework is going to get very popular!</p>
 <p>Now that we know about the WSGI application interface, let's talk about something that we deliberately missed earlier: Middleware.</p>
 <p>With middleware, the above scenario will look like this:</p>
@@ -286,7 +293,13 @@ all the variables listed:</p>
 
 
 <p>Now, if you run it, you will see something like this:</p>
-<p><img alt="wsgi-result" src="/static/images/post-images/intro-to-wsgi/wsgi-reverse-demo.png" />  </p>
+<div class="gallery large">
+    <a href="/static/images/post-images/intro-to-wsgi/wsgi-reverse-demo.png" rel="lightbox" title="Reverseware middleware">
+        <img src="/static/images/post-images/intro-to-wsgi/wsgi-reverse-demo.png" alt="Reverse headers">
+        <span>All headers are displayed in reverse</span>
+    </a>
+</div>
+
 <p>Beautiful!</p>
 <p>Alright, that's it from me today. If you want to learn more about the WSGI, please see the updated <a href="https://www.python.org/dev/peps/pep-3333/">PEP 3333</a>.
 Thanks for reading!</p>
@@ -318,6 +331,7 @@ Thanks for reading!</p>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="/static/js/mobile.js"></script>
+    <script src="/static/vendor/lightbox2/js/lightbox.min.js"></script>
 
 </body>
 </html>

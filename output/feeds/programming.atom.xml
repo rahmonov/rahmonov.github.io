@@ -147,7 +147,13 @@ Python's bundled WSGI server. But if you want to learn the WSGI server interface
 
 &lt;p&gt;Save this file as &lt;code&gt;wsgi_demo.py&lt;/code&gt; and run it &lt;code&gt;python wsgi_demo.py&lt;/code&gt;. Then, go to &lt;a href="http://localhost:8000"&gt;localhost:8000&lt;/a&gt; and you will see 
 all the variables listed:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="wsgi-result" src="/static/images/post-images/intro-to-wsgi/wsgi-demo.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/intro-to-wsgi/wsgi-demo.png" rel="lightbox" title="Headers"&gt;
+        &lt;img src="/static/images/post-images/intro-to-wsgi/wsgi-demo.png" alt="Headers"&gt;
+        &lt;span&gt;All headers&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;YES! This framework is going to get very popular!&lt;/p&gt;
 &lt;p&gt;Now that we know about the WSGI application interface, let's talk about something that we deliberately missed earlier: Middleware.&lt;/p&gt;
 &lt;p&gt;With middleware, the above scenario will look like this:&lt;/p&gt;
@@ -201,7 +207,13 @@ all the variables listed:&lt;/p&gt;
 
 
 &lt;p&gt;Now, if you run it, you will see something like this:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="wsgi-result" src="/static/images/post-images/intro-to-wsgi/wsgi-reverse-demo.png" /&gt;  &lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/intro-to-wsgi/wsgi-reverse-demo.png" rel="lightbox" title="Reverseware middleware"&gt;
+        &lt;img src="/static/images/post-images/intro-to-wsgi/wsgi-reverse-demo.png" alt="Reverse headers"&gt;
+        &lt;span&gt;All headers are displayed in reverse&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;Beautiful!&lt;/p&gt;
 &lt;p&gt;Alright, that's it from me today. If you want to learn more about the WSGI, please see the updated &lt;a href="https://www.python.org/dev/peps/pep-3333/"&gt;PEP 3333&lt;/a&gt;.
 Thanks for reading!&lt;/p&gt;
