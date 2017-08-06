@@ -1297,7 +1297,13 @@ will love this.&lt;/p&gt;
 
 
 &lt;p&gt;Open up your browser and go to &lt;code&gt;0.0.0.0:9001&lt;/code&gt;. You will see something like this:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="supervisor web interface" src="/static/images/supervisor.jpg" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/supervisor.jpg" rel="lightbox" title="Supervisor web interface"&gt;
+        &lt;img src="/static/images/supervisor.jpg" alt="Supervisor web interface"&gt;
+        &lt;span&gt;Web interface of Supervisor&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;Cool, right?! Go ahead and play with it to control your project.&lt;/p&gt;
 &lt;p&gt;Thanks for reading thus far. Now you have one more tool in your arsenal.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://rahmonov.me/posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/"&gt;Part I&lt;/a&gt;&lt;/p&gt;

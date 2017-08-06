@@ -145,7 +145,12 @@ Save the file and reload supervisor:
     
 Open up your browser and go to `0.0.0.0:9001`. You will see something like this:
 
-![supervisor web interface](/static/images/supervisor.jpg)
+<div class="gallery large">
+    <a href="/static/images/supervisor.jpg" rel="lightbox" title="Supervisor web interface">
+        <img src="/static/images/supervisor.jpg" alt="Supervisor web interface">
+        <span>Web interface of Supervisor</span>
+    </a>
+</div>
 
 Cool, right?! Go ahead and play with it to control your project.
 
