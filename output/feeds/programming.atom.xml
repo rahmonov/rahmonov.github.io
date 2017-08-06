@@ -896,22 +896,58 @@ Please note that we are going to do almost the same stuff that we did in the pre
 &lt;p&gt;Let's get started!&lt;/p&gt;
 &lt;h2&gt;Step I (creating a VPS)&lt;/h2&gt;
 &lt;p&gt;Go to &lt;code&gt;https://cloud.digitalocean.com/droplets&lt;/code&gt; and click on &lt;code&gt;Create Droplet&lt;/code&gt; button. Then, select Ubuntu 16.04:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="ubuntu16.04" src="/static/images/post-images/django-digitalocean/ubuntu1604.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/django-digitalocean/ubuntu1604.png" rel="lightbox" title="Choose an image"&gt;
+        &lt;img src="/static/images/post-images/django-digitalocean/ubuntu1604.png" alt="Choose an image"&gt;
+        &lt;span&gt;Choosing an image&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;Select a server:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="server" src="/static/images/post-images/django-digitalocean/size.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/django-digitalocean/size.png" rel="lightbox" title="Choose an image size"&gt;
+        &lt;img src="/static/images/post-images/django-digitalocean/size.png" alt="Choose an image size"&gt;
+        &lt;span&gt;Choosing an image size&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;Select a region:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="region" src="/static/images/post-images/django-digitalocean/region.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/django-digitalocean/region.png" rel="lightbox" title="Choose a datacenter region"&gt;
+        &lt;img src="/static/images/post-images/django-digitalocean/region.png" alt="Choose a datacenter region"&gt;
+        &lt;span&gt;Choosing a datacenter region&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;Then, preferably add you ssh key and name your server:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="name" src="/static/images/post-images/django-digitalocean/server-name.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/django-digitalocean/server-name.png" rel="lightbox" title="SSH and a host name"&gt;
+        &lt;img src="/static/images/post-images/django-digitalocean/server-name.png" alt="SSH and a host name"&gt;
+        &lt;span&gt;Entering SSH key and a host name&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;And click on &lt;strong&gt;&lt;em&gt;Create&lt;/em&gt;&lt;/strong&gt;. After a while, you will see that your server has been created:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="created-server" src="/static/images/post-images/django-digitalocean/created-server.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/django-digitalocean/created-server.png" rel="lightbox" title="Server created"&gt;
+        &lt;img src="/static/images/post-images/django-digitalocean/created-server.png" alt="Server created"&gt;
+        &lt;span&gt;Server created&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;Now, copy the IP address of the newly created server and ssh in:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssh root@104.236.57.112
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Replace that IP address with your own. Welcome in! You should see something like this:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="ssh-in" src="/static/images/post-images/django-digitalocean/ssh-in.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery medium"&gt;
+    &lt;a href="/static/images/post-images/django-digitalocean/ssh-in.png" rel="lightbox" title="SSH in"&gt;
+        &lt;img src="/static/images/post-images/django-digitalocean/ssh-in.png" alt="SSH in"&gt;
+        &lt;span&gt;SSHed in&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;h2&gt;Step II (installing system-wide dependencies)&lt;/h2&gt;
 &lt;p&gt;First, let's update and upgrade the packages:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get update
@@ -1097,7 +1133,13 @@ One of the ways to solve it to run nginx as root. To do that, open &lt;code&gt;/
 
 
 &lt;p&gt;Great! You will now see the pleasant face of Donald Trump and a random quote of his:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="donald.04" src="/static/images/post-images/django-digitalocean/donald.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/django-digitalocean/donald.png" rel="lightbox" title="DJDonald"&gt;
+        &lt;img src="/static/images/post-images/django-digitalocean/donald.png" alt="DJDonald"&gt;
+        &lt;span&gt;DJDonald&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;h2&gt;Step VI (configuring supervisor)&lt;/h2&gt;
 &lt;p&gt;Create &lt;code&gt;/etc/supervisor/conf.d/djtrump.conf&lt;/code&gt; and type in the following:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;program:djtrump&lt;span class="o"&gt;]&lt;/span&gt;

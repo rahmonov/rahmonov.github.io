@@ -101,22 +101,58 @@ Please note that we are going to do almost the same stuff that we did in the pre
 <p>Let's get started!</p>
 <h2>Step I (creating a VPS)</h2>
 <p>Go to <code>https://cloud.digitalocean.com/droplets</code> and click on <code>Create Droplet</code> button. Then, select Ubuntu 16.04:</p>
-<p><img alt="ubuntu16.04" src="/static/images/post-images/django-digitalocean/ubuntu1604.png" /></p>
+<div class="gallery large">
+    <a href="/static/images/post-images/django-digitalocean/ubuntu1604.png" rel="lightbox" title="Choose an image">
+        <img src="/static/images/post-images/django-digitalocean/ubuntu1604.png" alt="Choose an image">
+        <span>Choosing an image</span>
+    </a>
+</div>
+
 <p>Select a server:</p>
-<p><img alt="server" src="/static/images/post-images/django-digitalocean/size.png" /></p>
+<div class="gallery large">
+    <a href="/static/images/post-images/django-digitalocean/size.png" rel="lightbox" title="Choose an image size">
+        <img src="/static/images/post-images/django-digitalocean/size.png" alt="Choose an image size">
+        <span>Choosing an image size</span>
+    </a>
+</div>
+
 <p>Select a region:</p>
-<p><img alt="region" src="/static/images/post-images/django-digitalocean/region.png" /></p>
+<div class="gallery large">
+    <a href="/static/images/post-images/django-digitalocean/region.png" rel="lightbox" title="Choose a datacenter region">
+        <img src="/static/images/post-images/django-digitalocean/region.png" alt="Choose a datacenter region">
+        <span>Choosing a datacenter region</span>
+    </a>
+</div>
+
 <p>Then, preferably add you ssh key and name your server:</p>
-<p><img alt="name" src="/static/images/post-images/django-digitalocean/server-name.png" /></p>
+<div class="gallery large">
+    <a href="/static/images/post-images/django-digitalocean/server-name.png" rel="lightbox" title="SSH and a host name">
+        <img src="/static/images/post-images/django-digitalocean/server-name.png" alt="SSH and a host name">
+        <span>Entering SSH key and a host name</span>
+    </a>
+</div>
+
 <p>And click on <strong><em>Create</em></strong>. After a while, you will see that your server has been created:</p>
-<p><img alt="created-server" src="/static/images/post-images/django-digitalocean/created-server.png" /></p>
+<div class="gallery large">
+    <a href="/static/images/post-images/django-digitalocean/created-server.png" rel="lightbox" title="Server created">
+        <img src="/static/images/post-images/django-digitalocean/created-server.png" alt="Server created">
+        <span>Server created</span>
+    </a>
+</div>
+
 <p>Now, copy the IP address of the newly created server and ssh in:</p>
 <div class="highlight"><pre><span></span>ssh root@104.236.57.112
 </pre></div>
 
 
 <p>Replace that IP address with your own. Welcome in! You should see something like this:</p>
-<p><img alt="ssh-in" src="/static/images/post-images/django-digitalocean/ssh-in.png" /></p>
+<div class="gallery medium">
+    <a href="/static/images/post-images/django-digitalocean/ssh-in.png" rel="lightbox" title="SSH in">
+        <img src="/static/images/post-images/django-digitalocean/ssh-in.png" alt="SSH in">
+        <span>SSHed in</span>
+    </a>
+</div>
+
 <h2>Step II (installing system-wide dependencies)</h2>
 <p>First, let's update and upgrade the packages:</p>
 <div class="highlight"><pre><span></span>apt-get update
@@ -302,7 +338,13 @@ One of the ways to solve it to run nginx as root. To do that, open <code>/etc/ng
 
 
 <p>Great! You will now see the pleasant face of Donald Trump and a random quote of his:</p>
-<p><img alt="donald.04" src="/static/images/post-images/django-digitalocean/donald.png" /></p>
+<div class="gallery large">
+    <a href="/static/images/post-images/django-digitalocean/donald.png" rel="lightbox" title="DJDonald">
+        <img src="/static/images/post-images/django-digitalocean/donald.png" alt="DJDonald">
+        <span>DJDonald</span>
+    </a>
+</div>
+
 <h2>Step VI (configuring supervisor)</h2>
 <p>Create <code>/etc/supervisor/conf.d/djtrump.conf</code> and type in the following:</p>
 <div class="highlight"><pre><span></span><span class="o">[</span>program:djtrump<span class="o">]</span>

@@ -24,24 +24,50 @@ Let's get started!
 ##Step I (creating a VPS)
 
 Go to `https://cloud.digitalocean.com/droplets` and click on `Create Droplet` button. Then, select Ubuntu 16.04:
-       
-![ubuntu16.04](/static/images/post-images/django-digitalocean/ubuntu1604.png)
+
+<div class="gallery large">
+    <a href="/static/images/post-images/django-digitalocean/ubuntu1604.png" rel="lightbox" title="Choose an image">
+        <img src="/static/images/post-images/django-digitalocean/ubuntu1604.png" alt="Choose an image">
+        <span>Choosing an image</span>
+    </a>
+</div>
 
 Select a server:
 
-![server](/static/images/post-images/django-digitalocean/size.png)
+<div class="gallery large">
+    <a href="/static/images/post-images/django-digitalocean/size.png" rel="lightbox" title="Choose an image size">
+        <img src="/static/images/post-images/django-digitalocean/size.png" alt="Choose an image size">
+        <span>Choosing an image size</span>
+    </a>
+</div>
+
 
 Select a region:
 
-![region](/static/images/post-images/django-digitalocean/region.png)
+<div class="gallery large">
+    <a href="/static/images/post-images/django-digitalocean/region.png" rel="lightbox" title="Choose a datacenter region">
+        <img src="/static/images/post-images/django-digitalocean/region.png" alt="Choose a datacenter region">
+        <span>Choosing a datacenter region</span>
+    </a>
+</div>
 
 Then, preferably add you ssh key and name your server:
 
-![name](/static/images/post-images/django-digitalocean/server-name.png)
+<div class="gallery large">
+    <a href="/static/images/post-images/django-digitalocean/server-name.png" rel="lightbox" title="SSH and a host name">
+        <img src="/static/images/post-images/django-digitalocean/server-name.png" alt="SSH and a host name">
+        <span>Entering SSH key and a host name</span>
+    </a>
+</div>
 
 And click on ***Create***. After a while, you will see that your server has been created:
 
-![created-server](/static/images/post-images/django-digitalocean/created-server.png)
+<div class="gallery large">
+    <a href="/static/images/post-images/django-digitalocean/created-server.png" rel="lightbox" title="Server created">
+        <img src="/static/images/post-images/django-digitalocean/created-server.png" alt="Server created">
+        <span>Server created</span>
+    </a>
+</div>
 
 Now, copy the IP address of the newly created server and ssh in:
 
@@ -50,8 +76,12 @@ Now, copy the IP address of the newly created server and ssh in:
     
 Replace that IP address with your own. Welcome in! You should see something like this:
 
-![ssh-in](/static/images/post-images/django-digitalocean/ssh-in.png)
-
+<div class="gallery medium">
+    <a href="/static/images/post-images/django-digitalocean/ssh-in.png" rel="lightbox" title="SSH in">
+        <img src="/static/images/post-images/django-digitalocean/ssh-in.png" alt="SSH in">
+        <span>SSHed in</span>
+    </a>
+</div>
 
 
 ##Step II (installing system-wide dependencies)
@@ -254,8 +284,12 @@ and restart the nginx:
     
 Great! You will now see the pleasant face of Donald Trump and a random quote of his:
 
-![donald.04](/static/images/post-images/django-digitalocean/donald.png)
-
+<div class="gallery large">
+    <a href="/static/images/post-images/django-digitalocean/donald.png" rel="lightbox" title="DJDonald">
+        <img src="/static/images/post-images/django-digitalocean/donald.png" alt="DJDonald">
+        <span>DJDonald</span>
+    </a>
+</div>
 
 
 ##Step VI (configuring supervisor)
