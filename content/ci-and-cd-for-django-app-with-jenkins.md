@@ -13,8 +13,13 @@ help of [Jenkins](https://jenkins.io/). But first, let's see why we need such a 
 In the [previous post](http://rahmonov.me/posts/deploy-a-django-app-to-digitalocean/), we deployed [our application](https://github.com/rahmonov/djtrump)
 to Digital Ocean and now it is up and running:
  
-![donald.04](/static/images/post-images/django-digitalocean/donald.png)
-
+<div class="gallery large">
+    <a href="/static/images/post-images/django-digitalocean/donald.png" rel="lightbox" title="DJDonald">
+        <img src="/static/images/post-images/django-digitalocean/donald.png" alt="DJDonald">
+        <span>Donald Trump and one of his quotes</span>
+    </a>
+</div>
+ 
 Now, let's try to update it.
 
 By the way, to follow along this tutorial you should fork [this repo](https://github.com/rahmonov/djtrump) if you didn't do so in the previous post.
@@ -81,15 +86,25 @@ Install Jenkins:
  
 Now, if you go to JENKINS_IP_ADDRESS:8080 on your browser, you should see Jenkins up and running:
  
-![Jenkins](/static/images/post-images/jenkins-djtrump/jenkins-setup.png)
-
+<div class="gallery large">
+    <a href="/static/images/post-images/jenkins-djtrump/jenkins-setup.png" rel="lightbox" title="Jenkins">
+        <img src="/static/images/post-images/jenkins-djtrump/jenkins-setup.png" alt="Jenkins">
+        <span>Jenkins setup page</span>
+    </a>
+</div>
+ 
 Open to */var/lib/jenkins/secrets/initialAdminPassword*, copy your password and paste it on the form. Click on Continue.
 
 After a moment, *Customize Jenkins* page opens. There, click on *Select plugins to install*.
 
 On this page, search for *Github* and *Pipeline* plugins and check them. Click install:
 
-![Jenkins Plugins](/static/images/post-images/jenkins-djtrump/jenkins-initial-plugins.png)
+<div class="gallery large">
+    <a href="/static/images/post-images/jenkins-djtrump/jenkins-initial-plugins.png" rel="lightbox" title="Jenkins plugins">
+        <img src="/static/images/post-images/jenkins-djtrump/jenkins-initial-plugins.png" alt="Jenkins plugins">
+        <span>Jenkins plugins page</span>
+    </a>
+</div>
 
 After everything installs, on the next page, fill in the details and create a user. Click on *Start using Jenkins*.
 
@@ -99,23 +114,43 @@ Click on *New Item* or *create new jobs* to get started.
 
 On the new job page, name the item *DJTrump* and choose *Multibranch pipeline*:
 
-![Jenkins New Job](/static/images/post-images/jenkins-djtrump/jenkins-new-job.png)
+<div class="gallery large">
+    <a href="/static/images/post-images/jenkins-djtrump/jenkins-new-job.png" rel="lightbox" title="Jenkins new job">
+        <img src="/static/images/post-images/jenkins-djtrump/jenkins-new-job.png" alt="Jenkins new job">
+        <span>Jenkins new job</span>
+    </a>
+</div>
 
 On the configuration page, click on *Add source* and choose *Git*. Fill in the details of your repository in Github. Then, check *Periodically if not otherwise run* and 
 leave the interval of 1 minute:
 
-![Jenkins Configure Job](/static/images/post-images/jenkins-djtrump/jenkins-configure-job.png)    
+<div class="gallery large">
+    <a href="/static/images/post-images/jenkins-djtrump/jenkins-configure-job.png" rel="lightbox" title="Jenkins configure job">
+        <img src="/static/images/post-images/jenkins-djtrump/jenkins-configure-job.png" alt="Jenkins configure job">
+        <span>Jenkins configure job</span>
+    </a>
+</div>
 
 Click *Save*. You will see that Jenkins will immediately start to build the project. As we chose Multibranch mode, it will start to build for all branches.
 However, you will see that both branches will fail:
 
-![Jenkins Failed Job](/static/images/post-images/jenkins-djtrump/jenkins-failed-jobs.png) 
+<div class="gallery large">
+    <a href="/static/images/post-images/jenkins-djtrump/jenkins-failed-jobs.png" rel="lightbox" title="Jenkins failed">
+        <img src="/static/images/post-images/jenkins-djtrump/jenkins-failed-jobs.png" alt="Jenkins failed">
+        <span>Jenkins failed</span>
+    </a>
+</div>
 
 To see what is going on, click on *master* and on the next page, click on *#1* in the *Build History* list. Then, on the next page, click on *Console Output* in the left sidebar.
 You will see the logs which show that Jenkins cloned the project and then encountered an error that says: *No such DSL method 'slackSend' found among steps*. So, it tried to notify us
 through slack that a Jenkins build started and it got this error:
 
-![Jenkins Failed Logs](/static/images/post-images/jenkins-djtrump/jenkins-failed-logs.png) 
+<div class="gallery large">
+    <a href="/static/images/post-images/jenkins-djtrump/jenkins-failed-logs.png" rel="lightbox" title="Jenkins logs">
+        <img src="/static/images/post-images/jenkins-djtrump/jenkins-failed-logs.png" alt="Jenkins logs">
+        <span>Jenkins logs</span>
+    </a>
+</div>
 
 But wait! How did Jenkins know what to do in the first place? How did it know that it should send a slack message saying that a build started?
 
@@ -194,14 +229,24 @@ After it restarts, log in.
 We also need to install Jenkins plugin on the Slack side. Assuming you already have a slack team, go to https://my.slack.com/services/new/jenkins-ci.
 There, choose #general channel and click on *Add Jenkins CI integration*:
    
-![Jenkins Slack](/static/images/post-images/jenkins-djtrump/jenkins-slack.jpg)
-    
+<div class="gallery large">
+    <a href="/static/images/post-images/jenkins-djtrump/jenkins-slack.jpg" rel="lightbox" title="Jenkins Slack integration">
+        <img src="/static/images/post-images/jenkins-djtrump/jenkins-slack.jpg" alt="Jenkins Slack integration">
+        <span>Jenkins Slack integration</span>
+    </a>
+</div>
+       
 On the bottom of the next page, you will find some settings such as your Jenkins integration token. Save settings. Now, open another browser window.
 Go to your Jenkins server, navigate to *Manage Jenkins* -> *Configure System* and find *Global Slack Notifier Settings* there. Fill in team subdomain, integration token
 and channel:
     
-![Jenkins Slack](/static/images/post-images/jenkins-djtrump/jenkins-slack-config.png)
-    
+<div class="gallery large">
+    <a href="/static/images/post-images/jenkins-djtrump/jenkins-slack-config.png" rel="lightbox" title="Jenkins Slack config">
+        <img src="/static/images/post-images/jenkins-djtrump/jenkins-slack-config.png" alt="Jenkins Slack config">
+        <span>Jenkins Slack config</span>
+    </a>
+</div>
+        
 Save!     
  
 If you did everything correctly, slack messaging will work now. However, there are a couple more things we should do to avoid more errors.
@@ -293,16 +338,31 @@ Time to check!
     
 Navigate to *Jenkins root* -> *DJTrump* -> *master* and once there click on *Build now* to start a build manually:
     
-![Build Now](/static/images/post-images/jenkins-djtrump/jenkins-build-now.png)
-    
+<div class="gallery large">
+    <a href="/static/images/post-images/jenkins-djtrump/jenkins-build-now.png" rel="lightbox" title="Jenkins Build">
+        <img src="/static/images/post-images/jenkins-djtrump/jenkins-build-now.png" alt="Jenkins Build">
+    </a>
+</div>
+        
 And you will see that it will start a build and go through all 4 stages we describe at the beginning:
     
-![Successful Build](/static/images/post-images/jenkins-djtrump/jenkins-successful-build.png)
-    
-If you go to your Slack, you should see some messages in #general channel:
-    
-![Slack Notification](/static/images/post-images/jenkins-djtrump/jenkins-slack-notif.png)
+<div class="gallery large">
+    <a href="/static/images/post-images/jenkins-djtrump/jenkins-successful-build.png" rel="lightbox" title="Jenkins successful build">
+        <img src="/static/images/post-images/jenkins-djtrump/jenkins-successful-build.png" alt="Jenkins successful build">
+        <span>Jenkins successful build</span>
+    </a>
+</div>
 
+
+If you go to your Slack, you should see some messages in #general channel:
+ 
+<div class="gallery large">
+    <a href="/static/images/post-images/jenkins-djtrump/jenkins-slack-notif.png" rel="lightbox" title="Slack notification">
+        <img src="/static/images/post-images/jenkins-djtrump/jenkins-slack-notif.png" alt="Slack notification">
+        <span>Slack notification</span>
+    </a>
+</div> 
+    
 Awesome, right?! But that is not so good if we have to make build manually, right?
 
 Fortunately, that's also taken care of. Go to your djtrump and make some kind of change. For example, change the placeholder again to read 
@@ -313,11 +373,21 @@ Fortunately, that's also taken care of. Go to your djtrump and make some kind of
 
 In a minute, in your jenkins server you will see that the next build has started and ended successfully:
 
-![Second build](/static/images/post-images/jenkins-djtrump/jenkins-second-build.png)
+<div class="gallery large">
+    <a href="/static/images/post-images/jenkins-djtrump/jenkins-second-build.png" rel="lightbox" title="Jenkins next build">
+        <img src="/static/images/post-images/jenkins-djtrump/jenkins-second-build.png" alt="Jenkins next build">
+        <span>Jenkins next build</span>
+    </a>
+</div> 
 
 And if you visit your app, you will see that changes have taken place:
 
-![New Build](/static/images/post-images/jenkins-djtrump/new-build.png)
+<div class="gallery large">
+    <a href="/static/images/post-images/jenkins-djtrump/new-build.png" rel="lightbox" title="New changes">
+        <img src="/static/images/post-images/jenkins-djtrump/new-build.png" alt="New changes">
+        <span>New changes</span>
+    </a>
+</div> 
    
 Hooray! Isn't awesome? You just pushed your code and everything else happened by "itself". Ther is even more. Check your slack.
 You have been notified about the start, what has changed and the end of the build. I love this kind of automation.
@@ -325,11 +395,21 @@ You have been notified about the start, what has changed and the end of the buil
 Now, go ahead and play around with it. Try to make one of the tests fail and you will see that the failing code will not be deployed!
 It will stop in the Test stage:
 
-![Failed Test](/static/images/post-images/jenkins-djtrump/test-fail.png)
+<div class="gallery large">
+    <a href="/static/images/post-images/jenkins-djtrump/test-fail.png" rel="lightbox" title="Failed test">
+        <img src="/static/images/post-images/jenkins-djtrump/test-fail.png" alt="Failed test">
+        <span>Test stage failed</span>
+    </a>
+</div> 
 
 In Slack, you will see this fun message:
 
-![Slack Failed Test](/static/images/post-images/jenkins-djtrump/slack-test-fail.png)
+<div class="gallery large">
+    <a href="/static/images/post-images/jenkins-djtrump/slack-test-fail.png" rel="lightbox" title="Slack message">
+        <img src="/static/images/post-images/jenkins-djtrump/slack-test-fail.png" alt="Slack message">
+        <span>Slack message about the failed Jenkins build</span>
+    </a>
+</div> 
    
 If you click on *Open in Jenkins* and you will taken to that exact failed build.
    

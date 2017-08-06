@@ -17,7 +17,12 @@ was merged to [the Falcon framework](https://falconframework.org/) :)
 
 I also wanted to do something of my own. And today, I am excited to say that I published my first open source project in the form of a [PyPI package](https://pypi.python.org/pypi/agile-crm-python). YAY!
 
-![pypi](/static/images/post-images/first-osp/pypi.png)
+<div class="gallery large">
+    <a href="/static/images/post-images/first-osp/pypi.png" rel="lightbox" title="My PyPi package">
+        <img src="/static/images/post-images/first-osp/pypi.png" alt="My PyPi package">
+        <span>My PyPi package</span>
+    </a>
+</div>
 
 It is nothing big. Just a Python wrapper for [AgileCRM](https://www.agilecrm.com/) [REST API](https://github.com/agilecrm/rest-api).
 
