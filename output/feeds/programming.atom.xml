@@ -1,5 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/programming.atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2017-07-25T20:10:00+05:00</updated><entry><title>What the hell is WSGI anyway and what do you eat it with?</title><link href="http://rahmonov.github.io/posts/what-the-hell-is-wsgi-anyway-and-what-do-you-eat-it-with/" rel="alternate"></link><published>2017-07-25T20:10:00+05:00</published><updated>2017-07-25T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2017-07-25:posts/what-the-hell-is-wsgi-anyway-and-what-do-you-eat-it-with/</id><summary type="html">&lt;p&gt;Before we dive into the details of WSGI, why don't we take a bird-eye's view on what happens when a user uses our web application.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/programming.atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2017-08-11T20:10:00+05:00</updated><entry><title>I gave a talk at Google IO Extended 2017</title><link href="http://rahmonov.github.io/posts/i-gave-a-talk-at-google-io-extended/" rel="alternate"></link><published>2017-08-11T20:10:00+05:00</published><updated>2017-08-11T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2017-08-11:posts/i-gave-a-talk-at-google-io-extended/</id><summary type="html">&lt;p&gt;At Super Dispatch, we have this event so-called "Friday Talks" where all the people gather up and one person gives a talk on a topic
+of his own choice. This is done in order to foster a culture of knowledge sharing and growth. As a software developer at Super Dispatch,
+I have regularly been giving talks at this event. The topics I talked about include:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="/posts/how-to-write-clean-functions/"&gt;How to write clean functions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://graphql.org/"&gt;Introduction to GraphQL in Python&lt;/a&gt; &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://kubernetes.io/"&gt;Deploying Django apps using Kubernetes on GCP&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Practical Guide to Test Driven Development with Django&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;and a few more others. This has been an awesome experience for a number of reasons. For one thing, I learned a lot of things in the
+process of getting prepared for the talks and filled lots of gaps in my knowledge of things I thought I knew well. For another, 
+I overcame my fear of talking to an audience because it is much easier to give a talk to your colleagues than to complete strangers. 
+Besides, I learned how to structure my thoughts into an organized talk. &lt;/p&gt;
+&lt;p&gt;However, I have never stood up in the stage all alone in front of &lt;strike&gt;all these monsters who are getting ready to eat me up&lt;/strike&gt;
+a big number of people whose first thought, I think, would be: "Okay, this guy is giving a talk so he should be an expert". WHAT???
+What if I screw up and make fun of myself? What if somebody records how I screw up and puts it on YouTube? &lt;i class="em em-scream"&gt;&lt;/i&gt; 
+Okay, I am joking here, that would have been awesome and fun to watch. But the fear was real.&lt;/p&gt;
+&lt;p&gt;However, I as read more &lt;a href="https://www.amazon.com/Soft-Skills-software-developers-manual/dp/1617292397"&gt;books&lt;/a&gt; and &lt;a href="https://simpleprogrammer.com/2015/01/05/24-quick-tips-to-boost-your-career-as-a-software-engineer-this-year/"&gt;articles&lt;/a&gt; 
+on how to build a good career as a developer, I realized that getting yourself out there by starting a blog or giving a talk is essential to be successful in this industry.
+So, when it was announced that &lt;a href="https://www.facebook.com/iutextended/?ref=br_rs"&gt;Google IO Extended&lt;/a&gt; was happening in Tashkent, I knew that it was my chance to get started in this speaking journey. &lt;/p&gt;
+&lt;div class="gallery medium"&gt;
+    &lt;a href="/static/images/post-images/i-gave-a-talk/after-talks.jpg" rel="lightbox" title="Google IO People"&gt;
+        &lt;img src="/static/images/post-images/i-gave-a-talk/after-talks.jpg" alt="Google IO People"&gt;
+        &lt;span&gt;Event organizers and participants&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;p&gt;So, I went ahead and submitted a talk. And the rest is history...okay, I am joking again. No history here, just an ordinary tech even, phew &lt;i class="em em-sleepy"&gt;&lt;/i&gt;  &lt;/p&gt;
+&lt;p&gt;Thankfully, the organizers accepted my talk and announced it on the event page: &lt;/p&gt;
+&lt;div class="gallery medium"&gt;
+    &lt;a href="/static/images/post-images/i-gave-a-talk/announcing-me.png" rel="lightbox" title="My announcement"&gt;
+        &lt;img src="/static/images/post-images/i-gave-a-talk/announcing-me.png" alt="My announcement"&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;p&gt;I was proud and terrified at the same time. Some of the other talks included:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.facebook.com/iutextended/photos/a.902471193144035.1073741828.902460013145153/1414752278582588/?type=3&amp;amp;permPage=1"&gt;How to develop a web service in Golang and deploy it using Docker by Diyor Islomov&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.facebook.com/iutextended/photos/a.902471193144035.1073741828.902460013145153/1415300861861063/?type=3"&gt;Prototyping apps for non-programmers by Vlad Azimhodjaev&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.facebook.com/iutextended/photos/a.902471193144035.1073741828.902460013145153/1416110071780142/?type=3"&gt;Game/CGI characters creation process by Bekzod Fayozov&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.facebook.com/iutextended/photos/a.902471193144035.1073741828.902460013145153/1416861721704977/?type=3"&gt;Welcome to journey of JavaScript by Farrux Mamatxalilov&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.facebook.com/iutextended/photos/a.902471193144035.1073741828.902460013145153/1420533894671093/?type=3"&gt;Virtual Reality: Status Quo and the potential of the market by Shakhruz Ashirov&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;So the day came and I gave my talk called "How we deploy our Django apps now and where we are going". It was split into three parts.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The past: when we deployed everything manually and depended on the ninja develop who was the only one who knew how to do things&lt;/li&gt;
+&lt;li&gt;The present: when we are using CI and CD to deploy our apps automatically&lt;/li&gt;
+&lt;li&gt;The future: when we plan to use Docker, Kubernetes and CI&amp;amp;CD to deploy our apps&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="gallery medium"&gt;
+    &lt;a href="/static/images/post-images/i-gave-a-talk/me-talking.jpg" rel="lightbox" title="The beginning of the talk"&gt;
+        &lt;img src="/static/images/post-images/i-gave-a-talk/me-talking.jpg" alt="The beginning of the talk"&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;p&gt;It went pretty well. At least, better than I thought it would be. The audience was great. They laughed at approximately half of my jokes.
+But hey, 50% is not that bad for the first time &lt;i class="em em-sunglasses"&gt;&lt;/i&gt; &lt;/p&gt;
+&lt;div class="gallery medium"&gt;
+    &lt;a href="/static/images/post-images/i-gave-a-talk/audience.jpg" rel="lightbox" title="Audience"&gt;
+        &lt;img src="/static/images/post-images/i-gave-a-talk/audience.jpg" alt="Audience"&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;p&gt;After my talk ended, several people approached me with questions and some of them got my contacts. Honestly, I felt like a super star.&lt;/p&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;I know that it is not a huge thing to accomplish but I was and still am excited about what happened. The most important thing is that I
+learned a ton.&lt;/p&gt;
+&lt;p&gt;I experienced what it is like to be talking to more than 10 people. I improved my presentation skills. I answered the audience's questions.
+I got to meet some awesome people. &lt;s&gt;Some people got to meet me, the humblest person on this planet &lt;i class="em em-grin"&gt;&lt;/i&gt;&lt;/s&gt; &lt;/p&gt;
+&lt;p&gt;Overall, I think that it was a step forward in my career and I will continue to grab such opportunities to speak in the future as well.
+Also, I recommend that you do the same, no matter what you do. Getting oneself out there is what differentiates the successful from the average.&lt;/p&gt;
+&lt;p&gt;Thanks for reading &lt;i class="em em-innocent"&gt;&lt;/i&gt; and fight on &lt;i class="em em-muscle"&gt;&lt;/i&gt;&lt;/p&gt;</summary><category term="python"></category><category term="django"></category><category term="speaking"></category><category term="talk"></category><category term="google"></category></entry><entry><title>What the hell is WSGI anyway and what do you eat it with?</title><link href="http://rahmonov.github.io/posts/what-the-hell-is-wsgi-anyway-and-what-do-you-eat-it-with/" rel="alternate"></link><published>2017-07-25T20:10:00+05:00</published><updated>2017-07-25T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2017-07-25:posts/what-the-hell-is-wsgi-anyway-and-what-do-you-eat-it-with/</id><summary type="html">&lt;p&gt;Before we dive into the details of WSGI, why don't we take a bird-eye's view on what happens when a user uses our web application.&lt;/p&gt;
 &lt;h3&gt;Part I: the world through a web server's eyes&lt;/h3&gt;
 &lt;p&gt;Imagine for a moment that you are a web server (e.g. a gunicorn). Your job consists of the following parts:&lt;/p&gt;
 &lt;ul&gt;
