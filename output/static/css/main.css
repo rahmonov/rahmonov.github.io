@@ -506,3 +506,7 @@ code{
     padding: 3px;
 }
 
+#mc_embed_signup{
+    border: 1px solid;
+    border-radius: 6px;
+}
