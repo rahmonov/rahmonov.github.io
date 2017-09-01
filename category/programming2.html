@@ -7,6 +7,8 @@
         <link rel="stylesheet" href="/static/css/pygment.css" />
         <link rel="stylesheet" href="/static/css/font-awesome.min.css" />
         <link href="//fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="/static/vendor/lightbox2/css/lightbox.min.css">
+        <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
 
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -41,11 +43,16 @@
 
             <div class="paragraphs">
 <p>
-    I hold a BSc hon. in Business Information Systems from <a href="http://wiut.uz/">WIUT</a>.
-    I'm currently a Software Developer at <a href="http://mysuperdispatch.com/">Super Dispatch (TechStars '16)</a>
+    I'm a Software Developer at <a href="http://mysuperdispatch.com/">Super Dispatch (TechStars '16)</a>.
+    Avid reader.
+    <a href="http://wiut.uz/">WIUT</a> graduate.
+    Blogger and an amateur speaker
 </p>
 <p>
-    I write about web, books, productivity and other things that are of interest to me.
+    I write about Python, Django, AngularJS and sometimes something non-technical.
+</p>
+<p>
+    Welcome to my corner <i class="em em-snake"></i>
 </p>            </div>
 
             <form method="get" action="https://www.google.com/search">
@@ -77,226 +84,236 @@
 <h2>Articles in the programming category</h2>
 
 <h4>
-    <a href="posts/what-the-hell-is-wsgi-anyway-and-what-do-you-eat-it-with/">
-        25 July 2017
+    <a href="posts/python-decorators/">
+        30 August 2017
     </a>
 </h4>
 
-<h1>What the hell is WSGI anyway and what do you eat it with?</h1>
+<h1>Python Decorators</h1>
 
-<p>Before we dive into the details of WSGI, why don't we take a bird-eye's view on what happens when a user uses our web application.</p>
-<h3>Part I: the world through a web server's eyes</h3>
-<p>Imagine for a moment that you are a web server (e.g. a gunicorn). Your job consists of the following parts:</p>
-<ul>
-<li>You sit around and wait patiently for a request from some kind of a client</li>
-<li>When a client comes to you with a request, you receive this request</li>
-<li>Then, you take this request to a guy called PythonApp and say to him: "Hey dude, wake up! Here is a request from a very important client. Please, do 
- something about it"</li>
-<li>You get a response from this PythonApp guy</li>
-<li>You then take this response back to your client</li>
-</ul>
-<p>This is the only thing you do. You just serve your clients. You know nothing about content or anything. That's why you are so good at it.
-You can even scale up and down processing depending on the demand from the clients. You are so focused on this task.</p>
-<h3>Part II: PythonApp guy</h3>
-<p>PythonApp guy is your software (duh!). Whereas a web server should exist and wait for an incoming request all the time,
-your software exists only at the execution time:</p>
-<ul>
-<li>A web server wakes it up and gives him the request</li>
-<li>It takes the request and executes some commands on it</li>
-<li>It returns a response to the web server</li>
-<li>It goes to sleep</li>
-<li>Web server takes this response back to his client</li>
-</ul>
-<p>The only thing it does is execute, not sit around and wait.</p>
-<h3>The Problem</h3>
-<p>The scenario above is all good and roses. However, a web server's conversation with the PythonApp guy could have gone a little
-differently. Instead of:</p>
-<div class="highlight"><pre><span></span>Hey dude, wake up! Here is a request from a very important client. Please, do something about it
+<p>The following is a tale of how one programmer learned the basics of decorators in Python and it is told from his point of view.</p>
+<h2>The Tale</h2>
+<p>So, my boss told me to write two functions both of which return whatever they accept. Well, that seems pretty easy:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">first_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">arg</span>
+
+<span class="k">def</span> <span class="nf">second_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">arg</span>
 </pre></div>
 
 
-<p>it could have been like this:</p>
-<div class="highlight"><pre><span></span>Эй, чувак, проснись! Вот запрос от очень важного клиента. Пожалуйста, сделай что нибудь
+<p>When I asked him what the difference was between these two functions he said that the first one should only accept integers and
+the second one should only accept strings, otherwise they both should raise an <code>AssertionError</code> with a helpful message.</p>
+<p>Okay, that should not be too difficult:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">first_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="s2">&quot;{arg} is not an instance of int&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="n">arg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">arg</span>
+
+<span class="k">def</span> <span class="nf">second_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="s2">&quot;{arg} is not an instance of str&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="n">arg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">arg</span>
 </pre></div>
 
 
-<p>or it could have been like this:</p>
-<div class="highlight"><pre><span></span>Ehi amico, svegliati! Ecco una richiesta da un cliente molto importante. Si prega, fare qualcosa al riguardo
+<p>Let's try them out:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">first_func</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="mi">123</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">first_func</span><span class="p">(</span><span class="s1">&#39;some text&#39;</span><span class="p">)</span>
+<span class="o">---------------------------------------------------------------------------</span>
+<span class="ne">AssertionError</span><span class="p">:</span> <span class="n">some</span> <span class="n">text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">an</span> <span class="n">instance</span> <span class="n">of</span> <span class="nb">int</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">second_func</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;text&#39;</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">second_func</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
+<span class="o">---------------------------------------------------------------------------</span>
+<span class="ne">AssertionError</span><span class="p">:</span> <span class="mi">123</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">an</span> <span class="n">instance</span> <span class="n">of</span> <span class="nb">str</span>
 </pre></div>
 
 
-<p>or even like this:</p>
-<div class="highlight"><pre><span></span>嘿，伙计，醒醒吧！这里是一个非常重要的客户端的请求。请做点什么
+<p>Cool, they seem to work pretty well. But it bothers me that those assertion lines seem exactly the same and I am not following
+the DRY principle. Uncle Bob will kill me. I think I should probably factor them out to a separate function and call where needed.
+The function should accept an argument and a type and check if that argument is an instance of that type. If not, raise an assertion error:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">assert_type</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="p">),</span> <span class="s2">&quot;{arg} is not an instance of {type}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span>
 </pre></div>
 
 
-<p>Do you get it? The web server could have behaved in a number of different ways and the PythonApp guy had to learn all these 
-languages to understand what it is saying and behaving accordingly.</p>
-<p>What this means is that, in the past you had to adapt your software to fit the requirements of a web server. Moreover, you had to
-write different kinds of wrappers in order to make it suitable across different web servers. What developers wants to deal with such things instead of writing code?</p>
-<h3>WSGI to the rescue</h3>
-<p>Here is where the WSGI comes in! Understand it as a SET OF RULES for a web server and a web application. The rules for a web server look like this:</p>
-<blockquote>
-<p>Okay, if you want to talk to that PythonApp guy, speak these words and sentences. Also, learn these words as well which he will speak to you.
-Furthermore, if something goes wrong, here are the curse words that the PythonApp guy will be saying and here is how you should react to them</p>
-</blockquote>
-<p>And the rules for a web application look like this:</p>
-<blockquote>
-<p>Okay, if you want to talk to a web server, learn these words because a web server will be using them when addressing you. Also, you use
-the following words and be sure that a web server understands them. Furthermore, if something goes wrong, use these curse words and behave in this way</p>
-</blockquote>
-<h3>Enough talk, let's fight</h3>
-<p>Let's take a look at the WSGI application interface to see how it should behave. According to <a href="https://www.python.org/dev/peps/pep-0333/#the-application-framework-side">PEP 333</a>, the document 
-which specifies the details of the WSGI, the application interface is implemented as a callable object such as a function, a method, a class or an instance 
-with a <code>__call__</code> method. This object should accept two positional arguments and return the response body as strings in an iterable.</p>
-<p>The two arguments are:</p>
-<ul>
-<li>a dictionary with environment variables</li>
-<li>a callback function that will be used to send HTTP status and HTTP headers to the server</li>
-</ul>
-<p>Now that we know the basics why don't we create a web framework which will definitely take away some market share from Django itself :)
-Our web framework will do something that no one is doing right now: IT WILL PRINT ALL ENVIRONMENT VARIABLES IT RECEIVES. Genius!</p>
-<p>(have been watching to much Pewdiepie. Goddammit) </p>
-<p>Okay, let's create that callable object which receives to arguments:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">application</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="n">start_response</span><span class="p">):</span>
-    <span class="k">pass</span>
+<p>Now I can call this in the two functions that I wrote earlier:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">first_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="n">assert_type</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">arg</span>
+
+<span class="k">def</span> <span class="nf">second_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="n">assert_type</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">arg</span>
 </pre></div>
 
 
-<p>Easy enough. Now, let's prepare the response body that we want to return to the server:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">application</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="n">start_response</span><span class="p">):</span>
-    <span class="n">response_body</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s1">&#39;{key}: {value}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">environ</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
-    <span class="p">]</span>
-    <span class="n">response_body</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">response_body</span><span class="p">)</span>
+<p>Looks much better now and they are producing the same results. Hmmm, I have a strange feeling that I could improve this further. 
+It is Python after all. There should be something more pythonic. As <a href="https://twitter.com/raymondh">Raymond Hettinger</a> would say:</p>
+<div class="gallery medium">
+    <a href="/static/images/post-images/python-decorators/raymondhettinger.jpg" rel="lightbox" title="Raymond Hettinger">
+        <img src="/static/images/post-images/python-decorators/raymondhettinger.jpg" alt="Raymond Hettinger">
+        <span>There must be a better way!</span>
+    </a>
+</div>
+
+<p>I need to do a little research on how I can accomplish this feat.</p>
+<div class="highlight"><pre><span></span>...after 3 days...
 </pre></div>
 
 
-<p>Easy as well. Now, let's prepare the status and headers, and then call that callback function:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">application</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="n">start_response</span><span class="p">):</span>
-    <span class="n">response_body</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s1">&#39;{key}: {value}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">environ</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
-    <span class="p">]</span>
-    <span class="n">response_body</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">response_body</span><span class="p">)</span>
+<p>Oh wow! I watched this <a href="https://www.youtube.com/watch?v=7lmCu8wz8ro">amazing talk by James Powell</a> and learned that there is a feature
+in Python that does exactly what I want to do with my functions and it is called <code>decorators</code> <i class="em em-tada"></i></p>
+<p>Basically, what they allow me to do is add an additional functionality to my existing functions. That's exactly what I want to do: I want
+to add type-checking functionality to my existing <code>first_func</code> and <code>second_func</code>. Let's see an example:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">p_decorate</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+   <span class="k">def</span> <span class="nf">func_wrapper</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+       <span class="k">return</span> <span class="s2">&quot;&lt;p&gt;{0}&lt;/p&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+   <span class="k">return</span> <span class="n">func_wrapper</span>
 
-    <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;200&#39;</span>
-
-    <span class="n">response_headers</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">(</span><span class="s1">&#39;Content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">),</span>
-    <span class="p">]</span>
-
-    <span class="n">start_response</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="n">response_headers</span><span class="p">)</span>
+<span class="nd">@p_decorate</span>
+<span class="k">def</span> <span class="nf">get_text</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+   <span class="k">return</span> <span class="s2">&quot;lorem ipsum, {0} dolor sit amet&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 </pre></div>
 
 
-<p>And finally, let's return the response body in an iterable:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">application</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="n">start_response</span><span class="p">):</span>
-   <span class="n">response_body</span> <span class="o">=</span> <span class="p">[</span>
-       <span class="s1">&#39;{key}: {value}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">environ</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
-   <span class="p">]</span>
-   <span class="n">response_body</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">response_body</span><span class="p">)</span>
-
-   <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;200&#39;</span>
-
-   <span class="n">response_headers</span> <span class="o">=</span> <span class="p">[</span>
-       <span class="p">(</span><span class="s1">&#39;Content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">),</span>
-   <span class="p">]</span>
-
-   <span class="k">return</span> <span class="p">[</span><span class="n">response_body</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)]</span>
+<p>So, in this example, there is a <code>get_text</code> function which accepts a parameter <code>name</code> and returns a string of that name inside a random text.
+There is another method called <code>p_decorate</code>. It accepts a function and returns a function which is declared inside this <code>p_decorate</code>. It accepts
+<code>name</code> as a parameter. It then surrounds it with <code>&lt;p&gt;&lt;/p&gt;</code> tags and returns the result. And one more thing to note is that there is
+<code>@p_decorate</code> on top of <code>def get_text(name)</code>.</p>
+<p>This is all very mysterious to me but let's see what result it will yield:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">get_text</span><span class="p">(</span><span class="s1">&#39;John&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;&lt;p&gt;lorem ipsum, John dolor sit amet&lt;/p&gt;&#39;</span>
 </pre></div>
 
 
-<p>That's it. Our genius web framework is ready. Of course, we need a web server to serve our application and here we will be using
-Python's bundled WSGI server. But if you want to learn the WSGI server interface, take a look at <a href="https://www.python.org/dev/peps/pep-0333/#the-server-gateway-side">here</a></p>
-<p>Now, let's serve our application:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">wsgiref.simple_server</span> <span class="kn">import</span> <span class="n">make_server</span>
-
-<span class="k">def</span> <span class="nf">application</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="n">start_response</span><span class="p">):</span>
-    <span class="n">response_body</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s1">&#39;{key}: {value}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">environ</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
-    <span class="p">]</span>
-    <span class="n">response_body</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">response_body</span><span class="p">)</span>
-
-    <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;200&#39;</span>
-
-    <span class="n">response_headers</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">(</span><span class="s1">&#39;Content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">),</span>
-    <span class="p">]</span>
-
-    <span class="k">return</span> <span class="p">[</span><span class="n">response_body</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)]</span>
-
-<span class="n">server</span> <span class="o">=</span> <span class="n">make_server</span><span class="p">(</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="mi">8000</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="n">application</span><span class="p">)</span>
-<span class="n">server</span><span class="o">.</span><span class="n">serve_forever</span><span class="p">()</span>
+<p>Okay, the expected result. Let's try to understand what is going on here:</p>
+<p>First, when I call <code>get_text</code>, it will actually call <code>p_decorate(get_text)</code> because of <code>@p_decorate</code> on top of the function declaration.
+And what will <code>p_decorate(get_text)</code> return? It will return another function called <code>func_wrapper</code>. So, basically 
+<code>get_text(name)</code> will be replaced by <code>func_wrapper(name)</code> which will return <code>p</code> tag surrounded string that we saw.</p>
+<p>Now, it is much clearer to me. Back to my own functions. </p>
+<p>Using these decorators, I want my end result to look like this:</p>
+<div class="highlight"><pre><span></span><span class="nd">@assert_type</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">first_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">arg</span>
 </pre></div>
 
 
-<p>Save this file as <code>wsgi_demo.py</code> and run it <code>python wsgi_demo.py</code>. Then, go to <a href="http://localhost:8000">localhost:8000</a> and you will see 
-all the variables listed:</p>
-<p><img alt="wsgi-result" src="/static/images/post-images/intro-to-wsgi/wsgi-demo.png" /></p>
-<p>YES! This framework is going to get very popular!</p>
-<p>Now that we know about the WSGI application interface, let's talk about something that we deliberately missed earlier: Middleware.</p>
-<p>With middleware, the above scenario will look like this:</p>
-<ul>
-<li>Web server gets a request</li>
-<li>Now, it won't directly talk to the PythonApp guy. It will send it through a postman (middleware)</li>
-<li>The postman delivers the request to the PythonApp guy</li>
-<li>After the PythonApp guy does his job, gives the response to the postman</li>
-<li>The postman delivers the response to the web server</li>
-</ul>
-<p>The only thing to note is that while the postman is delivering the request/response, he may tweak it a little bit.</p>
-<p>Let's see it in action. We will now write a middleware that reverses the response from our application:</p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Reverseware</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wrapped_app</span> <span class="o">=</span> <span class="n">app</span>
+<p>It means that our decorator will have one more layer which will accept the type as parameter and will have two inner functions. Let's 
+try to write that decorator:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">assert_type</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">decorated_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="p">),</span> <span class="s2">&quot;{arg} is not an instance of {type}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">arg</span>
 
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environ</span><span class="p">,</span> <span class="n">start_response</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">data</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapped_app</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="n">start_response</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">decorated_func</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
 </pre></div>
 
 
-<p>Simple enough. If we insert this code to the example above, the full code will look like this:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">wsgiref.simple_server</span> <span class="kn">import</span> <span class="n">make_server</span>
+<p>Cool! And now I can use this decorator as I wanted:</p>
+<div class="highlight"><pre><span></span><span class="nd">@assert_type</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">first_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">arg</span>
 
-
-<span class="k">class</span> <span class="nc">Reverseware</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wrapped_app</span> <span class="o">=</span> <span class="n">app</span>
-
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environ</span><span class="p">,</span> <span class="n">start_response</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">data</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrapped_app</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="n">start_response</span><span class="p">)]</span>
-
-
-<span class="k">def</span> <span class="nf">application</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="n">start_response</span><span class="p">):</span>
-    <span class="n">response_body</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s1">&#39;{key}: {value}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">environ</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
-    <span class="p">]</span>
-    <span class="n">response_body</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">response_body</span><span class="p">)</span>
-
-    <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;200&#39;</span>
-
-    <span class="n">response_headers</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">(</span><span class="s1">&#39;Content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">),</span>
-    <span class="p">]</span>
-
-    <span class="k">return</span> <span class="p">[</span><span class="n">response_body</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)]</span>
-
-<span class="n">server</span> <span class="o">=</span> <span class="n">make_server</span><span class="p">(</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="mi">8000</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="n">Reverseware</span><span class="p">(</span><span class="n">application</span><span class="p">))</span>
-<span class="n">server</span><span class="o">.</span><span class="n">serve_forever</span><span class="p">()</span>
+<span class="nd">@assert_type</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">second_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">arg</span>
 </pre></div>
 
 
-<p>Now, if you run it, you will see something like this:</p>
-<p><img alt="wsgi-result" src="/static/images/post-images/intro-to-wsgi/wsgi-reverse-demo.png" />  </p>
-<p>Beautiful!</p>
-<p>Alright, that's it from me today. If you want to learn more about the WSGI, please see the updated <a href="https://www.python.org/dev/peps/pep-3333/">PEP 3333</a>.
-Thanks for reading!</p>
+<p>and run some tests:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">first_func</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="mi">123</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">first_func</span><span class="p">(</span><span class="s1">&#39;123&#39;</span><span class="p">)</span>
+<span class="o">---------------------------------------------------------------------------</span>
+<span class="ne">AssertionError</span><span class="p">:</span> <span class="mi">123</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">an</span> <span class="n">instance</span> <span class="n">of</span> <span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">int</span><span class="s1">&#39;&gt;</span>
+</pre></div>
+
+
+<p>Voila! It is working as before but now the functions are much better-looking. They are even hot <i class="em em-fire"></i><i class="em em-heart_eyes"></i></p>
+<p>Wow! I could not even imagine that I would learn so much more than just the decorators. </p>
+<p>Along the way, I learned that functions are <a href="https://dbader.org/blog/python-first-class-functions">first-class objects</a> in Python which means that I can use a function as arguments to another function:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+
+
+<p>I also learned that functions can have <a href="http://www.devshed.com/c/a/python/nested-functions-in-python/">inner functions</a>:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">assert_type</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">decorated_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="p">),</span> <span class="s2">&quot;{arg} is not an instance of {type}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">arg</span>
+
+        <span class="k">return</span> <span class="n">decorated_func</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+</pre></div>
+
+
+<p>And most importantly those inner functions can use the variables from the outer functions and can remember them even when 
+they go out of scope (<a href="https://www.programiz.com/python-programming/closure">clojure</a>), like in the following line:</p>
+<div class="highlight"><pre><span></span>assert isinstance(arg, type), &quot;{arg} is not an instance of {type}&quot;.format(arg=arg, type=type)
+</pre></div>
+
+
+<p>where <code>type</code> comes from the function above.</p>
+<p>Overall, it was a productive day <i class="em em-sunglasses"></i></p>
+<h2>Conclusion</h2>
+<p>Thanks for reading thus far. This post was not written to illustrate what exactly decorators are or how they work. But rather, it was
+written in order to show why we need decorators and how they can improve our code. That's why, in order to make your decorators knowledge
+comprehensive, please go ahead and read the <a href="http://simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/">these</a> 
+<a href="https://www.thecodeship.com/patterns/guide-to-python-function-decorators/">blog posts</a> for details. They are awesome!</p>
 <p>Fight on!</p>
 
 <div class="end">
     <span>
-        If you liked what you read, I would really appreciate if you could endorse me on
-        <a href="https://www.linkedin.com/in/jahongirrahmonov/">LinkedIn</a>
+        If you liked what you read, subscribe below. Once in a while, I will send you a list of my new posts.
     </span>
+
+    <div id="popup">
+        <p>
+            <!-- Begin MailChimp Signup Form -->
+            <link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css">
+            <style type="text/css">
+                #mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; }
+                /* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
+                   We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
+            </style>
+            <div id="mc_embed_signup">
+            <form action="//rahmonov.us16.list-manage.com/subscribe/post?u=9e30bdfdfe0a7bd7cf7e0d50a&amp;id=af3f3c5f76" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+                <div id="mc_embed_signup_scroll">
+            <div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
+            <div class="mc-field-group">
+                <label for="mce-MMERGE1">Name </label>
+                <input type="text" value="" name="MMERGE1" class="" id="mce-MMERGE1">
+            </div>
+            <div class="mc-field-group">
+                <label for="mce-EMAIL">Email Address  <span class="asterisk">*</span>
+            </label>
+                <input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
+            </div>
+                <div id="mce-responses" class="clear">
+                    <div class="response" id="mce-error-response" style="display:none"></div>
+                    <div class="response" id="mce-success-response" style="display:none"></div>
+                </div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+                <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_9e30bdfdfe0a7bd7cf7e0d50a_af3f3c5f76" tabindex="-1" value=""></div>
+                <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
+                </div>
+            </form>
+            </div>
+            <!--End mc_embed_signup-->
+        </p>
+    </div>
 </div>
             </div>
         </div>
@@ -314,6 +331,7 @@ Thanks for reading!</p>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="/static/js/mobile.js"></script>
+    <script src="/static/vendor/lightbox2/js/lightbox.min.js"></script>
 
 </body>
 </html>

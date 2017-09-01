@@ -1,5 +1,258 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/all-en.atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2017-07-25T20:10:00+05:00</updated><entry><title>What the hell is WSGI anyway and what do you eat it with?</title><link href="http://rahmonov.github.io/posts/what-the-hell-is-wsgi-anyway-and-what-do-you-eat-it-with/" rel="alternate"></link><published>2017-07-25T20:10:00+05:00</published><updated>2017-07-25T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2017-07-25:posts/what-the-hell-is-wsgi-anyway-and-what-do-you-eat-it-with/</id><summary type="html">&lt;p&gt;Before we dive into the details of WSGI, why don't we take a bird-eye's view on what happens when a user uses our web application.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.github.io/" rel="alternate"></link><link href="http://rahmonov.github.io/feeds/all-en.atom.xml" rel="self"></link><id>http://rahmonov.github.io/</id><updated>2017-08-30T20:10:00+05:00</updated><entry><title>Python Decorators</title><link href="http://rahmonov.github.io/posts/python-decorators/" rel="alternate"></link><published>2017-08-30T20:10:00+05:00</published><updated>2017-08-30T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2017-08-30:posts/python-decorators/</id><summary type="html">&lt;p&gt;The following is a tale of how one programmer learned the basics of decorators in Python and it is told from his point of view.&lt;/p&gt;
+&lt;h2&gt;The Tale&lt;/h2&gt;
+&lt;p&gt;So, my boss told me to write two functions both of which return whatever they accept. Well, that seems pretty easy:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;first_func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;arg&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;second_func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;arg&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;When I asked him what the difference was between these two functions he said that the first one should only accept integers and
+the second one should only accept strings, otherwise they both should raise an &lt;code&gt;AssertionError&lt;/code&gt; with a helpful message.&lt;/p&gt;
+&lt;p&gt;Okay, that should not be too difficult:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;first_func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="nb"&gt;isinstance&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;{arg} is not an instance of int&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;arg&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;second_func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="nb"&gt;isinstance&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;{arg} is not an instance of str&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;arg&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Let's try them out:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;first_func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;123&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;123&lt;/span&gt;
+
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;first_func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;some text&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;---------------------------------------------------------------------------&lt;/span&gt;
+&lt;span class="ne"&gt;AssertionError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;some&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;an&lt;/span&gt; &lt;span class="n"&gt;instance&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;
+
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;second_func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;text&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;text&amp;#39;&lt;/span&gt;
+
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;second_func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;123&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;---------------------------------------------------------------------------&lt;/span&gt;
+&lt;span class="ne"&gt;AssertionError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;123&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;an&lt;/span&gt; &lt;span class="n"&gt;instance&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Cool, they seem to work pretty well. But it bothers me that those assertion lines seem exactly the same and I am not following
+the DRY principle. Uncle Bob will kill me. I think I should probably factor them out to a separate function and call where needed.
+The function should accept an argument and a type and check if that argument is an instance of that type. If not, raise an assertion error:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;assert_type&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="nb"&gt;isinstance&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;{arg} is not an instance of {type}&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now I can call this in the two functions that I wrote earlier:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;first_func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;assert_type&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;arg&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;second_func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;assert_type&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;arg&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Looks much better now and they are producing the same results. Hmmm, I have a strange feeling that I could improve this further. 
+It is Python after all. There should be something more pythonic. As &lt;a href="https://twitter.com/raymondh"&gt;Raymond Hettinger&lt;/a&gt; would say:&lt;/p&gt;
+&lt;div class="gallery medium"&gt;
+    &lt;a href="/static/images/post-images/python-decorators/raymondhettinger.jpg" rel="lightbox" title="Raymond Hettinger"&gt;
+        &lt;img src="/static/images/post-images/python-decorators/raymondhettinger.jpg" alt="Raymond Hettinger"&gt;
+        &lt;span&gt;There must be a better way!&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;p&gt;I need to do a little research on how I can accomplish this feat.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;...after 3 days...
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Oh wow! I watched this &lt;a href="https://www.youtube.com/watch?v=7lmCu8wz8ro"&gt;amazing talk by James Powell&lt;/a&gt; and learned that there is a feature
+in Python that does exactly what I want to do with my functions and it is called &lt;code&gt;decorators&lt;/code&gt; &lt;i class="em em-tada"&gt;&lt;/i&gt;&lt;/p&gt;
+&lt;p&gt;Basically, what they allow me to do is add an additional functionality to my existing functions. That's exactly what I want to do: I want
+to add type-checking functionality to my existing &lt;code&gt;first_func&lt;/code&gt; and &lt;code&gt;second_func&lt;/code&gt;. Let's see an example:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;p_decorate&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;func&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+   &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;func_wrapper&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+       &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;lt;p&amp;gt;{0}&amp;lt;/p&amp;gt;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+   &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;func_wrapper&lt;/span&gt;
+
+&lt;span class="nd"&gt;@p_decorate&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get_text&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+   &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;lorem ipsum, {0} dolor sit amet&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So, in this example, there is a &lt;code&gt;get_text&lt;/code&gt; function which accepts a parameter &lt;code&gt;name&lt;/code&gt; and returns a string of that name inside a random text.
+There is another method called &lt;code&gt;p_decorate&lt;/code&gt;. It accepts a function and returns a function which is declared inside this &lt;code&gt;p_decorate&lt;/code&gt;. It accepts
+&lt;code&gt;name&lt;/code&gt; as a parameter. It then surrounds it with &lt;code&gt;&amp;lt;p&amp;gt;&amp;lt;/p&amp;gt;&lt;/code&gt; tags and returns the result. And one more thing to note is that there is
+&lt;code&gt;@p_decorate&lt;/code&gt; on top of &lt;code&gt;def get_text(name)&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;This is all very mysterious to me but let's see what result it will yield:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;get_text&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;John&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;lt;p&amp;gt;lorem ipsum, John dolor sit amet&amp;lt;/p&amp;gt;&amp;#39;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Okay, the expected result. Let's try to understand what is going on here:&lt;/p&gt;
+&lt;p&gt;First, when I call &lt;code&gt;get_text&lt;/code&gt;, it will actually call &lt;code&gt;p_decorate(get_text)&lt;/code&gt; because of &lt;code&gt;@p_decorate&lt;/code&gt; on top of the function declaration.
+And what will &lt;code&gt;p_decorate(get_text)&lt;/code&gt; return? It will return another function called &lt;code&gt;func_wrapper&lt;/code&gt;. So, basically 
+&lt;code&gt;get_text(name)&lt;/code&gt; will be replaced by &lt;code&gt;func_wrapper(name)&lt;/code&gt; which will return &lt;code&gt;p&lt;/code&gt; tag surrounded string that we saw.&lt;/p&gt;
+&lt;p&gt;Now, it is much clearer to me. Back to my own functions. &lt;/p&gt;
+&lt;p&gt;Using these decorators, I want my end result to look like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nd"&gt;@assert_type&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;first_func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;arg&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It means that our decorator will have one more layer which will accept the type as parameter and will have two inner functions. Let's 
+try to write that decorator:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;assert_type&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;wrapper&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;func&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;decorated_func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+            &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="nb"&gt;isinstance&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;{arg} is not an instance of {type}&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;arg&lt;/span&gt;
+
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;decorated_func&lt;/span&gt;
+
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;wrapper&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Cool! And now I can use this decorator as I wanted:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nd"&gt;@assert_type&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;int&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;first_func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;arg&lt;/span&gt;
+
+&lt;span class="nd"&gt;@assert_type&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;second_func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;arg&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;and run some tests:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;first_func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;123&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;123&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;first_func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;123&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;---------------------------------------------------------------------------&lt;/span&gt;
+&lt;span class="ne"&gt;AssertionError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;123&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;an&lt;/span&gt; &lt;span class="n"&gt;instance&lt;/span&gt; &lt;span class="n"&gt;of&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="err"&gt;&amp;#39;&lt;/span&gt;&lt;span class="nc"&gt;int&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Voila! It is working as before but now the functions are much better-looking. They are even hot &lt;i class="em em-fire"&gt;&lt;/i&gt;&lt;i class="em em-heart_eyes"&gt;&lt;/i&gt;&lt;/p&gt;
+&lt;p&gt;Wow! I could not even imagine that I would learn so much more than just the decorators. &lt;/p&gt;
+&lt;p&gt;Along the way, I learned that functions are &lt;a href="https://dbader.org/blog/python-first-class-functions"&gt;first-class objects&lt;/a&gt; in Python which means that I can use a function as arguments to another function:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;add&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;
+
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;apply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;func&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I also learned that functions can have &lt;a href="http://www.devshed.com/c/a/python/nested-functions-in-python/"&gt;inner functions&lt;/a&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;assert_type&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;wrapper&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;func&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;decorated_func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+            &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="nb"&gt;isinstance&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;{arg} is not an instance of {type}&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;arg&lt;/span&gt;
+
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;decorated_func&lt;/span&gt;
+
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;wrapper&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And most importantly those inner functions can use the variables from the outer functions and can remember them even when 
+they go out of scope (&lt;a href="https://www.programiz.com/python-programming/closure"&gt;clojure&lt;/a&gt;), like in the following line:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;assert isinstance(arg, type), &amp;quot;{arg} is not an instance of {type}&amp;quot;.format(arg=arg, type=type)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;where &lt;code&gt;type&lt;/code&gt; comes from the function above.&lt;/p&gt;
+&lt;p&gt;Overall, it was a productive day &lt;i class="em em-sunglasses"&gt;&lt;/i&gt;&lt;/p&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;Thanks for reading thus far. This post was not written to illustrate what exactly decorators are or how they work. But rather, it was
+written in order to show why we need decorators and how they can improve our code. That's why, in order to make your decorators knowledge
+comprehensive, please go ahead and read the &lt;a href="http://simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/"&gt;these&lt;/a&gt; 
+&lt;a href="https://www.thecodeship.com/patterns/guide-to-python-function-decorators/"&gt;blog posts&lt;/a&gt; for details. They are awesome!&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="python"></category><category term="decorators"></category><category term="function"></category></entry><entry><title>I gave a talk at Google IO Extended 2017</title><link href="http://rahmonov.github.io/posts/i-gave-a-talk-at-google-io-extended/" rel="alternate"></link><published>2017-08-11T20:10:00+05:00</published><updated>2017-08-11T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2017-08-11:posts/i-gave-a-talk-at-google-io-extended/</id><summary type="html">&lt;p&gt;At Super Dispatch, we have this event so-called "Friday Talks" where all the people gather up and one person gives a talk on a topic
+of his own choice. This is done in order to foster a culture of knowledge sharing and growth. As a software developer at Super Dispatch,
+I have regularly been giving talks at this event. The topics I talked about include:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="/posts/how-to-write-clean-functions/"&gt;How to write clean functions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://graphql.org/"&gt;Introduction to GraphQL in Python&lt;/a&gt; &lt;/li&gt;
+&lt;li&gt;&lt;a href="https://kubernetes.io/"&gt;Deploying Django apps using Kubernetes on GCP&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Practical Guide to Test Driven Development with Django&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;and a few more others. This has been an awesome experience for a number of reasons. For one thing, I learned a lot of things in the
+process of getting prepared for the talks and filled lots of gaps in my knowledge of things I thought I knew well. For another, 
+I overcame my fear of talking to an audience because it is much easier to give a talk to your colleagues than to complete strangers. 
+Besides, I learned how to structure my thoughts into an organized talk. &lt;/p&gt;
+&lt;p&gt;However, I have never stood up in the stage all alone in front of &lt;strike&gt;all these monsters who are getting ready to eat me up&lt;/strike&gt;
+a big number of people whose first thought, I think, would be: "Okay, this guy is giving a talk so he should be an expert". WHAT???
+What if I screw up and make fun of myself? What if somebody records how I screw up and puts it on YouTube? &lt;i class="em em-scream"&gt;&lt;/i&gt; 
+Okay, I am joking here, that would have been awesome and fun to watch. But the fear was real.&lt;/p&gt;
+&lt;p&gt;However, I as read more &lt;a href="https://www.amazon.com/Soft-Skills-software-developers-manual/dp/1617292397"&gt;books&lt;/a&gt; and &lt;a href="https://simpleprogrammer.com/2015/01/05/24-quick-tips-to-boost-your-career-as-a-software-engineer-this-year/"&gt;articles&lt;/a&gt; 
+on how to build a good career as a developer, I realized that getting yourself out there by starting a blog or giving a talk is essential to be successful in this industry.
+So, when it was announced that &lt;a href="https://www.facebook.com/iutextended/?ref=br_rs"&gt;Google IO Extended&lt;/a&gt; was happening in Tashkent, I knew that it was my chance to get started in this speaking journey. &lt;/p&gt;
+&lt;div class="gallery medium"&gt;
+    &lt;a href="/static/images/post-images/i-gave-a-talk/after-talks.jpg" rel="lightbox" title="Google IO People"&gt;
+        &lt;img src="/static/images/post-images/i-gave-a-talk/after-talks.jpg" alt="Google IO People"&gt;
+        &lt;span&gt;Event organizers and participants&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;p&gt;So, I went ahead and submitted a talk. And the rest is history...okay, I am joking again. No history here, just an ordinary tech even, phew &lt;i class="em em-sleepy"&gt;&lt;/i&gt;  &lt;/p&gt;
+&lt;p&gt;Thankfully, the organizers accepted my talk and announced it on the event page: &lt;/p&gt;
+&lt;div class="gallery medium"&gt;
+    &lt;a href="/static/images/post-images/i-gave-a-talk/announcing-me.png" rel="lightbox" title="My announcement"&gt;
+        &lt;img src="/static/images/post-images/i-gave-a-talk/announcing-me.png" alt="My announcement"&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;p&gt;I was proud and terrified at the same time. Some of the other talks included:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.facebook.com/iutextended/photos/a.902471193144035.1073741828.902460013145153/1414752278582588/?type=3&amp;amp;permPage=1"&gt;How to develop a web service in Golang and deploy it using Docker by Diyor Islomov&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.facebook.com/iutextended/photos/a.902471193144035.1073741828.902460013145153/1415300861861063/?type=3"&gt;Prototyping apps for non-programmers by Vlad Azimhodjaev&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.facebook.com/iutextended/photos/a.902471193144035.1073741828.902460013145153/1416110071780142/?type=3"&gt;Game/CGI characters creation process by Bekzod Fayozov&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.facebook.com/iutextended/photos/a.902471193144035.1073741828.902460013145153/1416861721704977/?type=3"&gt;Welcome to journey of JavaScript by Farrux Mamatxalilov&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.facebook.com/iutextended/photos/a.902471193144035.1073741828.902460013145153/1420533894671093/?type=3"&gt;Virtual Reality: Status Quo and the potential of the market by Shakhruz Ashirov&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;So the day came and I gave my talk called "How we deploy our Django apps now and where we are going". It was split into three parts.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The past: when we deployed everything manually and depended on the ninja develop who was the only one who knew how to do things&lt;/li&gt;
+&lt;li&gt;The present: when we are using CI and CD to deploy our apps automatically&lt;/li&gt;
+&lt;li&gt;The future: when we plan to use Docker, Kubernetes and CI&amp;amp;CD to deploy our apps&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="gallery medium"&gt;
+    &lt;a href="/static/images/post-images/i-gave-a-talk/me-talking.jpg" rel="lightbox" title="The beginning of the talk"&gt;
+        &lt;img src="/static/images/post-images/i-gave-a-talk/me-talking.jpg" alt="The beginning of the talk"&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;p&gt;It went pretty well. At least, better than I thought it would be. The audience was great. They laughed at approximately half of my jokes.
+But hey, 50% is not that bad for the first time &lt;i class="em em-sunglasses"&gt;&lt;/i&gt; &lt;/p&gt;
+&lt;div class="gallery medium"&gt;
+    &lt;a href="/static/images/post-images/i-gave-a-talk/audience.jpg" rel="lightbox" title="Audience"&gt;
+        &lt;img src="/static/images/post-images/i-gave-a-talk/audience.jpg" alt="Audience"&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;p&gt;After my talk ended, several people approached me with questions and some of them got my contacts. Honestly, I felt like a super star.&lt;/p&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;I know that it is not a huge thing to accomplish but I was and still am excited about what happened. The most important thing is that I
+learned a ton.&lt;/p&gt;
+&lt;p&gt;I experienced what it is like to be talking to more than 10 people. I improved my presentation skills. I answered the audience's questions.
+I got to meet some awesome people. &lt;s&gt;Some people got to meet me, the humblest person on this planet &lt;i class="em em-grin"&gt;&lt;/i&gt;&lt;/s&gt; &lt;/p&gt;
+&lt;p&gt;Overall, I think that it was a step forward in my career and I will continue to grab such opportunities to speak in the future as well.
+Also, I recommend that you do the same, no matter what you do. Getting oneself out there is what differentiates the successful from the average.&lt;/p&gt;
+&lt;p&gt;Thanks for reading &lt;i class="em em-innocent"&gt;&lt;/i&gt; and fight on &lt;i class="em em-muscle"&gt;&lt;/i&gt;&lt;/p&gt;</summary><category term="python"></category><category term="django"></category><category term="speaking"></category><category term="talk"></category><category term="google"></category></entry><entry><title>What the hell is WSGI anyway and what do you eat it with?</title><link href="http://rahmonov.github.io/posts/what-the-hell-is-wsgi-anyway-and-what-do-you-eat-it-with/" rel="alternate"></link><published>2017-07-25T20:10:00+05:00</published><updated>2017-07-25T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.github.io,2017-07-25:posts/what-the-hell-is-wsgi-anyway-and-what-do-you-eat-it-with/</id><summary type="html">&lt;p&gt;Before we dive into the details of WSGI, why don't we take a bird-eye's view on what happens when a user uses our web application.&lt;/p&gt;
 &lt;h3&gt;Part I: the world through a web server's eyes&lt;/h3&gt;
 &lt;p&gt;Imagine for a moment that you are a web server (e.g. a gunicorn). Your job consists of the following parts:&lt;/p&gt;
 &lt;ul&gt;
@@ -147,7 +400,13 @@ Python's bundled WSGI server. But if you want to learn the WSGI server interface
 
 &lt;p&gt;Save this file as &lt;code&gt;wsgi_demo.py&lt;/code&gt; and run it &lt;code&gt;python wsgi_demo.py&lt;/code&gt;. Then, go to &lt;a href="http://localhost:8000"&gt;localhost:8000&lt;/a&gt; and you will see 
 all the variables listed:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="wsgi-result" src="/static/images/post-images/intro-to-wsgi/wsgi-demo.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/intro-to-wsgi/wsgi-demo.png" rel="lightbox" title="Headers"&gt;
+        &lt;img src="/static/images/post-images/intro-to-wsgi/wsgi-demo.png" alt="Headers"&gt;
+        &lt;span&gt;All headers&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;YES! This framework is going to get very popular!&lt;/p&gt;
 &lt;p&gt;Now that we know about the WSGI application interface, let's talk about something that we deliberately missed earlier: Middleware.&lt;/p&gt;
 &lt;p&gt;With middleware, the above scenario will look like this:&lt;/p&gt;
@@ -201,7 +460,13 @@ all the variables listed:&lt;/p&gt;
 
 
 &lt;p&gt;Now, if you run it, you will see something like this:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="wsgi-result" src="/static/images/post-images/intro-to-wsgi/wsgi-reverse-demo.png" /&gt;  &lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/intro-to-wsgi/wsgi-reverse-demo.png" rel="lightbox" title="Reverseware middleware"&gt;
+        &lt;img src="/static/images/post-images/intro-to-wsgi/wsgi-reverse-demo.png" alt="Reverse headers"&gt;
+        &lt;span&gt;All headers are displayed in reverse&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;Beautiful!&lt;/p&gt;
 &lt;p&gt;Alright, that's it from me today. If you want to learn more about the WSGI, please see the updated &lt;a href="https://www.python.org/dev/peps/pep-3333/"&gt;PEP 3333&lt;/a&gt;.
 Thanks for reading!&lt;/p&gt;
@@ -212,7 +477,13 @@ fixing a typo here, opening an issue there and solving some small issues. I stil
 was merged to &lt;a href="https://falconframework.org/"&gt;the Falcon framework&lt;/a&gt; :)&lt;/p&gt;
 &lt;p&gt;&lt;img alt="first-pr" src="/static/images/post-images/first-osp/pr.jpg" /&gt;&lt;/p&gt;
 &lt;p&gt;I also wanted to do something of my own. And today, I am excited to say that I published my first open source project in the form of a &lt;a href="https://pypi.python.org/pypi/agile-crm-python"&gt;PyPI package&lt;/a&gt;. YAY!&lt;/p&gt;
-&lt;p&gt;&lt;img alt="pypi" src="/static/images/post-images/first-osp/pypi.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/first-osp/pypi.png" rel="lightbox" title="My PyPi package"&gt;
+        &lt;img src="/static/images/post-images/first-osp/pypi.png" alt="My PyPi package"&gt;
+        &lt;span&gt;My PyPi package&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;It is nothing big. Just a Python wrapper for &lt;a href="https://www.agilecrm.com/"&gt;AgileCRM&lt;/a&gt; &lt;a href="https://github.com/agilecrm/rest-api"&gt;REST API&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;However, there are a number of reasons why I made &lt;a href="https://github.com/rahmonov/agile-crm-python"&gt;this package&lt;/a&gt;!&lt;/p&gt;
 &lt;p&gt;First of all, &lt;a href="https://github.com/agilecrm/python-api"&gt;their own package&lt;/a&gt; was not comfortable to use. The following is how you update a tag field of a contact:&lt;/p&gt;
@@ -508,7 +779,13 @@ is one of those methods that require to be inside a transaction. If you call it 
 help of &lt;a href="https://jenkins.io/"&gt;Jenkins&lt;/a&gt;. But first, let's see why we need such a server.&lt;/p&gt;
 &lt;p&gt;In the &lt;a href="http://rahmonov.me/posts/deploy-a-django-app-to-digitalocean/"&gt;previous post&lt;/a&gt;, we deployed &lt;a href="https://github.com/rahmonov/djtrump"&gt;our application&lt;/a&gt;
 to Digital Ocean and now it is up and running:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="donald.04" src="/static/images/post-images/django-digitalocean/donald.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/django-digitalocean/donald.png" rel="lightbox" title="DJDonald"&gt;
+        &lt;img src="/static/images/post-images/django-digitalocean/donald.png" alt="DJDonald"&gt;
+        &lt;span&gt;Donald Trump and one of his quotes&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;Now, let's try to update it.&lt;/p&gt;
 &lt;p&gt;By the way, to follow along this tutorial you should fork &lt;a href="https://github.com/rahmonov/djtrump"&gt;this repo&lt;/a&gt; if you didn't do so in the previous post.
 The reason is that we will play around with the app to see our CI and CD server in play later on.&lt;/p&gt;
@@ -566,26 +843,62 @@ sudo apt-get install jenkins
 
 
 &lt;p&gt;Now, if you go to JENKINS_IP_ADDRESS:8080 on your browser, you should see Jenkins up and running:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Jenkins" src="/static/images/post-images/jenkins-djtrump/jenkins-setup.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/jenkins-djtrump/jenkins-setup.png" rel="lightbox" title="Jenkins"&gt;
+        &lt;img src="/static/images/post-images/jenkins-djtrump/jenkins-setup.png" alt="Jenkins"&gt;
+        &lt;span&gt;Jenkins setup page&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;Open to &lt;em&gt;/var/lib/jenkins/secrets/initialAdminPassword&lt;/em&gt;, copy your password and paste it on the form. Click on Continue.&lt;/p&gt;
 &lt;p&gt;After a moment, &lt;em&gt;Customize Jenkins&lt;/em&gt; page opens. There, click on &lt;em&gt;Select plugins to install&lt;/em&gt;.&lt;/p&gt;
 &lt;p&gt;On this page, search for &lt;em&gt;Github&lt;/em&gt; and &lt;em&gt;Pipeline&lt;/em&gt; plugins and check them. Click install:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Jenkins Plugins" src="/static/images/post-images/jenkins-djtrump/jenkins-initial-plugins.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/jenkins-djtrump/jenkins-initial-plugins.png" rel="lightbox" title="Jenkins plugins"&gt;
+        &lt;img src="/static/images/post-images/jenkins-djtrump/jenkins-initial-plugins.png" alt="Jenkins plugins"&gt;
+        &lt;span&gt;Jenkins plugins page&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;After everything installs, on the next page, fill in the details and create a user. Click on &lt;em&gt;Start using Jenkins&lt;/em&gt;.&lt;/p&gt;
 &lt;h2&gt;Set up a Jenkins Job&lt;/h2&gt;
 &lt;p&gt;Click on &lt;em&gt;New Item&lt;/em&gt; or &lt;em&gt;create new jobs&lt;/em&gt; to get started.&lt;/p&gt;
 &lt;p&gt;On the new job page, name the item &lt;em&gt;DJTrump&lt;/em&gt; and choose &lt;em&gt;Multibranch pipeline&lt;/em&gt;:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Jenkins New Job" src="/static/images/post-images/jenkins-djtrump/jenkins-new-job.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/jenkins-djtrump/jenkins-new-job.png" rel="lightbox" title="Jenkins new job"&gt;
+        &lt;img src="/static/images/post-images/jenkins-djtrump/jenkins-new-job.png" alt="Jenkins new job"&gt;
+        &lt;span&gt;Jenkins new job&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;On the configuration page, click on &lt;em&gt;Add source&lt;/em&gt; and choose &lt;em&gt;Git&lt;/em&gt;. Fill in the details of your repository in Github. Then, check &lt;em&gt;Periodically if not otherwise run&lt;/em&gt; and 
 leave the interval of 1 minute:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Jenkins Configure Job" src="/static/images/post-images/jenkins-djtrump/jenkins-configure-job.png" /&gt;    &lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/jenkins-djtrump/jenkins-configure-job.png" rel="lightbox" title="Jenkins configure job"&gt;
+        &lt;img src="/static/images/post-images/jenkins-djtrump/jenkins-configure-job.png" alt="Jenkins configure job"&gt;
+        &lt;span&gt;Jenkins configure job&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;Click &lt;em&gt;Save&lt;/em&gt;. You will see that Jenkins will immediately start to build the project. As we chose Multibranch mode, it will start to build for all branches.
 However, you will see that both branches will fail:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Jenkins Failed Job" src="/static/images/post-images/jenkins-djtrump/jenkins-failed-jobs.png" /&gt; &lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/jenkins-djtrump/jenkins-failed-jobs.png" rel="lightbox" title="Jenkins failed"&gt;
+        &lt;img src="/static/images/post-images/jenkins-djtrump/jenkins-failed-jobs.png" alt="Jenkins failed"&gt;
+        &lt;span&gt;Jenkins failed&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;To see what is going on, click on &lt;em&gt;master&lt;/em&gt; and on the next page, click on &lt;em&gt;#1&lt;/em&gt; in the &lt;em&gt;Build History&lt;/em&gt; list. Then, on the next page, click on &lt;em&gt;Console Output&lt;/em&gt; in the left sidebar.
 You will see the logs which show that Jenkins cloned the project and then encountered an error that says: &lt;em&gt;No such DSL method 'slackSend' found among steps&lt;/em&gt;. So, it tried to notify us
 through slack that a Jenkins build started and it got this error:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Jenkins Failed Logs" src="/static/images/post-images/jenkins-djtrump/jenkins-failed-logs.png" /&gt; &lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/jenkins-djtrump/jenkins-failed-logs.png" rel="lightbox" title="Jenkins logs"&gt;
+        &lt;img src="/static/images/post-images/jenkins-djtrump/jenkins-failed-logs.png" alt="Jenkins logs"&gt;
+        &lt;span&gt;Jenkins logs&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;But wait! How did Jenkins know what to do in the first place? How did it know that it should send a slack message saying that a build started?&lt;/p&gt;
 &lt;p&gt;If you go to the root folder of the project you will see a file named &lt;em&gt;Jenkinsfile&lt;/em&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="cp"&gt;#!groovy&lt;/span&gt;
@@ -656,11 +969,23 @@ After it gets installed, click on &lt;em&gt;Restart Jenkins when installation is
 &lt;p&gt;After it restarts, log in.&lt;/p&gt;
 &lt;p&gt;We also need to install Jenkins plugin on the Slack side. Assuming you already have a slack team, go to https://my.slack.com/services/new/jenkins-ci.
 There, choose #general channel and click on &lt;em&gt;Add Jenkins CI integration&lt;/em&gt;:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Jenkins Slack" src="/static/images/post-images/jenkins-djtrump/jenkins-slack.jpg" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/jenkins-djtrump/jenkins-slack.jpg" rel="lightbox" title="Jenkins Slack integration"&gt;
+        &lt;img src="/static/images/post-images/jenkins-djtrump/jenkins-slack.jpg" alt="Jenkins Slack integration"&gt;
+        &lt;span&gt;Jenkins Slack integration&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;On the bottom of the next page, you will find some settings such as your Jenkins integration token. Save settings. Now, open another browser window.
 Go to your Jenkins server, navigate to &lt;em&gt;Manage Jenkins&lt;/em&gt; -&amp;gt; &lt;em&gt;Configure System&lt;/em&gt; and find &lt;em&gt;Global Slack Notifier Settings&lt;/em&gt; there. Fill in team subdomain, integration token
 and channel:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Jenkins Slack" src="/static/images/post-images/jenkins-djtrump/jenkins-slack-config.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/jenkins-djtrump/jenkins-slack-config.png" rel="lightbox" title="Jenkins Slack config"&gt;
+        &lt;img src="/static/images/post-images/jenkins-djtrump/jenkins-slack-config.png" alt="Jenkins Slack config"&gt;
+        &lt;span&gt;Jenkins Slack config&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;Save!     &lt;/p&gt;
 &lt;p&gt;If you did everything correctly, slack messaging will work now. However, there are a couple more things we should do to avoid more errors.
 First of all, we should install virtualenv for python:&lt;/p&gt;
@@ -746,11 +1071,28 @@ To do that, log in as &lt;em&gt;jenkins&lt;/em&gt; user coz this is the user tha
 &lt;p&gt;Type yes and you should see that you are connected without any password. Congrats! We should be all set.&lt;/p&gt;
 &lt;p&gt;Time to check!&lt;/p&gt;
 &lt;p&gt;Navigate to &lt;em&gt;Jenkins root&lt;/em&gt; -&amp;gt; &lt;em&gt;DJTrump&lt;/em&gt; -&amp;gt; &lt;em&gt;master&lt;/em&gt; and once there click on &lt;em&gt;Build now&lt;/em&gt; to start a build manually:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Build Now" src="/static/images/post-images/jenkins-djtrump/jenkins-build-now.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/jenkins-djtrump/jenkins-build-now.png" rel="lightbox" title="Jenkins Build"&gt;
+        &lt;img src="/static/images/post-images/jenkins-djtrump/jenkins-build-now.png" alt="Jenkins Build"&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;And you will see that it will start a build and go through all 4 stages we describe at the beginning:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Successful Build" src="/static/images/post-images/jenkins-djtrump/jenkins-successful-build.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/jenkins-djtrump/jenkins-successful-build.png" rel="lightbox" title="Jenkins successful build"&gt;
+        &lt;img src="/static/images/post-images/jenkins-djtrump/jenkins-successful-build.png" alt="Jenkins successful build"&gt;
+        &lt;span&gt;Jenkins successful build&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;If you go to your Slack, you should see some messages in #general channel:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Slack Notification" src="/static/images/post-images/jenkins-djtrump/jenkins-slack-notif.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/jenkins-djtrump/jenkins-slack-notif.png" rel="lightbox" title="Slack notification"&gt;
+        &lt;img src="/static/images/post-images/jenkins-djtrump/jenkins-slack-notif.png" alt="Slack notification"&gt;
+        &lt;span&gt;Slack notification&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;Awesome, right?! But that is not so good if we have to make build manually, right?&lt;/p&gt;
 &lt;p&gt;Fortunately, that's also taken care of. Go to your djtrump and make some kind of change. For example, change the placeholder again to read 
 &lt;em&gt;NNAAAMMMEEE&lt;/em&gt; like we did at the beginning of this tutorial. Then, stage and commit the changes:&lt;/p&gt;
@@ -759,16 +1101,40 @@ To do that, log in as &lt;em&gt;jenkins&lt;/em&gt; user coz this is the user tha
 
 
 &lt;p&gt;In a minute, in your jenkins server you will see that the next build has started and ended successfully:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Second build" src="/static/images/post-images/jenkins-djtrump/jenkins-second-build.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/jenkins-djtrump/jenkins-second-build.png" rel="lightbox" title="Jenkins next build"&gt;
+        &lt;img src="/static/images/post-images/jenkins-djtrump/jenkins-second-build.png" alt="Jenkins next build"&gt;
+        &lt;span&gt;Jenkins next build&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;And if you visit your app, you will see that changes have taken place:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="New Build" src="/static/images/post-images/jenkins-djtrump/new-build.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/jenkins-djtrump/new-build.png" rel="lightbox" title="New changes"&gt;
+        &lt;img src="/static/images/post-images/jenkins-djtrump/new-build.png" alt="New changes"&gt;
+        &lt;span&gt;New changes&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;Hooray! Isn't awesome? You just pushed your code and everything else happened by "itself". Ther is even more. Check your slack.
 You have been notified about the start, what has changed and the end of the build. I love this kind of automation.&lt;/p&gt;
 &lt;p&gt;Now, go ahead and play around with it. Try to make one of the tests fail and you will see that the failing code will not be deployed!
 It will stop in the Test stage:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Failed Test" src="/static/images/post-images/jenkins-djtrump/test-fail.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/jenkins-djtrump/test-fail.png" rel="lightbox" title="Failed test"&gt;
+        &lt;img src="/static/images/post-images/jenkins-djtrump/test-fail.png" alt="Failed test"&gt;
+        &lt;span&gt;Test stage failed&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;In Slack, you will see this fun message:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Slack Failed Test" src="/static/images/post-images/jenkins-djtrump/slack-test-fail.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/jenkins-djtrump/slack-test-fail.png" rel="lightbox" title="Slack message"&gt;
+        &lt;img src="/static/images/post-images/jenkins-djtrump/slack-test-fail.png" alt="Slack message"&gt;
+        &lt;span&gt;Slack message about the failed Jenkins build&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;If you click on &lt;em&gt;Open in Jenkins&lt;/em&gt; and you will taken to that exact failed build.&lt;/p&gt;
 &lt;p&gt;Once again, I love this kind of automation! And you should too!&lt;/p&gt;
 &lt;p&gt;Huh, that was quite a ride! We have learned a lot!&lt;/p&gt;
@@ -783,22 +1149,58 @@ Please note that we are going to do almost the same stuff that we did in the pre
 &lt;p&gt;Let's get started!&lt;/p&gt;
 &lt;h2&gt;Step I (creating a VPS)&lt;/h2&gt;
 &lt;p&gt;Go to &lt;code&gt;https://cloud.digitalocean.com/droplets&lt;/code&gt; and click on &lt;code&gt;Create Droplet&lt;/code&gt; button. Then, select Ubuntu 16.04:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="ubuntu16.04" src="/static/images/post-images/django-digitalocean/ubuntu1604.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/django-digitalocean/ubuntu1604.png" rel="lightbox" title="Choose an image"&gt;
+        &lt;img src="/static/images/post-images/django-digitalocean/ubuntu1604.png" alt="Choose an image"&gt;
+        &lt;span&gt;Choosing an image&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;Select a server:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="server" src="/static/images/post-images/django-digitalocean/size.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/django-digitalocean/size.png" rel="lightbox" title="Choose an image size"&gt;
+        &lt;img src="/static/images/post-images/django-digitalocean/size.png" alt="Choose an image size"&gt;
+        &lt;span&gt;Choosing an image size&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;Select a region:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="region" src="/static/images/post-images/django-digitalocean/region.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/django-digitalocean/region.png" rel="lightbox" title="Choose a datacenter region"&gt;
+        &lt;img src="/static/images/post-images/django-digitalocean/region.png" alt="Choose a datacenter region"&gt;
+        &lt;span&gt;Choosing a datacenter region&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;Then, preferably add you ssh key and name your server:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="name" src="/static/images/post-images/django-digitalocean/server-name.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/django-digitalocean/server-name.png" rel="lightbox" title="SSH and a host name"&gt;
+        &lt;img src="/static/images/post-images/django-digitalocean/server-name.png" alt="SSH and a host name"&gt;
+        &lt;span&gt;Entering SSH key and a host name&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;And click on &lt;strong&gt;&lt;em&gt;Create&lt;/em&gt;&lt;/strong&gt;. After a while, you will see that your server has been created:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="created-server" src="/static/images/post-images/django-digitalocean/created-server.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/django-digitalocean/created-server.png" rel="lightbox" title="Server created"&gt;
+        &lt;img src="/static/images/post-images/django-digitalocean/created-server.png" alt="Server created"&gt;
+        &lt;span&gt;Server created&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;Now, copy the IP address of the newly created server and ssh in:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssh root@104.236.57.112
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Replace that IP address with your own. Welcome in! You should see something like this:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="ssh-in" src="/static/images/post-images/django-digitalocean/ssh-in.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery medium"&gt;
+    &lt;a href="/static/images/post-images/django-digitalocean/ssh-in.png" rel="lightbox" title="SSH in"&gt;
+        &lt;img src="/static/images/post-images/django-digitalocean/ssh-in.png" alt="SSH in"&gt;
+        &lt;span&gt;SSHed in&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;h2&gt;Step II (installing system-wide dependencies)&lt;/h2&gt;
 &lt;p&gt;First, let's update and upgrade the packages:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apt-get update
@@ -984,7 +1386,13 @@ One of the ways to solve it to run nginx as root. To do that, open &lt;code&gt;/
 
 
 &lt;p&gt;Great! You will now see the pleasant face of Donald Trump and a random quote of his:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="donald.04" src="/static/images/post-images/django-digitalocean/donald.png" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/django-digitalocean/donald.png" rel="lightbox" title="DJDonald"&gt;
+        &lt;img src="/static/images/post-images/django-digitalocean/donald.png" alt="DJDonald"&gt;
+        &lt;span&gt;DJDonald&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;h2&gt;Step VI (configuring supervisor)&lt;/h2&gt;
 &lt;p&gt;Create &lt;code&gt;/etc/supervisor/conf.d/djtrump.conf&lt;/code&gt; and type in the following:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;program:djtrump&lt;span class="o"&gt;]&lt;/span&gt;
@@ -1142,7 +1550,13 @@ will love this.&lt;/p&gt;
 
 
 &lt;p&gt;Open up your browser and go to &lt;code&gt;0.0.0.0:9001&lt;/code&gt;. You will see something like this:&lt;/p&gt;
-&lt;p&gt;&lt;img alt="supervisor web interface" src="/static/images/supervisor.jpg" /&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/supervisor.jpg" rel="lightbox" title="Supervisor web interface"&gt;
+        &lt;img src="/static/images/supervisor.jpg" alt="Supervisor web interface"&gt;
+        &lt;span&gt;Web interface of Supervisor&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
 &lt;p&gt;Cool, right?! Go ahead and play with it to control your project.&lt;/p&gt;
 &lt;p&gt;Thanks for reading thus far. Now you have one more tool in your arsenal.&lt;/p&gt;
 &lt;p&gt;&lt;a href="http://rahmonov.me/posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/"&gt;Part I&lt;/a&gt;&lt;/p&gt;

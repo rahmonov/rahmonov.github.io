@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns#">
+          <title> Python Decorators - Jahongir Rahmonov </title>
+
+        <link rel="stylesheet" href="/static/css/main.css" />
+        <link rel="stylesheet" href="/static/css/pygment.css" />
+        <link rel="stylesheet" href="/static/css/font-awesome.min.css" />
+        <link href="//fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="/static/vendor/lightbox2/css/lightbox.min.css">
+        <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
+
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Jahongir Rahmonov's personal blog" />
+        <meta name="author" content="Jahongir Rahmonov" />
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+<meta property="og:title" content="Python Decorators - Jahongir Rahmonov">
+<meta property="og:type" content="website">
+<meta property="og:image" content="/static/images/programming.jpg">
+<meta property="og:url" content="http://rahmonov.github.io/posts/python-decorators/">
+<meta property="og:description" content="<p>A tale of decorators in Python</p>">
+
+        <link href="http://rahmonov.github.io/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Full Atom Feed" />
+        <link href="http://rahmonov.github.io/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="Jahongir Rahmonov Full RSS Feed" />
+        <link href="http://rahmonov.github.io/feeds/programming.atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Categories Atom Feed" />
+
+
+
+    <meta name="tags" content="python" />
+    <meta name="tags" content="decorators" />
+    <meta name="tags" content="function" />
+
+</head>
+
+<body id="index" class="home">
+    <div class="container">
+
+        <button class="nav js-mobile">
+            <i class="fa fa-bars"></i>
+        </button>
+
+        <div class="side">
+            <div class="logo">
+                <a href="/"><img src="/static/images/me.jpg" class="jahon" alt="Jahongir Rahmonov"/></a>
+            </div>
+
+            <h2>Jahongir Rahmonov</h2>
+
+            <div class="paragraphs">
+<p>
+    I'm a Software Developer at <a href="http://mysuperdispatch.com/">Super Dispatch (TechStars '16)</a>.
+    Avid reader.
+    <a href="http://wiut.uz/">WIUT</a> graduate.
+    Blogger and an amateur speaker
+</p>
+<p>
+    I write about Python, Django, AngularJS and sometimes something non-technical.
+</p>
+<p>
+    Welcome to my corner <i class="em em-snake"></i>
+</p>            </div>
+
+            <form method="get" action="https://www.google.com/search">
+                <input name="sitesearch" value="rahmonov.me" type="hidden">
+                <input type="text" id="search-query" class="field field-text" required="required" name="q" placeholder="Search..." autocomplete="off">
+                <input type="image" src="/static/images/search-icon.png" width="20" height="20" class="search-icon" title="Search via Google" alt="Search via Google">
+            </form>
+
+            <ul class="menu">
+                <li><a href="/">Home</a></li>
+                <li><a href="/pages/posts.html">Posts</a></li>
+                <li><a href="/pages/about.html">About</a></li>
+                <li><a href="/pages/about.html#contact">Contact</a></li>
+                <li><a href="/feeds/atom.xml" target="_blank">RSS <i class="fa fa-rss"></i></a></li>
+            </ul>
+
+            <p class="profiles">
+                <a title="GitHub" href="https://github.com/rahmonov" target="_blank"><i class="fa fa-github-square"></i></a>
+                <a title="Twitter" href="https://twitter.com/the_rahmonov" target="_blank"><i class="fa fa-twitter-square"></i></a>
+                <a title="Facebook" href="https://www.facebook.com/rahmonovj" target="_blank"><i class="fa fa-facebook-official"></i></a>
+                <a title="Bitbucket" href="https://bitbucket.org/Jahongir/" target="_blank"><i class="fa fa-bitbucket-square"></i></a>
+                <a title="LinkedIn" href="https://www.linkedin.com/in/jahongirrahmonov" target="_blank"><i class="fa fa-linkedin-square"></i></a>
+            </p>
+        </div>
+
+        <div class="wrap">
+            <div class="content">
+
+  <h4>Wed 30 August 2017</h4>
+
+  <h1>Python Decorators</h1>
+
+  <div class="entry-content">
+    <p>The following is a tale of how one programmer learned the basics of decorators in Python and it is told from his point of view.</p>
+<h2>The Tale</h2>
+<p>So, my boss told me to write two functions both of which return whatever they accept. Well, that seems pretty easy:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">first_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">arg</span>
+
+<span class="k">def</span> <span class="nf">second_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">arg</span>
+</pre></div>
+
+
+<p>When I asked him what the difference was between these two functions he said that the first one should only accept integers and
+the second one should only accept strings, otherwise they both should raise an <code>AssertionError</code> with a helpful message.</p>
+<p>Okay, that should not be too difficult:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">first_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="s2">&quot;{arg} is not an instance of int&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="n">arg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">arg</span>
+
+<span class="k">def</span> <span class="nf">second_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="s2">&quot;{arg} is not an instance of str&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="n">arg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">arg</span>
+</pre></div>
+
+
+<p>Let's try them out:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">first_func</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="mi">123</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">first_func</span><span class="p">(</span><span class="s1">&#39;some text&#39;</span><span class="p">)</span>
+<span class="o">---------------------------------------------------------------------------</span>
+<span class="ne">AssertionError</span><span class="p">:</span> <span class="n">some</span> <span class="n">text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">an</span> <span class="n">instance</span> <span class="n">of</span> <span class="nb">int</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">second_func</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;text&#39;</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">second_func</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
+<span class="o">---------------------------------------------------------------------------</span>
+<span class="ne">AssertionError</span><span class="p">:</span> <span class="mi">123</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">an</span> <span class="n">instance</span> <span class="n">of</span> <span class="nb">str</span>
+</pre></div>
+
+
+<p>Cool, they seem to work pretty well. But it bothers me that those assertion lines seem exactly the same and I am not following
+the DRY principle. Uncle Bob will kill me. I think I should probably factor them out to a separate function and call where needed.
+The function should accept an argument and a type and check if that argument is an instance of that type. If not, raise an assertion error:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">assert_type</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="p">),</span> <span class="s2">&quot;{arg} is not an instance of {type}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Now I can call this in the two functions that I wrote earlier:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">first_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="n">assert_type</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">arg</span>
+
+<span class="k">def</span> <span class="nf">second_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="n">assert_type</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">arg</span>
+</pre></div>
+
+
+<p>Looks much better now and they are producing the same results. Hmmm, I have a strange feeling that I could improve this further. 
+It is Python after all. There should be something more pythonic. As <a href="https://twitter.com/raymondh">Raymond Hettinger</a> would say:</p>
+<div class="gallery medium">
+    <a href="/static/images/post-images/python-decorators/raymondhettinger.jpg" rel="lightbox" title="Raymond Hettinger">
+        <img src="/static/images/post-images/python-decorators/raymondhettinger.jpg" alt="Raymond Hettinger">
+        <span>There must be a better way!</span>
+    </a>
+</div>
+
+<p>I need to do a little research on how I can accomplish this feat.</p>
+<div class="highlight"><pre><span></span>...after 3 days...
+</pre></div>
+
+
+<p>Oh wow! I watched this <a href="https://www.youtube.com/watch?v=7lmCu8wz8ro">amazing talk by James Powell</a> and learned that there is a feature
+in Python that does exactly what I want to do with my functions and it is called <code>decorators</code> <i class="em em-tada"></i></p>
+<p>Basically, what they allow me to do is add an additional functionality to my existing functions. That's exactly what I want to do: I want
+to add type-checking functionality to my existing <code>first_func</code> and <code>second_func</code>. Let's see an example:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">p_decorate</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+   <span class="k">def</span> <span class="nf">func_wrapper</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+       <span class="k">return</span> <span class="s2">&quot;&lt;p&gt;{0}&lt;/p&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+   <span class="k">return</span> <span class="n">func_wrapper</span>
+
+<span class="nd">@p_decorate</span>
+<span class="k">def</span> <span class="nf">get_text</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+   <span class="k">return</span> <span class="s2">&quot;lorem ipsum, {0} dolor sit amet&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+
+
+<p>So, in this example, there is a <code>get_text</code> function which accepts a parameter <code>name</code> and returns a string of that name inside a random text.
+There is another method called <code>p_decorate</code>. It accepts a function and returns a function which is declared inside this <code>p_decorate</code>. It accepts
+<code>name</code> as a parameter. It then surrounds it with <code>&lt;p&gt;&lt;/p&gt;</code> tags and returns the result. And one more thing to note is that there is
+<code>@p_decorate</code> on top of <code>def get_text(name)</code>.</p>
+<p>This is all very mysterious to me but let's see what result it will yield:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">get_text</span><span class="p">(</span><span class="s1">&#39;John&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;&lt;p&gt;lorem ipsum, John dolor sit amet&lt;/p&gt;&#39;</span>
+</pre></div>
+
+
+<p>Okay, the expected result. Let's try to understand what is going on here:</p>
+<p>First, when I call <code>get_text</code>, it will actually call <code>p_decorate(get_text)</code> because of <code>@p_decorate</code> on top of the function declaration.
+And what will <code>p_decorate(get_text)</code> return? It will return another function called <code>func_wrapper</code>. So, basically 
+<code>get_text(name)</code> will be replaced by <code>func_wrapper(name)</code> which will return <code>p</code> tag surrounded string that we saw.</p>
+<p>Now, it is much clearer to me. Back to my own functions. </p>
+<p>Using these decorators, I want my end result to look like this:</p>
+<div class="highlight"><pre><span></span><span class="nd">@assert_type</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">first_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">arg</span>
+</pre></div>
+
+
+<p>It means that our decorator will have one more layer which will accept the type as parameter and will have two inner functions. Let's 
+try to write that decorator:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">assert_type</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">decorated_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="p">),</span> <span class="s2">&quot;{arg} is not an instance of {type}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">arg</span>
+
+        <span class="k">return</span> <span class="n">decorated_func</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+</pre></div>
+
+
+<p>Cool! And now I can use this decorator as I wanted:</p>
+<div class="highlight"><pre><span></span><span class="nd">@assert_type</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">first_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">arg</span>
+
+<span class="nd">@assert_type</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">second_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">arg</span>
+</pre></div>
+
+
+<p>and run some tests:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">first_func</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="mi">123</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">first_func</span><span class="p">(</span><span class="s1">&#39;123&#39;</span><span class="p">)</span>
+<span class="o">---------------------------------------------------------------------------</span>
+<span class="ne">AssertionError</span><span class="p">:</span> <span class="mi">123</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">an</span> <span class="n">instance</span> <span class="n">of</span> <span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">int</span><span class="s1">&#39;&gt;</span>
+</pre></div>
+
+
+<p>Voila! It is working as before but now the functions are much better-looking. They are even hot <i class="em em-fire"></i><i class="em em-heart_eyes"></i></p>
+<p>Wow! I could not even imagine that I would learn so much more than just the decorators. </p>
+<p>Along the way, I learned that functions are <a href="https://dbader.org/blog/python-first-class-functions">first-class objects</a> in Python which means that I can use a function as arguments to another function:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+
+
+<p>I also learned that functions can have <a href="http://www.devshed.com/c/a/python/nested-functions-in-python/">inner functions</a>:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">assert_type</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">decorated_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="p">),</span> <span class="s2">&quot;{arg} is not an instance of {type}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">arg</span>
+
+        <span class="k">return</span> <span class="n">decorated_func</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+</pre></div>
+
+
+<p>And most importantly those inner functions can use the variables from the outer functions and can remember them even when 
+they go out of scope (<a href="https://www.programiz.com/python-programming/closure">clojure</a>), like in the following line:</p>
+<div class="highlight"><pre><span></span>assert isinstance(arg, type), &quot;{arg} is not an instance of {type}&quot;.format(arg=arg, type=type)
+</pre></div>
+
+
+<p>where <code>type</code> comes from the function above.</p>
+<p>Overall, it was a productive day <i class="em em-sunglasses"></i></p>
+<h2>Conclusion</h2>
+<p>Thanks for reading thus far. This post was not written to illustrate what exactly decorators are or how they work. But rather, it was
+written in order to show why we need decorators and how they can improve our code. That's why, in order to make your decorators knowledge
+comprehensive, please go ahead and read the <a href="http://simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/">these</a> 
+<a href="https://www.thecodeship.com/patterns/guide-to-python-function-decorators/">blog posts</a> for details. They are awesome!</p>
+<p>Fight on!</p>
+  </div>
+
+<div class="end">
+    <span>
+        If you liked what you read, subscribe below. Once in a while, I will send you a list of my new posts.
+    </span>
+
+    <div id="popup">
+        <p>
+            <!-- Begin MailChimp Signup Form -->
+            <link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css">
+            <style type="text/css">
+                #mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; }
+                /* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
+                   We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
+            </style>
+            <div id="mc_embed_signup">
+            <form action="//rahmonov.us16.list-manage.com/subscribe/post?u=9e30bdfdfe0a7bd7cf7e0d50a&amp;id=af3f3c5f76" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+                <div id="mc_embed_signup_scroll">
+            <div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
+            <div class="mc-field-group">
+                <label for="mce-MMERGE1">Name </label>
+                <input type="text" value="" name="MMERGE1" class="" id="mce-MMERGE1">
+            </div>
+            <div class="mc-field-group">
+                <label for="mce-EMAIL">Email Address  <span class="asterisk">*</span>
+            </label>
+                <input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
+            </div>
+                <div id="mce-responses" class="clear">
+                    <div class="response" id="mce-error-response" style="display:none"></div>
+                    <div class="response" id="mce-success-response" style="display:none"></div>
+                </div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+                <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_9e30bdfdfe0a7bd7cf7e0d50a_af3f3c5f76" tabindex="-1" value=""></div>
+                <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
+                </div>
+            </form>
+            </div>
+            <!--End mc_embed_signup-->
+        </p>
+    </div>
+</div>
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES * * */
+        var disqus_shortname = 'jrahmonov';
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+            </div>
+        </div>
+    </div>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-67392250-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="/static/js/mobile.js"></script>
+    <script src="/static/vendor/lightbox2/js/lightbox.min.js"></script>
+
+</body>
+</html>
