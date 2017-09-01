@@ -83,85 +83,196 @@
 <h2>Latest Post</h2>
 
 <h4>
-    <a href="posts/i-gave-a-talk-at-google-io-extended/">
-        11 August 2017
+    <a href="posts/python-decorators/">
+        30 August 2017
     </a>
 </h4>
 
-<h1>I gave a talk at Google IO Extended 2017</h1>
+<h1>Python Decorators</h1>
 
-<p>At Super Dispatch, we have this event so-called "Friday Talks" where all the people gather up and one person gives a talk on a topic
-of his own choice. This is done in order to foster a culture of knowledge sharing and growth. As a software developer at Super Dispatch,
-I have regularly been giving talks at this event. The topics I talked about include:</p>
-<ul>
-<li><a href="/posts/how-to-write-clean-functions/">How to write clean functions</a></li>
-<li><a href="http://graphql.org/">Introduction to GraphQL in Python</a> </li>
-<li><a href="https://kubernetes.io/">Deploying Django apps using Kubernetes on GCP</a></li>
-<li>Practical Guide to Test Driven Development with Django</li>
-</ul>
-<p>and a few more others. This has been an awesome experience for a number of reasons. For one thing, I learned a lot of things in the
-process of getting prepared for the talks and filled lots of gaps in my knowledge of things I thought I knew well. For another, 
-I overcame my fear of talking to an audience because it is much easier to give a talk to your colleagues than to complete strangers. 
-Besides, I learned how to structure my thoughts into an organized talk. </p>
-<p>However, I have never stood up in the stage all alone in front of <strike>all these monsters who are getting ready to eat me up</strike>
-a big number of people whose first thought, I think, would be: "Okay, this guy is giving a talk so he should be an expert". WHAT???
-What if I screw up and make fun of myself? What if somebody records how I screw up and puts it on YouTube? <i class="em em-scream"></i> 
-Okay, I am joking here, that would have been awesome and fun to watch. But the fear was real.</p>
-<p>However, I as read more <a href="https://www.amazon.com/Soft-Skills-software-developers-manual/dp/1617292397">books</a> and <a href="https://simpleprogrammer.com/2015/01/05/24-quick-tips-to-boost-your-career-as-a-software-engineer-this-year/">articles</a> 
-on how to build a good career as a developer, I realized that getting yourself out there by starting a blog or giving a talk is essential to be successful in this industry.
-So, when it was announced that <a href="https://www.facebook.com/iutextended/?ref=br_rs">Google IO Extended</a> was happening in Tashkent, I knew that it was my chance to get started in this speaking journey. </p>
+<p>The following is a tale of how one programmer learned the basics of decorators in Python and it is told from his point of view.</p>
+<h2>The Tale</h2>
+<p>So, my boss told me to write two functions both of which return whatever they accept. Well, that seems pretty easy:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">first_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">arg</span>
+
+<span class="k">def</span> <span class="nf">second_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">arg</span>
+</pre></div>
+
+
+<p>When I asked him what the difference was between these two functions he said that the first one should only accept integers and
+the second one should only accept strings, otherwise they both should raise an <code>AssertionError</code> with a helpful message.</p>
+<p>Okay, that should not be too difficult:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">first_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="s2">&quot;{arg} is not an instance of int&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="n">arg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">arg</span>
+
+<span class="k">def</span> <span class="nf">second_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="s2">&quot;{arg} is not an instance of str&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="n">arg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">arg</span>
+</pre></div>
+
+
+<p>Let's try them out:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">first_func</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="mi">123</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">first_func</span><span class="p">(</span><span class="s1">&#39;some text&#39;</span><span class="p">)</span>
+<span class="o">---------------------------------------------------------------------------</span>
+<span class="ne">AssertionError</span><span class="p">:</span> <span class="n">some</span> <span class="n">text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">an</span> <span class="n">instance</span> <span class="n">of</span> <span class="nb">int</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">second_func</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;text&#39;</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">second_func</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
+<span class="o">---------------------------------------------------------------------------</span>
+<span class="ne">AssertionError</span><span class="p">:</span> <span class="mi">123</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">an</span> <span class="n">instance</span> <span class="n">of</span> <span class="nb">str</span>
+</pre></div>
+
+
+<p>Cool, they seem to work pretty well. But it bothers me that those assertion lines seem exactly the same and I am not following
+the DRY principle. Uncle Bob will kill me. I think I should probably factor them out to a separate function and call where needed.
+The function should accept an argument and a type and check if that argument is an instance of that type. If not, raise an assertion error:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">assert_type</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="p">),</span> <span class="s2">&quot;{arg} is not an instance of {type}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Now I can call this in the two functions that I wrote earlier:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">first_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="n">assert_type</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">arg</span>
+
+<span class="k">def</span> <span class="nf">second_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="n">assert_type</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">arg</span>
+</pre></div>
+
+
+<p>Looks much better now and they are producing the same results. Hmmm, I have a strange feeling that I could improve this further. 
+It is Python after all. There should be something more pythonic. As <a href="https://twitter.com/raymondh">Raymond Hettinger</a> would say:</p>
 <div class="gallery medium">
-    <a href="/static/images/post-images/i-gave-a-talk/after-talks.jpg" rel="lightbox" title="Google IO People">
-        <img src="/static/images/post-images/i-gave-a-talk/after-talks.jpg" alt="Google IO People">
-        <span>Event organizers and participants</span>
+    <a href="/static/images/post-images/python-decorators/raymondhettinger.jpg" rel="lightbox" title="Raymond Hettinger">
+        <img src="/static/images/post-images/python-decorators/raymondhettinger.jpg" alt="Raymond Hettinger">
+        <span>There must be a better way!</span>
     </a>
 </div>
 
-<p>So, I went ahead and submitted a talk. And the rest is history...okay, I am joking again. No history here, just an ordinary tech even, phew <i class="em em-sleepy"></i>  </p>
-<p>Thankfully, the organizers accepted my talk and announced it on the event page: </p>
-<div class="gallery medium">
-    <a href="/static/images/post-images/i-gave-a-talk/announcing-me.png" rel="lightbox" title="My announcement">
-        <img src="/static/images/post-images/i-gave-a-talk/announcing-me.png" alt="My announcement">
-    </a>
-</div>
+<p>I need to do a little research on how I can accomplish this feat.</p>
+<div class="highlight"><pre><span></span>...after 3 days...
+</pre></div>
 
-<p>I was proud and terrified at the same time. Some of the other talks included:</p>
-<ul>
-<li><a href="https://www.facebook.com/iutextended/photos/a.902471193144035.1073741828.902460013145153/1414752278582588/?type=3&amp;permPage=1">How to develop a web service in Golang and deploy it using Docker by Diyor Islomov</a></li>
-<li><a href="https://www.facebook.com/iutextended/photos/a.902471193144035.1073741828.902460013145153/1415300861861063/?type=3">Prototyping apps for non-programmers by Vlad Azimhodjaev</a></li>
-<li><a href="https://www.facebook.com/iutextended/photos/a.902471193144035.1073741828.902460013145153/1416110071780142/?type=3">Game/CGI characters creation process by Bekzod Fayozov</a></li>
-<li><a href="https://www.facebook.com/iutextended/photos/a.902471193144035.1073741828.902460013145153/1416861721704977/?type=3">Welcome to journey of JavaScript by Farrux Mamatxalilov</a></li>
-<li><a href="https://www.facebook.com/iutextended/photos/a.902471193144035.1073741828.902460013145153/1420533894671093/?type=3">Virtual Reality: Status Quo and the potential of the market by Shakhruz Ashirov</a></li>
-</ul>
-<p>So the day came and I gave my talk called "How we deploy our Django apps now and where we are going". It was split into three parts.</p>
-<ul>
-<li>The past: when we deployed everything manually and depended on the ninja develop who was the only one who knew how to do things</li>
-<li>The present: when we are using CI and CD to deploy our apps automatically</li>
-<li>The future: when we plan to use Docker, Kubernetes and CI&amp;CD to deploy our apps</li>
-</ul>
-<div class="gallery medium">
-    <a href="/static/images/post-images/i-gave-a-talk/me-talking.jpg" rel="lightbox" title="The beginning of the talk">
-        <img src="/static/images/post-images/i-gave-a-talk/me-talking.jpg" alt="The beginning of the talk">
-    </a>
-</div>
 
-<p>It went pretty well. At least, better than I thought it would be. The audience was great. They laughed at approximately half of my jokes.
-But hey, 50% is not that bad for the first time <i class="em em-sunglasses"></i> </p>
-<div class="gallery medium">
-    <a href="/static/images/post-images/i-gave-a-talk/audience.jpg" rel="lightbox" title="Audience">
-        <img src="/static/images/post-images/i-gave-a-talk/audience.jpg" alt="Audience">
-    </a>
-</div>
+<p>Oh wow! I watched this <a href="https://www.youtube.com/watch?v=7lmCu8wz8ro">amazing talk by James Powell</a> and learned that there is a feature
+in Python that does exactly what I want to do with my functions and it is called <code>decorators</code> <i class="em em-tada"></i></p>
+<p>Basically, what they allow me to do is add an additional functionality to my existing functions. That's exactly what I want to do: I want
+to add type-checking functionality to my existing <code>first_func</code> and <code>second_func</code>. Let's see an example:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">p_decorate</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+   <span class="k">def</span> <span class="nf">func_wrapper</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+       <span class="k">return</span> <span class="s2">&quot;&lt;p&gt;{0}&lt;/p&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+   <span class="k">return</span> <span class="n">func_wrapper</span>
 
-<p>After my talk ended, several people approached me with questions and some of them got my contacts. Honestly, I felt like a super star.</p>
+<span class="nd">@p_decorate</span>
+<span class="k">def</span> <span class="nf">get_text</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+   <span class="k">return</span> <span class="s2">&quot;lorem ipsum, {0} dolor sit amet&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+
+
+<p>So, in this example, there is a <code>get_text</code> function which accepts a parameter <code>name</code> and returns a string of that name inside a random text.
+There is another method called <code>p_decorate</code>. It accepts a function and returns a function which is declared inside this <code>p_decorate</code>. It accepts
+<code>name</code> as a parameter. It then surrounds it with <code>&lt;p&gt;&lt;/p&gt;</code> tags and returns the result. And one more thing to note is that there is
+<code>@p_decorate</code> on top of <code>def get_text(name)</code>.</p>
+<p>This is all very mysterious to me but let's see what result it will yield:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">get_text</span><span class="p">(</span><span class="s1">&#39;John&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;&lt;p&gt;lorem ipsum, John dolor sit amet&lt;/p&gt;&#39;</span>
+</pre></div>
+
+
+<p>Okay, the expected result. Let's try to understand what is going on here:</p>
+<p>First, when I call <code>get_text</code>, it will actually call <code>p_decorate(get_text)</code> because of <code>@p_decorate</code> on top of the function declaration.
+And what will <code>p_decorate(get_text)</code> return? It will return another function called <code>func_wrapper</code>. So, basically 
+<code>get_text(name)</code> will be replaced by <code>func_wrapper(name)</code> which will return <code>p</code> tag surrounded string that we saw.</p>
+<p>Now, it is much clearer to me. Back to my own functions. </p>
+<p>Using these decorators, I want my end result to look like this:</p>
+<div class="highlight"><pre><span></span><span class="nd">@assert_type</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">first_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">arg</span>
+</pre></div>
+
+
+<p>It means that our decorator will have one more layer which will accept the type as parameter and will have two inner functions. Let's 
+try to write that decorator:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">assert_type</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">decorated_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="p">),</span> <span class="s2">&quot;{arg} is not an instance of {type}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">arg</span>
+
+        <span class="k">return</span> <span class="n">decorated_func</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+</pre></div>
+
+
+<p>Cool! And now I can use this decorator as I wanted:</p>
+<div class="highlight"><pre><span></span><span class="nd">@assert_type</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">first_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">arg</span>
+
+<span class="nd">@assert_type</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">second_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">arg</span>
+</pre></div>
+
+
+<p>and run some tests:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">first_func</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="mi">123</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">first_func</span><span class="p">(</span><span class="s1">&#39;123&#39;</span><span class="p">)</span>
+<span class="o">---------------------------------------------------------------------------</span>
+<span class="ne">AssertionError</span><span class="p">:</span> <span class="mi">123</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">an</span> <span class="n">instance</span> <span class="n">of</span> <span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">int</span><span class="s1">&#39;&gt;</span>
+</pre></div>
+
+
+<p>Voila! It is working as before but now the functions are much better-looking. They are even hot <i class="em em-fire"></i><i class="em em-heart_eyes"></i></p>
+<p>Wow! I could not even imagine that I would learn so much more than just the decorators. </p>
+<p>Along the way, I learned that functions are <a href="https://dbader.org/blog/python-first-class-functions">first-class objects</a> in Python which means that I can use a function as arguments to another function:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+
+
+<p>I also learned that functions can have <a href="http://www.devshed.com/c/a/python/nested-functions-in-python/">inner functions</a>:</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">assert_type</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">decorated_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="p">),</span> <span class="s2">&quot;{arg} is not an instance of {type}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">arg</span>
+
+        <span class="k">return</span> <span class="n">decorated_func</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+</pre></div>
+
+
+<p>And most importantly those inner functions can use the variables from the outer functions and can remember them even when 
+they go out of scope (<a href="https://www.programiz.com/python-programming/closure">clojure</a>), like in the following line:</p>
+<div class="highlight"><pre><span></span>assert isinstance(arg, type), &quot;{arg} is not an instance of {type}&quot;.format(arg=arg, type=type)
+</pre></div>
+
+
+<p>where <code>type</code> comes from the function above.</p>
+<p>Overall, it was a productive day <i class="em em-sunglasses"></i></p>
 <h2>Conclusion</h2>
-<p>I know that it is not a huge thing to accomplish but I was and still am excited about what happened. The most important thing is that I
-learned a ton.</p>
-<p>I experienced what it is like to be talking to more than 10 people. I improved my presentation skills. I answered the audience's questions.
-I got to meet some awesome people. <s>Some people got to meet me, the humblest person on this planet <i class="em em-grin"></i></s> </p>
-<p>Overall, I think that it was a step forward in my career and I will continue to grab such opportunities to speak in the future as well.
-Also, I recommend that you do the same, no matter what you do. Getting oneself out there is what differentiates the successful from the average.</p>
-<p>Thanks for reading <i class="em em-innocent"></i> and fight on <i class="em em-muscle"></i></p>
+<p>Thanks for reading thus far. This post was not written to illustrate what exactly decorators are or how they work. But rather, it was
+written in order to show why we need decorators and how they can improve our code. That's why, in order to make your decorators knowledge
+comprehensive, please go ahead and read the <a href="http://simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/">these</a> 
+<a href="https://www.thecodeship.com/patterns/guide-to-python-function-decorators/">blog posts</a> for details. They are awesome!</p>
+<p>Fight on!</p>
 
 <div class="end">
     <span>
