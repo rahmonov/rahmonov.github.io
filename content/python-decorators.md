@@ -7,7 +7,7 @@ Slug: python-decorators
 Authors: Jahongir Rahmonov
 Summary: A tale of decorators in Python
 
-The following is a tale of how one programmer learned the basics of decorators in Python and it is told from his point of view.
+The following is a tale of how one programmer learned the basics of decorators in Python and is told from his point of view.
 
 ## The Tale
 So, my boss told me to write two functions both of which return whatever they accept. Well, that seems pretty easy:
