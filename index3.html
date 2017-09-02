@@ -83,196 +83,140 @@
 <h2>Latest Post</h2>
 
 <h4>
-    <a href="posts/python-decorators/">
-        30 August 2017
+    <a href="posts/python-generators/">
+        02 September 2017
     </a>
 </h4>
 
-<h1>Python Decorators</h1>
+<h1>Python Generators</h1>
 
-<p>The following is a tale of how one programmer learned the basics of decorators in Python and is told from his point of view.</p>
+<p>This is a tale of how one programmer learned the basics of generators in Python and is told from his point of view.</p>
 <h2>The Tale</h2>
-<p>So, my boss told me to write two functions both of which return whatever they accept. Well, that seems pretty easy:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">first_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">arg</span>
+<p>So, my boss told me to write a function that accepts <code>n</code> as a parameter and generates this many random numbers and returns the result.
+That should not be too difficult:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
 
-<span class="k">def</span> <span class="nf">second_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">arg</span>
+<span class="k">def</span> <span class="nf">random_nums</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">nums</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">nums</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>   <span class="c1"># random number is between 0 and 1000</span>
+    <span class="k">return</span> <span class="n">nums</span>
 </pre></div>
 
 
-<p>When I asked him what the difference was between these two functions he said that the first one should only accept integers and
-the second one should only accept strings, otherwise they both should raise an <code>AssertionError</code> with a helpful message.</p>
-<p>Okay, that should not be too difficult:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">first_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span> <span class="s2">&quot;{arg} is not an instance of int&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="n">arg</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">arg</span>
+<p>Let me test it out:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">random_nums</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="p">[</span><span class="mi">886</span><span class="p">,</span> <span class="mi">348</span><span class="p">,</span> <span class="mi">763</span><span class="p">,</span> <span class="mi">493</span><span class="p">,</span> <span class="mi">401</span><span class="p">,</span> <span class="mi">219</span><span class="p">,</span> <span class="mi">911</span><span class="p">,</span> <span class="mi">789</span><span class="p">,</span> <span class="mi">834</span><span class="p">,</span> <span class="mi">940</span><span class="p">]</span>
 
-<span class="k">def</span> <span class="nf">second_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span> <span class="s2">&quot;{arg} is not an instance of str&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="n">arg</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">arg</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">random_nums</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="p">[</span><span class="mi">366</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">951</span><span class="p">,</span> <span class="mi">682</span><span class="p">,</span> <span class="mi">153</span><span class="p">]</span>
 </pre></div>
 
 
-<p>Let's try them out:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">first_func</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="mi">123</span>
-
-<span class="o">&gt;&gt;&gt;</span> <span class="n">first_func</span><span class="p">(</span><span class="s1">&#39;some text&#39;</span><span class="p">)</span>
-<span class="o">---------------------------------------------------------------------------</span>
-<span class="ne">AssertionError</span><span class="p">:</span> <span class="n">some</span> <span class="n">text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">an</span> <span class="n">instance</span> <span class="n">of</span> <span class="nb">int</span>
-
-<span class="o">&gt;&gt;&gt;</span> <span class="n">second_func</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;text&#39;</span>
-
-<span class="o">&gt;&gt;&gt;</span> <span class="n">second_func</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
-<span class="o">---------------------------------------------------------------------------</span>
-<span class="ne">AssertionError</span><span class="p">:</span> <span class="mi">123</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">an</span> <span class="n">instance</span> <span class="n">of</span> <span class="nb">str</span>
+<p>It seems to be working well. However, I have a few concerns about this function. First of all, what if the <code>n</code> param is really large?
+Because the function stores the random numbers in a list (<code>nums = []</code>), that list will get bigger and bigger, and eventually the machine may run
+out of memory.</p>
+<p>Second of all, the function is <em>eager</em> which means that it will go from the start till the end without any pause. This, in turn, means that
+if I want to do something like this:</p>
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">random_nums</span><span class="p">(</span><span class="mi">10000000</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
 </pre></div>
 
 
-<p>Cool, they seem to work pretty well. But it bothers me that those assertion lines seem exactly the same and I am not following
-the DRY principle. Uncle Bob will kill me. I think I should probably factor them out to a separate function and call where needed.
-The function should accept an argument and a type and check if that argument is an instance of that type. If not, raise an assertion error:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">assert_type</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
-    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="p">),</span> <span class="s2">&quot;{arg} is not an instance of {type}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span>
-</pre></div>
-
-
-<p>Now I can call this in the two functions that I wrote earlier:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">first_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-    <span class="n">assert_type</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">arg</span>
-
-<span class="k">def</span> <span class="nf">second_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-    <span class="n">assert_type</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">arg</span>
-</pre></div>
-
-
-<p>Looks much better now and they are producing the same results. Hmmm, I have a strange feeling that I could improve this further. 
-It is Python after all. There should be something more pythonic. As <a href="https://twitter.com/raymondh">Raymond Hettinger</a> would say:</p>
-<div class="gallery medium">
-    <a href="/static/images/post-images/python-decorators/raymondhettinger.jpg" rel="lightbox" title="Raymond Hettinger">
-        <img src="/static/images/post-images/python-decorators/raymondhettinger.jpg" alt="Raymond Hettinger">
-        <span>There must be a better way!</span>
+<p>It will first execute <code>random_nums(10000000)</code> part and then start the loop. It means that even if I needed only the first element of the list, I would
+have to wait for all 10000000 numbers to be generated. That sucks <i class="em em-confounded"></i></p>
+<div class="gallery large">
+    <a href="/static/images/post-images/python-generators/large_number.gif" rel="lightbox" title="Large Number">
+        <img src="/static/images/post-images/python-generators/large_number.gif" alt="Large Number">
+        <span>Waiting for the first number...</span>
     </a>
 </div>
 
-<p>I need to do a little research on how I can accomplish this feat.</p>
-<div class="highlight"><pre><span></span>...after 3 days...
+<p>Well, there must be a better way. There must be a solution which solves both memory and eagerness issues. So, in order to achieve that
+I must get rid of storing the numbers and make the function lazy so that it generates one number at a time. What if I create such a class?
+That should not be too difficult. I could use <code>__iter__</code> and <code>__next__</code> functions to make my class iterable and in that <code>__next__</code> I will return
+one number at a time and remember the last index:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">BetterRandomNums</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">random_number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">StopIteration</span><span class="p">(</span><span class="s1">&#39;No more numbers&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">random_number</span>
 </pre></div>
 
 
-<p>Oh wow! I watched this <a href="https://www.youtube.com/watch?v=7lmCu8wz8ro">amazing talk by James Powell</a> and learned that there is a feature
-in Python that does exactly what I want to do with my functions and it is called <code>decorators</code> <i class="em em-tada"></i></p>
-<p>Basically, what they allow me to do is add an additional functionality to my existing functions. That's exactly what I want to do: I want
-to add type-checking functionality to my existing <code>first_func</code> and <code>second_func</code>. Let's see an example:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">p_decorate</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-   <span class="k">def</span> <span class="nf">func_wrapper</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-       <span class="k">return</span> <span class="s2">&quot;&lt;p&gt;{0}&lt;/p&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
-   <span class="k">return</span> <span class="n">func_wrapper</span>
+<p>Let me try it out now:</p>
+<div class="gallery large">
+    <a href="/static/images/post-images/python-generators/better-random.gif" rel="lightbox" title="Better random generator">
+        <img src="/static/images/post-images/python-generators/better-random.gif" alt="Better random generator">
+        <span>Better random number generator</span>
+    </a>
+</div>
 
-<span class="nd">@p_decorate</span>
-<span class="k">def</span> <span class="nf">get_text</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-   <span class="k">return</span> <span class="s2">&quot;lorem ipsum, {0} dolor sit amet&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+<p>Now, it is better! Basically, it is generating one random number, giving me that number and letting me print it and only then going on
+to create the next random number. Exactly what I wanted <i class="em em-tada"></i></p>
+<p>Now, if I try to access the first number, it will happen immediately:</p>
+<div class="gallery large">
+    <a href="/static/images/post-images/python-generators/fast-first-number.gif" rel="lightbox" title="Fast First Number">
+        <img src="/static/images/post-images/python-generators/fast-first-number.gif" alt="Fast First Number">
+        <span>Fast access to the first number</span>
+    </a>
+</div>
+
+<p>There you go. This is what I wanted to do. But boy does it look ugly and I can't believe that I had to do all these things to get this done.
+This is Python, there must be a Pythonic way of doing it.</p>
+<div class="highlight"><pre><span></span>After doing a little research...
 </pre></div>
 
 
-<p>So, in this example, there is a <code>get_text</code> function which accepts a parameter <code>name</code> and returns a string of that name inside a random text.
-There is another method called <code>p_decorate</code>. It accepts a function and returns a function which is declared inside this <code>p_decorate</code>. It accepts
-<code>name</code> as a parameter. It then surrounds it with <code>&lt;p&gt;&lt;/p&gt;</code> tags and returns the result. And one more thing to note is that there is
-<code>@p_decorate</code> on top of <code>def get_text(name)</code>.</p>
-<p>This is all very mysterious to me but let's see what result it will yield:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">get_text</span><span class="p">(</span><span class="s1">&#39;John&#39;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;&lt;p&gt;lorem ipsum, John dolor sit amet&lt;/p&gt;&#39;</span>
+<p>Hooray! It turns out there is such a thing and it is called <code>generators</code> <i class="em em-star2"></i></p>
+<p>Using a generator, our new function will look like this vs the old one:</p>
+<div class="highlight"><pre><span></span><span class="c1"># the new function                                            # the old one</span>
+<span class="k">def</span> <span class="nf">random_nums2</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>                                <span class="o">|</span>         <span class="k">def</span> <span class="nf">random_nums</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>                              <span class="o">|</span>            <span class="n">nums</span> <span class="o">=</span> <span class="p">[]</span>    
+        <span class="n">rand_num</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>          <span class="o">|</span>            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+                                                    <span class="o">|</span>                <span class="n">nums</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
+        <span class="k">yield</span> <span class="n">rand_num</span>                              <span class="o">|</span>            <span class="k">return</span> <span class="n">nums</span>
 </pre></div>
 
 
-<p>Okay, the expected result. Let's try to understand what is going on here:</p>
-<p>First, when I call <code>get_text</code>, it will actually call <code>p_decorate(get_text)</code> because of <code>@p_decorate</code> on top of the function declaration.
-And what will <code>p_decorate(get_text)</code> return? It will return another function called <code>func_wrapper</code>. So, basically 
-<code>get_text(name)</code> will be replaced by <code>func_wrapper(name)</code> which will return <code>p</code> tag surrounded string that we saw.</p>
-<p>Now, it is much clearer to me. Back to my own functions. </p>
-<p>Using these decorators, I want my end result to look like this:</p>
-<div class="highlight"><pre><span></span><span class="nd">@assert_type</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">first_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">arg</span>
-</pre></div>
+<p>So, what changed? They look very similar. The are two small differences, though. First, the new function does not store the results in a list.
+That's why, it will not use any memory for that. Second, instead of <code>return</code> we have <code>yield</code>. This is the <strong>keyword</strong> that turns a function
+into a generator. As a result, it will generate a random number, give a user that random number, and then that's it; it will remember that it 
+produced one random number and wait for the user to continue. Only when the user calls it again, it will generate the second random number. </p>
+<p>Let's try it out:</p>
+<div class="gallery large">
+    <a href="/static/images/post-images/python-generators/generator.gif" rel="lightbox" title="Generator">
+        <img src="/static/images/post-images/python-generators/generator.gif" alt="Generator">
+        <span>Generator at work</span>
+    </a>
+</div>
 
+<p>Basically, it is working just like the <code>BetterRandomNums</code> class above. But it is much more compact and does not require knowledge of all those
+magic methods that the class had. As PewDiePie would say:</p>
+<div class="gallery medium">
+    <a href="/static/images/post-images/python-generators/very-nice.jpg" rel="lightbox" title="Very nice">
+        <img src="/static/images/post-images/python-generators/very-nice.jpg" alt="Very nice">
+        <span>Very nice</span>
+    </a>
+</div>
 
-<p>It means that our decorator will have one more layer which will accept the type as parameter and will have two inner functions. Let's 
-try to write that decorator:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">assert_type</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-        <span class="k">def</span> <span class="nf">decorated_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="p">),</span> <span class="s2">&quot;{arg} is not an instance of {type}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">arg</span>
-
-        <span class="k">return</span> <span class="n">decorated_func</span>
-
-    <span class="k">return</span> <span class="n">wrapper</span>
-</pre></div>
-
-
-<p>Cool! And now I can use this decorator as I wanted:</p>
-<div class="highlight"><pre><span></span><span class="nd">@assert_type</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">first_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">arg</span>
-
-<span class="nd">@assert_type</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">second_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">arg</span>
-</pre></div>
-
-
-<p>and run some tests:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">first_func</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="mi">123</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">first_func</span><span class="p">(</span><span class="s1">&#39;123&#39;</span><span class="p">)</span>
-<span class="o">---------------------------------------------------------------------------</span>
-<span class="ne">AssertionError</span><span class="p">:</span> <span class="mi">123</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">an</span> <span class="n">instance</span> <span class="n">of</span> <span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">int</span><span class="s1">&#39;&gt;</span>
-</pre></div>
-
-
-<p>Voila! It is working as before but now the functions are much better-looking. They are even hot <i class="em em-fire"></i><i class="em em-heart_eyes"></i></p>
-<p>Wow! I could not even imagine that I would learn so much more than just the decorators. </p>
-<p>Along the way, I learned that functions are <a href="https://dbader.org/blog/python-first-class-functions">first-class objects</a> in Python which means that I can use a function as arguments to another function:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
-
-<span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-</pre></div>
-
-
-<p>I also learned that functions can have <a href="http://www.devshed.com/c/a/python/nested-functions-in-python/">inner functions</a>:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">assert_type</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-        <span class="k">def</span> <span class="nf">decorated_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
-            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="p">),</span> <span class="s2">&quot;{arg} is not an instance of {type}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">arg</span>
-
-        <span class="k">return</span> <span class="n">decorated_func</span>
-
-    <span class="k">return</span> <span class="n">wrapper</span>
-</pre></div>
-
-
-<p>And most importantly those inner functions can use the variables from the outer functions and can remember them even when 
-they go out of scope (<a href="https://www.programiz.com/python-programming/closure">clojure</a>), like in the following line:</p>
-<div class="highlight"><pre><span></span><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="p">),</span> <span class="s2">&quot;{arg} is not an instance of {type}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span>
-</pre></div>
-
-
-<p>where <code>type</code> comes from the function above.</p>
-<p>Overall, it was a productive day <i class="em em-sunglasses"></i></p>
 <h2>Conclusion</h2>
-<p>Thanks for reading thus far. This post was not written to illustrate what exactly decorators are or how they work. But rather, it was
-written in order to show why we need decorators and how they can improve our code. That's why, in order to make your decorators knowledge
-comprehensive, please go ahead and read the <a href="http://simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/">these</a> 
-<a href="https://www.thecodeship.com/patterns/guide-to-python-function-decorators/">blog posts</a> for details. They are awesome!</p>
-<p>Fight on!</p>
+<p>There you have it. We had problems of memory and an eager function. We solved them with the help of generators. This tale was intended to show 
+not only how to use generators but also why we need to use them. I hope it is more or less clear. If not, <a href="/pages/about.html#contact">contact me</a> 
+and I will do my best to explain things further.</p>
+<p>Thanks for reading and fight on!</p>
 
 <div class="end">
     <span>
