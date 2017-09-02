@@ -12,62 +12,67 @@ The following is a tale of how one programmer learned the basics of decorators i
 ## The Tale
 So, my boss told me to write two functions both of which return whatever they accept. Well, that seems pretty easy:
 
-    :::python
-    def first_func(arg):
-        return arg
+```python
+def first_func(arg):
+    return arg
 
-    def second_func(arg):
-        return arg
+def second_func(arg):
+    return arg
+```
         
 When I asked him what the difference was between these two functions he said that the first one should only accept integers and
 the second one should only accept strings, otherwise they both should raise an `AssertionError` with a helpful message.
 
 Okay, that should not be too difficult:
 
-    :::python
-    def first_func(arg):
-        assert isinstance(arg, int), "{arg} is not an instance of int".format(arg=arg)
-        return arg
-        
-    def second_func(arg):
-        assert isinstance(arg, str), "{arg} is not an instance of str".format(arg=arg)
-        return arg
+```python
+def first_func(arg):
+    assert isinstance(arg, int), "{arg} is not an instance of int".format(arg=arg)
+    return arg
+    
+def second_func(arg):
+    assert isinstance(arg, str), "{arg} is not an instance of str".format(arg=arg)
+    return arg
+```
         
 Let's try them out:
 
-    :::python
-    >>> first_func(123)
-    >>> 123
-    
-    >>> first_func('some text')
-    ---------------------------------------------------------------------------
-    AssertionError: some text is not an instance of int
-    
-    >>> second_func('text')
-    >>> 'text'
-    
-    >>> second_func(123)
-    ---------------------------------------------------------------------------
-    AssertionError: 123 is not an instance of str
+```python
+>>> first_func(123)
+>>> 123
+
+>>> first_func('some text')
+---------------------------------------------------------------------------
+AssertionError: some text is not an instance of int
+
+>>> second_func('text')
+>>> 'text'
+
+>>> second_func(123)
+---------------------------------------------------------------------------
+AssertionError: 123 is not an instance of str
+```
     
 Cool, they seem to work pretty well. But it bothers me that those assertion lines seem exactly the same and I am not following
 the DRY principle. Uncle Bob will kill me. I think I should probably factor them out to a separate function and call where needed.
 The function should accept an argument and a type and check if that argument is an instance of that type. If not, raise an assertion error:
 
-    :::python
-    def assert_type(arg, type):
-        assert isinstance(arg, type), "{arg} is not an instance of {type}".format(arg=arg, type=type)
+```python
+def assert_type(arg, type):
+    assert isinstance(arg, type), "{arg} is not an instance of {type}".format(arg=arg, type=type)
+```
         
 Now I can call this in the two functions that I wrote earlier:
 
-    :::python
-    def first_func(arg):
-        assert_type(arg, int)
-        return arg
-        
-    def second_func(arg):
-        assert_type(arg, str)
-        return arg
+```python
+def first_func(arg):
+    assert_type(arg, int)
+    return arg
+    
+def second_func(arg):
+    assert_type(arg, str)
+    return arg
+```
  
 Looks much better now and they are producing the same results. Hmmm, I have a strange feeling that I could improve this further. 
 It is Python after all. There should be something more pythonic. As [Raymond Hettinger](https://twitter.com/raymondh) would say:
@@ -89,15 +94,16 @@ in Python that does exactly what I want to do with my functions and it is called
 Basically, what they allow me to do is add an additional functionality to my existing functions. That's exactly what I want to do: I want
 to add type-checking functionality to my existing `first_func` and `second_func`. Let's see an example:
 
-    :::python
-    def p_decorate(func):
-       def func_wrapper(name):
-           return "<p>{0}</p>".format(func(name))
-       return func_wrapper
-    
-    @p_decorate
-    def get_text(name):
-       return "lorem ipsum, {0} dolor sit amet".format(name)
+```python
+def p_decorate(func):
+   def func_wrapper(name):
+       return "<p>{0}</p>".format(func(name))
+   return func_wrapper
+
+@p_decorate
+def get_text(name):
+   return "lorem ipsum, {0} dolor sit amet".format(name)
+```
    
  
 So, in this example, there is a `get_text` function which accepts a parameter `name` and returns a string of that name inside a random text.
@@ -107,9 +113,10 @@ There is another method called `p_decorate`. It accepts a function and returns a
   
 This is all very mysterious to me but let's see what result it will yield:
   
-    :::python
-    >>> get_text('John')
-    >>> '<p>lorem ipsum, John dolor sit amet</p>'
+```python
+>>> get_text('John')
+>>> '<p>lorem ipsum, John dolor sit amet</p>'
+```
     
 Okay, the expected result. Let's try to understand what is going on here:
     
@@ -121,75 +128,83 @@ Now, it is much clearer to me. Back to my own functions.
 
 Using these decorators, I want my end result to look like this:
 
-    :::python
-    @assert_type(int)
-    def first_func(arg):
-        return arg
+```python
+@assert_type(int)
+def first_func(arg):
+    return arg
+```
             
 It means that our decorator will have one more layer which will accept the type as parameter and will have two inner functions. Let's 
 try to write that decorator:
 
-    :::python
-    def assert_type(type):
-        def wrapper(func):
-            def decorated_func(arg):
-                assert isinstance(arg, type), "{arg} is not an instance of {type}".format(arg=arg, type=type)
-                return arg
-                
-            return decorated_func
+```python
+def assert_type(type):
+    def wrapper(func):
+        def decorated_func(arg):
+            assert isinstance(arg, type), "{arg} is not an instance of {type}".format(arg=arg, type=type)
+            return arg
             
-        return wrapper
+        return decorated_func
+        
+    return wrapper
+```
         
 Cool! And now I can use this decorator as I wanted:
 
-    :::python
-    @assert_type(int)
-    def first_func(arg):
-        return arg
-        
-    @assert_type(str)
-    def second_func(arg):
-        return arg
+```python
+@assert_type(int)
+def first_func(arg):
+    return arg
+    
+@assert_type(str)
+def second_func(arg):
+    return arg
+```
         
 and run some tests:
         
-    :::python
-    >>> first_func(123)
-    >>> 123
-    >>> first_func('123')
-    ---------------------------------------------------------------------------
-    AssertionError: 123 is not an instance of <class 'int'>
-    
+```python
+>>> first_func(123)
+>>> 123
+>>> first_func('123')
+---------------------------------------------------------------------------
+AssertionError: 123 is not an instance of <class 'int'>
+```
+
 Voila! It is working as before but now the functions are much better-looking. They are even hot <i class="em em-fire"></i><i class="em em-heart_eyes"></i>
 
 Wow! I could not even imagine that I would learn so much more than just the decorators. 
 
 Along the way, I learned that functions are [first-class objects](https://dbader.org/blog/python-first-class-functions) in Python which means that I can use a function as arguments to another function:
 
-    :::python
-    >>> def add(x, y):
-            return x + y
-            
-    >>> def apply(func, x, y):
-            return func(x, y)
+```python
+>>> def add(x, y):
+        return x + y
+        
+>>> def apply(func, x, y):
+        return func(x, y)
+```
 
 I also learned that functions can have [inner functions](http://www.devshed.com/c/a/python/nested-functions-in-python/):
 
-    :::python
-    def assert_type(type):
-        def wrapper(func):
-            def decorated_func(arg):
-                assert isinstance(arg, type), "{arg} is not an instance of {type}".format(arg=arg, type=type)
-                return arg
-                
-            return decorated_func
+```python
+def assert_type(type):
+    def wrapper(func):
+        def decorated_func(arg):
+            assert isinstance(arg, type), "{arg} is not an instance of {type}".format(arg=arg, type=type)
+            return arg
             
-        return wrapper
+        return decorated_func
+        
+    return wrapper
+```
         
 And most importantly those inner functions can use the variables from the outer functions and can remember them even when 
 they go out of scope ([clojure](https://www.programiz.com/python-programming/closure)), like in the following line:
 
-    assert isinstance(arg, type), "{arg} is not an instance of {type}".format(arg=arg, type=type)
+```python
+assert isinstance(arg, type), "{arg} is not an instance of {type}".format(arg=arg, type=type)
+```
     
 where `type` comes from the function above.
 

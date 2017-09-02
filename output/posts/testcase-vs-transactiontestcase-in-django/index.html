@@ -103,11 +103,10 @@ about the <code>TestCase</code> class:</p>
 <p>Wraps the tests within two nested atomic() blocks: one for the whole class and one for each test.</p>
 </blockquote>
 <p>Now imagine that you have a method that must be executed inside a transaction or else it raises an error. You could write a test similar to this:</p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="n">SomeTestCase</span>(<span class="n">TestCase</span>):
-
-    <span class="n">def</span> <span class="n">test_your_method_raises_error_without_atomic_block</span>(<span class="k">self</span>):
-        <span class="n">with</span> <span class="k">self</span>.<span class="n">assertRaises</span>(<span class="n">SomeError</span>):
-            <span class="n">your_method</span>()
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SomeTestCase</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">test_your_method_raises_error_without_atomic_block</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="n">SomeError</span><span class="p">):</span>
+            <span class="n">your_method</span><span class="p">()</span>
 </pre></div>
 
 
@@ -117,11 +116,10 @@ ALL THE TIME. Thus, <code>your_method()</code> will not raise an error, which is
 <h2>TransactionTestCase to the rescue</h2>
 <p>This is where <code>TransactionTestCase</code> should be used. It does not wrap the tests with <code>atomic()</code> block and thus you can test your special 
 methods that require a transaction without any problem. The above test will pass with <code>TransactionTestCase</code> now:</p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="n">SomeTestCase</span>(<span class="n">TransactionTestCase</span>):
-
-    <span class="n">def</span> <span class="n">test_your_method_raises_error_without_atomic_block</span>(<span class="k">self</span>):
-        <span class="n">with</span> <span class="k">self</span>.<span class="n">assertRaises</span>(<span class="n">SomeError</span>):
-            <span class="n">your_method</span>()
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">SomeTestCase</span><span class="p">(</span><span class="n">TransactionTestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">test_your_method_raises_error_without_atomic_block</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="n">SomeError</span><span class="p">):</span>
+            <span class="n">your_method</span><span class="p">()</span>
 </pre></div>
 
 
@@ -129,7 +127,7 @@ methods that require a transaction without any problem. The above test will pass
 <p>Let's see a real example now. A queryset method called <a href="https://docs.djangoproject.com/en/1.11/ref/models/querysets/#django.db.models.query.QuerySet.select_for_update">select_for_update()</a> 
 is one of those methods that require to be inside a transaction. If you call it without any transaction, it raises an error.</p>
 <p>Let's say you have a model called <code>Item</code> and you are calling <code>select_for_update()</code>:</p>
-<div class="highlight"><pre><span></span>Item.objects.select_for_update()
+<div class="highlight"><pre><span></span><span class="n">Item</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">select_for_update</span><span class="p">()</span>
 </pre></div>
 
 
@@ -139,32 +137,32 @@ is one of those methods that require to be inside a transaction. If you call it 
 
 
 <p>Now, let's try to write tests for it with both <code>TestCase</code> and <code>TransactionTestCase</code>:</p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="n">ItemTestCase</span>(<span class="n">TestCase</span>):
-    <span class="n">def</span> <span class="n">setUp</span>(<span class="k">self</span>):
-        <span class="k">self</span>.<span class="n">item</span> = <span class="n">Item</span>.<span class="n">objects</span>.<span class="n">create</span>(<span class="nb">name</span>=<span class="s">&#39;hat&#39;</span>)
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ItemTestCase</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">item</span> <span class="o">=</span> <span class="n">Item</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;hat&#39;</span><span class="p">)</span>
 
-    <span class="n">def</span> <span class="n">test_select_for_update_raises_an_error_without_transaction</span>(<span class="k">self</span>):
-        <span class="n">with</span> <span class="k">self</span>.<span class="n">assertRaises</span>(<span class="n">TransactionManagementError</span>):
-            <span class="n">items</span> = <span class="n">Items</span>.<span class="n">objects</span>.<span class="n">select_for_update</span>().<span class="n">filter</span>()
-            <span class="nb">print</span>(<span class="n">items</span>)  <span class="c c-Singleline"># needed to actually execute the query because they are lazy</span>
+    <span class="k">def</span> <span class="nf">test_select_for_update_raises_an_error_without_transaction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="n">TransactionManagementError</span><span class="p">):</span>
+            <span class="n">items</span> <span class="o">=</span> <span class="n">Items</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">select_for_update</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">()</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>  <span class="c1"># needed to actually execute the query because they are lazy</span>
 </pre></div>
 
 
 <p>Try to run the test and you will get the following:</p>
-<div class="highlight"><pre><span></span><span class="n">AssertionError</span><span class="o">:</span> <span class="n">TransactionManagementError</span> <span class="n">not</span> <span class="n">raised</span>
+<div class="highlight"><pre><span></span>AssertionError: TransactionManagementError not raised
 </pre></div>
 
 
 <p>The reason? <code>TestCase</code> wraps the tests with <code>atomic()</code> blocks ALL THE TIME. Good. Glad you remember this. </p>
 <p>Now, let's make this test pass with <code>TransactionTestCase</code>:</p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="n">ItemTestCase</span>(<span class="n">TransactionTestCase</span>):
-    <span class="n">def</span> <span class="n">setUp</span>(<span class="k">self</span>):
-        <span class="k">self</span>.<span class="n">item</span> = <span class="n">Item</span>.<span class="n">objects</span>.<span class="n">create</span>(<span class="nb">name</span>=<span class="s">&#39;hat&#39;</span>)
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ItemTestCase</span><span class="p">(</span><span class="n">TransactionTestCase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">item</span> <span class="o">=</span> <span class="n">Item</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;hat&#39;</span><span class="p">)</span>
 
-    <span class="n">def</span> <span class="n">test_select_for_update_raises_an_error_without_transaction</span>(<span class="k">self</span>):
-        <span class="n">with</span> <span class="k">self</span>.<span class="n">assertRaises</span>(<span class="n">TransactionManagementError</span>):
-            <span class="n">items</span> = <span class="n">Items</span>.<span class="n">objects</span>.<span class="n">select_for_update</span>().<span class="n">filter</span>()
-            <span class="nb">print</span>(<span class="n">items</span>)  <span class="c c-Singleline"># needed to actually execute the query because they are lazy</span>
+    <span class="k">def</span> <span class="nf">test_select_for_update_raises_an_error_without_transaction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="n">TransactionManagementError</span><span class="p">):</span>
+            <span class="n">items</span> <span class="o">=</span> <span class="n">Items</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">select_for_update</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">()</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>  <span class="c1"># needed to actually execute the query because they are lazy</span>
 </pre></div>
 
 

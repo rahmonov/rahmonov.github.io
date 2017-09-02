@@ -29,29 +29,31 @@ Installation
 ------------
 By now we already have Django and Gunicorn ready. So, let's install Nginx now:
 
-    :::bash
-    sudo apt-get install nginx
+```bash
+sudo apt-get install nginx
+```
 
 Now, we will configure Nginx to pass traffic to the process.
 
 Create a file `/etc/nginx/sites-available/djtrump` and type in the following:
     
-    :::bash
-    server {
-        listen 8000;
-        server_name 0.0.0.0;
+```bash
+server {
+    listen 8000;
+    server_name 0.0.0.0;
 
-        location = /favicon.ico { access_log off; log_not_found off; }
+    location = /favicon.ico { access_log off; log_not_found off; }
 
-        location /static/ {
-                root /home/ubuntu/myproject;
-        }
-
-        location / {
-                include proxy_params;
-                proxy_pass http://unix:/home/ubuntu/myproject/myproject.sock;
-        }
+    location /static/ {
+            root /home/ubuntu/myproject;
     }
+
+    location / {
+            include proxy_params;
+            proxy_pass http://unix:/home/ubuntu/myproject/myproject.sock;
+    }
+}
+```
 
 Adjust the paths such as `/home/ubuntu/myproject` to your own environment.
 
@@ -68,25 +70,29 @@ each other through a unix socket. That's why we will bind our gunicorn to a sock
   
 Now, let's enable this file by linking it to the `sites-enabled` folder:
   
-    :::bash
-    sudo ln -s /etc/nginx/sites-available/myproject /etc/nginx/sites-enabled
+```bash
+sudo ln -s /etc/nginx/sites-available/myproject /etc/nginx/sites-enabled
+```
       
 and check if our configuration file was correctly written:
 
-    :::bash
-    sudo nginx -t
+```bash
+sudo nginx -t
+```
     
 If everything is OK, you should see something like this:
 
-    :::bash
-    nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
-    nginx: configuration file /etc/nginx/nginx.conf test is successful
+```bash
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+```
 
 You may ask what all that linking and `sites-enabled` folder were about. We could have included those settings in Nginx's main settings file:
 `/etc/nginx/nginx.conf`. If we take a look at it, we will see this:
 
-    :::bash
-    include /etc/nginx/sites-enabled/*
+```bash
+include /etc/nginx/sites-enabled/*
+```
     
 So, we can see that what we did makes it more modular and much easier to maintain when we have several apps being served by Nginx.
 
@@ -96,29 +102,33 @@ First, let's move all our static files to `~/myproject/static/` because we set u
 Open up `myproject/settings.py` and add this:
  
  
-    :::python
-    STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+```bash
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+```
      
      
 Save and close. Now, let's collect them to that folder:
 
-    :::bash
-    ./manage.py collectstatic
+```bash
+./manage.py collectstatic
+```
     
 Confirm the operation and our static files should be there for Nginx to find them.
 
 Now, let's finally run our app:
  
-    :::bash
-    gunicorn --daemon --workers 3 --bind unix:/home/ubuntu/myproject/myproject.sock myproject.wsgi
+```bash
+gunicorn --daemon --workers 3 --bind unix:/home/ubuntu/myproject/myproject.sock myproject.wsgi
+```
 
 As I told earlier, we are starting gunicorn a little differently now. We are binding it to a unix socket file which is needed to talk
 to Nginx. This file will be created and enable Nginx and Gunicorn to talk to each other. You may ask what about ports and ip?.
 Nginx will take care of that. Remember we configured it to listen to `0.0.0.0:8000`? Cool! Now, let's restart Nginx to make these changes
 take effect.
 
-    :::bash
-    sudo service nginx restart
+```bash
+sudo service nginx restart
+```
 
 Now, go ahead and access `0.0.0.0:8000`. Great, our app is running. Let's check our admin panel now at `0.0.0.0:8000/admin`. Awesome,
 styles are there! We have achieved what we wanted. Congratulations!

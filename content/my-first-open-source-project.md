@@ -30,16 +30,17 @@ However, there are a number of reasons why I made [this package](https://github.
 
 First of all, [their own package](https://github.com/agilecrm/python-api) was not comfortable to use. The following is how you update a tag field of a contact:
 
-    :::python
-    update_tag_value = {
-       "id": "5708993221623808",
-       "tags": [
-           "test1",
-           "test2"
-       ]
-    }
-    
-    print agileCRM("contacts/edit/tags","PUT",update_tag_value,"application/json")
+```python
+update_tag_value = {
+   "id": "5708993221623808",
+   "tags": [
+       "test1",
+       "test2"
+   ]
+}
+
+print agileCRM("contacts/edit/tags","PUT",update_tag_value,"application/json")
+```
     
 You have to input all these things manually such as `"application/json"` content-type or the method. You also have to know the URL of the endpoint.
 Both of them could have easily been managed by the package itself.
@@ -55,13 +56,14 @@ Now, let's take a look at [my baby](https://github.com/rahmonov/agile-crm-python
 
 I will just give you some examples:
 
-    :::python
-    agile_client.contact.fetch('5649050225344512')
-    agile_client.contact.delete('5649050225344512')
-    agile_client.contact.find(q='los', page_size=15)
-    agile_client.contact.get_notes(contact_id='5689413791121408')
-    agile_client.deal.fetch('5719238044024832')
-    client.contact.add_notes(subject='Second Note', description='DESCRIPTION', contact_id=contact_id)
+```python
+agile_client.contact.fetch('5649050225344512')
+agile_client.contact.delete('5649050225344512')
+agile_client.contact.find(q='los', page_size=15)
+agile_client.contact.get_notes(contact_id='5689413791121408')
+agile_client.deal.fetch('5719238044024832')
+client.contact.add_notes(subject='Second Note', description='DESCRIPTION', contact_id=contact_id)
+```
     
 I am definitely a little biased here but it is very easy to use because you just have to input your variables and forget about
 method type, the endpoint url or the content-type. And look how readable it is. Just by reading, you know that you are fetching or updating a contact or you are
@@ -69,7 +71,9 @@ adding a note to a contact.
 
 As for the installation, simple:
 
-    pip install agile-crm-python
+```commandline
+pip install agile-crm-python
+```
     
 That's it!
     

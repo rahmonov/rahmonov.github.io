@@ -129,13 +129,13 @@ set up a periodic task.</p>
 executed every 30 seconds and given an argument <code>Blog reader</code>.</p>
 <p>By the way, this feature of celery is called <code>celery-beat</code>.</p>
 <p>Now, in command line, do the following:</p>
-<div class="highlight"><pre><span></span>celery -A celery_demo beat
+<div class="highlight"><pre><span></span><span class="n">celery</span> <span class="o">-</span><span class="n">A</span> <span class="n">celery_demo</span> <span class="n">beat</span>
 </pre></div>
 
 
 <p>and behold! Every 30 seconds you will see something like this:</p>
-<div class="highlight"><pre><span></span><span class="p">[</span><span class="mi">2016</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">14</span> <span class="mi">13</span><span class="p">:</span><span class="mo">06</span><span class="p">:</span><span class="mi">44</span><span class="p">,</span><span class="mi">087</span><span class="p">:</span> <span class="n">INFO</span><span class="o">/</span><span class="n">MainProcess</span><span class="p">]</span> <span class="n">Scheduler</span><span class="p">:</span> <span class="n">Sending</span> <span class="n">due</span> <span class="n">task</span> <span class="n">say</span><span class="o">-</span><span class="n">hello</span><span class="o">-</span><span class="n">every</span><span class="o">-</span><span class="mi">30</span><span class="o">-</span><span class="n">seconds</span> <span class="p">(</span><span class="n">tasks</span><span class="o">.</span><span class="n">say_hello</span><span class="p">)</span>
-<span class="p">[</span><span class="mi">2016</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">14</span> <span class="mi">13</span><span class="p">:</span><span class="mo">07</span><span class="p">:</span><span class="mi">14</span><span class="p">,</span><span class="mi">114</span><span class="p">:</span> <span class="n">INFO</span><span class="o">/</span><span class="n">MainProcess</span><span class="p">]</span> <span class="n">Scheduler</span><span class="p">:</span> <span class="n">Sending</span> <span class="n">due</span> <span class="n">task</span> <span class="n">say</span><span class="o">-</span><span class="n">hello</span><span class="o">-</span><span class="n">every</span><span class="o">-</span><span class="mi">30</span><span class="o">-</span><span class="n">seconds</span> <span class="p">(</span><span class="n">tasks</span><span class="o">.</span><span class="n">say_hello</span><span class="p">)</span>
+<div class="highlight"><pre><span></span>[2016-08-14 13:06:44,087: INFO/MainProcess] Scheduler: Sending due task say-hello-every-30-seconds (tasks.say_hello)
+[2016-08-14 13:07:14,114: INFO/MainProcess] Scheduler: Sending due task say-hello-every-30-seconds (tasks.say_hello)  
 </pre></div>
 
 

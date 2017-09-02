@@ -167,7 +167,7 @@ nginx: configuration file /etc/nginx/nginx.conf <span class="nb">test</span> is 
 <p>OK, now that we have configured Nginx, let's see some action.</p>
 <p>First, let's move all our static files to <code>~/myproject/static/</code> because we set up Nginx to look for them there.
 Open up <code>myproject/settings.py</code> and add this:</p>
-<div class="highlight"><pre><span></span><span class="n">STATIC_ROOT</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">BASE_DIR</span><span class="p">,</span> <span class="s1">&#39;static/&#39;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><span class="nv">STATIC_ROOT</span> <span class="o">=</span> os.path.join<span class="o">(</span>BASE_DIR, <span class="s1">&#39;static/&#39;</span><span class="o">)</span>
 </pre></div>
 
 

@@ -28,21 +28,23 @@ set up a periodic task.
 
 First, let's write a function that simply says `Hello, name` in proj/tasks.py:
 
-    :::python
-    def say_hello(name):
-        print("Hello, {}".format(name))
+```python
+def say_hello(name):
+    print("Hello, {}".format(name))
+```
          
 Now, in your settings file, write the following down:
 
-    :::python
-    CELERYBEAT_SCHEDULE = {
-        'say-hello-every-30-seconds': {
-            'task': 'tasks.say_hello',
-            'schedule': timedelta(seconds=30),
-            'args': ["Blog reader"]
-        },
-    }
-    CELERY_TIMEZONE = 'UTC'    
+```python
+CELERYBEAT_SCHEDULE = {
+    'say-hello-every-30-seconds': {
+        'task': 'tasks.say_hello',
+        'schedule': timedelta(seconds=30),
+        'args': ["Blog reader"]
+    },
+}
+CELERY_TIMEZONE = 'UTC'
+```
 
 I guess it is pretty clear what these settings mean. They simply say that `tasks.say_hello` should be 
 executed every 30 seconds and given an argument `Blog reader`.
@@ -51,14 +53,16 @@ By the way, this feature of celery is called `celery-beat`.
 
 Now, in command line, do the following:
 
-    :::bash
-    celery -A celery_demo beat
+```python
+celery -A celery_demo beat
+```
 
 and behold! Every 30 seconds you will see something like this:
 
-    :::python
-    [2016-08-14 13:06:44,087: INFO/MainProcess] Scheduler: Sending due task say-hello-every-30-seconds (tasks.say_hello)
-    [2016-08-14 13:07:14,114: INFO/MainProcess] Scheduler: Sending due task say-hello-every-30-seconds (tasks.say_hello)  
+```commandline
+[2016-08-14 13:06:44,087: INFO/MainProcess] Scheduler: Sending due task say-hello-every-30-seconds (tasks.say_hello)
+[2016-08-14 13:07:14,114: INFO/MainProcess] Scheduler: Sending due task say-hello-every-30-seconds (tasks.say_hello)  
+```
 
 Pretty awesome, huh?
       

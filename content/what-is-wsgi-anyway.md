@@ -86,78 +86,82 @@ Our web framework will do something that no one is doing right now: IT WILL PRIN
  
 Okay, let's create that callable object which receives to arguments:
 
-    :::python
-    def application(environ, start_response):
+```python
+def application(environ, start_response):
         pass
-        
+```
+    
 Easy enough. Now, let's prepare the response body that we want to return to the server:
 
-    :::python
-    def application(environ, start_response):
-        response_body = [
-            '{key}: {value}'.format(key=key, value=value) for key, value in sorted(environ.items())
-        ]
-        response_body = '\n'.join(response_body)
+```python
+def application(environ, start_response):
+    response_body = [
+        '{key}: {value}'.format(key=key, value=value) for key, value in sorted(environ.items())
+    ]
+    response_body = '\n'.join(response_body)
+```
         
 Easy as well. Now, let's prepare the status and headers, and then call that callback function:
 
-    :::python
-    def application(environ, start_response):
-        response_body = [
-            '{key}: {value}'.format(key=key, value=value) for key, value in sorted(environ.items())
-        ]
-        response_body = '\n'.join(response_body)
-        
-        status = '200'
-
-        response_headers = [
-            ('Content-type', 'text/plain'),
-        ]
+```python
+def application(environ, start_response):
+    response_body = [
+        '{key}: {value}'.format(key=key, value=value) for key, value in sorted(environ.items())
+    ]
+    response_body = '\n'.join(response_body)
     
-        start_response(status, response_headers)
-        
+    status = '200'
+
+    response_headers = [
+        ('Content-type', 'text/plain'),
+    ]
+
+    start_response(status, response_headers)
+```
+   
 And finally, let's return the response body in an iterable:
  
-    :::python
-    def application(environ, start_response):
-       response_body = [
-           '{key}: {value}'.format(key=key, value=value) for key, value in sorted(environ.items())
-       ]
-       response_body = '\n'.join(response_body)
-        
-       status = '200'
+```python
+def application(environ, start_response):
+   response_body = [
+       '{key}: {value}'.format(key=key, value=value) for key, value in sorted(environ.items())
+   ]
+   response_body = '\n'.join(response_body)
+    
+   status = '200'
 
-       response_headers = [
-           ('Content-type', 'text/plain'),
-       ]
-        
-       return [response_body.encode('utf-8')]
-         
+   response_headers = [
+       ('Content-type', 'text/plain'),
+   ]
+    
+   return [response_body.encode('utf-8')]
+```      
         
 That's it. Our genius web framework is ready. Of course, we need a web server to serve our application and here we will be using
 Python's bundled WSGI server. But if you want to learn the WSGI server interface, take a look at [here](https://www.python.org/dev/peps/pep-0333/#the-server-gateway-side)
 
 Now, let's serve our application:
 
-    :::python
-    from wsgiref.simple_server import make_server
+```python
+from wsgiref.simple_server import make_server
     
-    def application(environ, start_response):
-        response_body = [
-            '{key}: {value}'.format(key=key, value=value) for key, value in sorted(environ.items())
-        ]
-        response_body = '\n'.join(response_body)
-       
-        status = '200'
+def application(environ, start_response):
+    response_body = [
+        '{key}: {value}'.format(key=key, value=value) for key, value in sorted(environ.items())
+    ]
+    response_body = '\n'.join(response_body)
+   
+    status = '200'
 
-        response_headers = [
-            ('Content-type', 'text/plain'),
-        ]
-        
-        return [response_body.encode('utf-8')]
-        
-    server = make_server('localhost', 8000, app=application)
-    server.serve_forever()
+    response_headers = [
+        ('Content-type', 'text/plain'),
+    ]
+    
+    return [response_body.encode('utf-8')]
+    
+server = make_server('localhost', 8000, app=application)
+server.serve_forever()
+```
     
 Save this file as `wsgi_demo.py` and run it `python wsgi_demo.py`. Then, go to [localhost:8000](http://localhost:8000) and you will see 
 all the variables listed:
@@ -185,44 +189,46 @@ The only thing to note is that while the postman is delivering the request/respo
 
 Let's see it in action. We will now write a middleware that reverses the response from our application:
 
-    :::python
-    class Reverseware:
-        def __init__(self, app):
-            self.wrapped_app = app
-
-        def __call__(self, environ, start_response, *args, **kwargs):
-            return [data[::-1] for data in self.wrapped_app(environ, start_response)]
+```python
+class Reverseware:
+    def __init__(self, app):
+        self.wrapped_app = app
+    
+    def __call__(self, environ, start_response, *args, **kwargs):
+        return [data[::-1] for data in self.wrapped_app(environ, start_response)]
+```
             
 Simple enough. If we insert this code to the example above, the full code will look like this:
 
-    :::python
-    from wsgiref.simple_server import make_server
-    
-    
-    class Reverseware:
-        def __init__(self, app):
-            self.wrapped_app = app
+```python
+from wsgiref.simple_server import make_server
 
-        def __call__(self, environ, start_response, *args, **kwargs):
-            return [data[::-1] for data in self.wrapped_app(environ, start_response)]
-            
-    
-    def application(environ, start_response):
-        response_body = [
-            '{key}: {value}'.format(key=key, value=value) for key, value in sorted(environ.items())
-        ]
-        response_body = '\n'.join(response_body)
-       
-        status = '200'
 
-        response_headers = [
-            ('Content-type', 'text/plain'),
-        ]
+class Reverseware:
+    def __init__(self, app):
+        self.wrapped_app = app
+
+    def __call__(self, environ, start_response, *args, **kwargs):
+        return [data[::-1] for data in self.wrapped_app(environ, start_response)]
         
-        return [response_body.encode('utf-8')]
-        
-    server = make_server('localhost', 8000, app=Reverseware(application))
-    server.serve_forever()
+
+def application(environ, start_response):
+    response_body = [
+        '{key}: {value}'.format(key=key, value=value) for key, value in sorted(environ.items())
+    ]
+    response_body = '\n'.join(response_body)
+   
+    status = '200'
+
+    response_headers = [
+        ('Content-type', 'text/plain'),
+    ]
+    
+    return [response_body.encode('utf-8')]
+    
+server = make_server('localhost', 8000, app=Reverseware(application))
+server.serve_forever()
+```
     
 Now, if you run it, you will see something like this:
 
