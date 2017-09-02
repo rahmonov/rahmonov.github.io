@@ -493,8 +493,14 @@ table.pretty thead tr th {
     border-bottom: 1px solid #ddd;
 }
 
-code{
-    font-size: 15px;
+/*code{*/
+    /*font-size: 15px;*/
+/*}*/
+code {
+    padding: 2px 4px;
+    color: #c7254e;
+    background-color: #f9f2f4;
+    border-radius: 4px;
 }
 
 .search-icon{
