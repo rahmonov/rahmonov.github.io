@@ -193,7 +193,7 @@ redirect to <code>require_email</code> view, which looks like this:</p>
 <p>After a user submits the form, the pipeline comes to this part of the partial pipeline code:</p>
 <div class="highlight"><pre><span></span><span class="n">email</span> <span class="o">=</span> <span class="n">strategy</span><span class="o">.</span><span class="n">request_data</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;email&#39;</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">email</span><span class="p">:</span>
-    <span class="n">details</span><span class="p">[</span><span class="s1">&#39;email&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">email</span>
+    <span class="n">details</span><span class="p">[</span><span class="s1">&#39;email&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">email</span>  
 </pre></div>
 
 
@@ -206,15 +206,15 @@ To provide different registration proccess for them we can do the following:</p>
 <ol>
 <li>
 <p>Provide two different links and mark one of them with a get parameter(user_type):</p>
-<div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{% url &#39;social:begin&#39; &#39;facebook&#39; %}&quot;</span><span class="p">&gt;</span>Login as SimpleUser<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
-<span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;{% url &#39;social:begin&#39; &#39;facebook&#39; %}?user_type=shop&quot;</span><span class="p">&gt;</span>Login as Shop<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+<div class="highlight"><pre><span></span><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;{% url &#39;social:begin&#39; &#39;facebook&#39; %}&quot;</span><span class="nt">&gt;</span>Login as SimpleUser<span class="nt">&lt;/a&gt;</span>
+<span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;{% url &#39;social:begin&#39; &#39;facebook&#39; %}?user_type=shop&quot;</span><span class="nt">&gt;</span>Login as Shop<span class="nt">&lt;/a&gt;</span>
 </pre></div>
 
 
 </li>
 <li>
 <p>In order to access this get parameter, we will have to do this in our settings file:</p>
-<div class="highlight"><pre><span></span><span class="n">FIELDS_STORED_IN_SESSION</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;user_type&#39;</span><span class="p">]</span>
+<div class="highlight"><pre><span></span>FIELDS_STORED_IN_SESSION = [&#39;user_type&#39;]
 </pre></div>
 
 
