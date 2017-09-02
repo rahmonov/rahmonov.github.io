@@ -1,5 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Jahongir Rahmonov</title><link>http://rahmonov.github.io/</link><description></description><lastBuildDate>Wed, 30 Aug 2017 20:10:00 +0500</lastBuildDate><item><title>Python Decorators</title><link>http://rahmonov.github.io/posts/python-decorators/</link><description>&lt;p&gt;The following is a tale of how one programmer learned the basics of decorators in Python and is told from his point of view.&lt;/p&gt;
+<rss version="2.0"><channel><title>Jahongir Rahmonov</title><link>http://rahmonov.github.io/</link><description></description><lastBuildDate>Sat, 02 Sep 2017 20:10:00 +0500</lastBuildDate><item><title>Python Generators</title><link>http://rahmonov.github.io/posts/python-generators/</link><description>&lt;p&gt;This is a tale of how one programmer learned the basics of generators in Python and is told from his point of view.&lt;/p&gt;
+&lt;h2&gt;The Tale&lt;/h2&gt;
+&lt;p&gt;So, my boss told me to write a function that accepts &lt;code&gt;n&lt;/code&gt; as a parameter and generates this many random numbers and returns the result.
+That should not be too difficult:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;random&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;random_nums&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;nums&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;nums&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;random&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;randint&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;   &lt;span class="c1"&gt;# random number is between 0 and 1000&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;nums&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Let me test it out:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;random_nums&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;886&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;348&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;763&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;493&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;401&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;219&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;911&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;789&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;834&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;940&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;random_nums&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;366&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;160&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;951&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;682&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;153&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It seems to be working well. However, I have a few concerns about this function. First of all, what if the &lt;code&gt;n&lt;/code&gt; param is really large?
+Because the function stores the random numbers in a list (&lt;code&gt;nums = []&lt;/code&gt;), that list will get bigger and bigger, and eventually the machine may run
+out of memory.&lt;/p&gt;
+&lt;p&gt;Second of all, the function is &lt;em&gt;eager&lt;/em&gt; which means that it will go from the start till the end without any pause. This, in turn, means that
+if I want to do something like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;random_nums&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;10000000&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It will first execute &lt;code&gt;random_nums(10000000)&lt;/code&gt; part and then start the loop. It means that even if I needed only the first element of the list, I would
+have to wait for all 10000000 numbers to be generated. That sucks &lt;i class="em em-confounded"&gt;&lt;/i&gt;&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/python-generators/large_number.gif" rel="lightbox" title="Large Number"&gt;
+        &lt;img src="/static/images/post-images/python-generators/large_number.gif" alt="Large Number"&gt;
+        &lt;span&gt;Waiting for the first number...&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Well, there must be a better way. There must be a solution which solves both memory and eagerness issues. So, in order to achieve that
+I must get rid of storing the numbers and make the function lazy so that it generates one number at a time. What if I create such a class?
+That should not be too difficult. I could use &lt;code&gt;__iter__&lt;/code&gt; and &lt;code&gt;__next__&lt;/code&gt; functions to make my class iterable and in that &lt;code&gt;__next__&lt;/code&gt; I will return
+one number at a time and remember the last index:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;BetterRandomNums&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;n&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__iter__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__next__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;random_number&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;random&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;randint&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="ne"&gt;StopIteration&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;No more numbers&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt; &lt;span class="o"&gt;+=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;random_number&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Let me try it out now:&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/python-generators/better-random.gif" rel="lightbox" title="Better random generator"&gt;
+        &lt;img src="/static/images/post-images/python-generators/better-random.gif" alt="Better random generator"&gt;
+        &lt;span&gt;Better random number generator&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now, it is better! Basically, it is generating one random number, giving me that number and letting me print it and only then going on
+to create the next random number. Exactly what I wanted &lt;i class="em em-tada"&gt;&lt;/i&gt;&lt;/p&gt;
+&lt;p&gt;Now, if I try to access the first number, it will happen immediately:&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/python-generators/fast-first-number.gif" rel="lightbox" title="Fast First Number"&gt;
+        &lt;img src="/static/images/post-images/python-generators/fast-first-number.gif" alt="Fast First Number"&gt;
+        &lt;span&gt;Fast access to the first number&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;p&gt;There you go. This is what I wanted to do. But boy does it look ugly and I can't believe that I had to do all these things to get this done.
+This is Python, there must be a Pythonic way of doing it.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;After doing a little research...
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Hooray! It turns out there is such a thing and it is called &lt;code&gt;generators&lt;/code&gt; &lt;i class="em em-star2"&gt;&lt;/i&gt;&lt;/p&gt;
+&lt;p&gt;Using a generator, our new function will look like this vs the old one:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# the new function                                            # the old one&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;random_nums2&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;                                &lt;span class="o"&gt;|&lt;/span&gt;         &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;random_nums&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;                              &lt;span class="o"&gt;|&lt;/span&gt;            &lt;span class="n"&gt;nums&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;    
+        &lt;span class="n"&gt;rand_num&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;random&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;randint&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;          &lt;span class="o"&gt;|&lt;/span&gt;            &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+                                                    &lt;span class="o"&gt;|&lt;/span&gt;                &lt;span class="n"&gt;nums&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;random&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;randint&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+        &lt;span class="k"&gt;yield&lt;/span&gt; &lt;span class="n"&gt;rand_num&lt;/span&gt;                              &lt;span class="o"&gt;|&lt;/span&gt;            &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;nums&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;So, what changed? They look very similar. The are two small differences, though. First, the new function does not store the results in a list.
+That's why, it will not use any memory for that. Second, instead of &lt;code&gt;return&lt;/code&gt; we have &lt;code&gt;yield&lt;/code&gt;. This is the &lt;strong&gt;keyword&lt;/strong&gt; that turns a function
+into a generator. As a result, it will generate a random number, give a user that random number, and then that's it; it will remember that it 
+produced one random number and wait for the user to continue. Only when the user calls it again, it will generate the second random number. &lt;/p&gt;
+&lt;p&gt;Let's try it out:&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="/static/images/post-images/python-generators/generator.gif" rel="lightbox" title="Generator"&gt;
+        &lt;img src="/static/images/post-images/python-generators/generator.gif" alt="Generator"&gt;
+        &lt;span&gt;Generator at work&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Basically, it is working just like the &lt;code&gt;BetterRandomNums&lt;/code&gt; class above. But it is much more compact and does not require knowledge of all those
+magic methods that the class had. As PewDiePie would say:&lt;/p&gt;
+&lt;div class="gallery medium"&gt;
+    &lt;a href="/static/images/post-images/python-generators/very-nice.jpg" rel="lightbox" title="Very nice"&gt;
+        &lt;img src="/static/images/post-images/python-generators/very-nice.jpg" alt="Very nice"&gt;
+        &lt;span&gt;Very nice&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;There you have it. We had problems of memory and an eager function. We solved them with the help of generators. This tale was intended to show 
+not only how to use generators but also why we need to use them. I hope it is more or less clear. If not, &lt;a href="/pages/about.html#contact"&gt;contact me&lt;/a&gt; 
+and I will do my best to explain things further.&lt;/p&gt;
+&lt;p&gt;Thanks for reading and fight on!&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jahongir Rahmonov</dc:creator><pubDate>Sat, 02 Sep 2017 20:10:00 +0500</pubDate><guid isPermaLink="false">tag:rahmonov.github.io,2017-09-02:posts/python-generators/</guid><category>python</category><category>generators</category><category>function</category></item><item><title>Python Decorators</title><link>http://rahmonov.github.io/posts/python-decorators/</link><description>&lt;p&gt;The following is a tale of how one programmer learned the basics of decorators in Python and is told from his point of view.&lt;/p&gt;
 &lt;h2&gt;The Tale&lt;/h2&gt;
 &lt;p&gt;So, my boss told me to write two functions both of which return whatever they accept. Well, that seems pretty easy:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;first_func&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;arg&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
