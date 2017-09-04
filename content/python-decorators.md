@@ -142,7 +142,7 @@ def assert_type(type):
     def wrapper(func):
         def decorated_func(arg):
             assert isinstance(arg, type), "{arg} is not an instance of {type}".format(arg=arg, type=type)
-            return arg
+            return func(arg)
             
         return decorated_func
         
@@ -192,7 +192,7 @@ def assert_type(type):
     def wrapper(func):
         def decorated_func(arg):
             assert isinstance(arg, type), "{arg} is not an instance of {type}".format(arg=arg, type=type)
-            return arg
+            return func(arg)
             
         return decorated_func
         

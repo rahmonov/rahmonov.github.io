@@ -210,7 +210,7 @@ try to write that decorator:</p>
     <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
         <span class="k">def</span> <span class="nf">decorated_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
             <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="p">),</span> <span class="s2">&quot;{arg} is not an instance of {type}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">arg</span>
+            <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">decorated_func</span>
 
@@ -254,7 +254,7 @@ try to write that decorator:</p>
     <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
         <span class="k">def</span> <span class="nf">decorated_func</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
             <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="p">),</span> <span class="s2">&quot;{arg} is not an instance of {type}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arg</span><span class="o">=</span><span class="n">arg</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">arg</span>
+            <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">decorated_func</span>
 
