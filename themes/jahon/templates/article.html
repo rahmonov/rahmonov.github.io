@@ -2,8 +2,10 @@
 {% block head %}
   {{ super() }}
 
-  {% if article.description %}
-    <meta name="description" content="{{article.summary}}" />
+  {% if article.summary %}
+    {% block meta_description %}
+        <meta name="description" content="{{article.summary}}" />
+    {% endblock %}
   {% endif %}
 
   {% for tag in article.tags %}
@@ -12,7 +14,7 @@
 
 {% endblock %}
 
-<title>{% block title %} {{ article.title }} - {{ SITENAME }} {% endblock %}</title>
+<title>{% block title %} {{ article.title }} {% endblock %}</title>
 
 {% block open_graph %}
 <meta property="og:title" content="{{ article.title }} - {{ SITENAME }}">
