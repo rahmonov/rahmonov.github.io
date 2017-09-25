@@ -2,6 +2,7 @@ Title: The music to listen to while working
 Date: 2015-07-15 20:12
 Modified: 2015-07-16 20:36
 Category: Others
+Type: non-tech
 Tags: work, music
 Slug: music-to-listen-to-at-work
 Authors: Jahongir Rahmonov

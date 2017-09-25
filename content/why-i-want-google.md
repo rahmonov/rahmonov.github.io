@@ -1,7 +1,8 @@
 Title: Why I want to work at Google - My validation
 Date: 2015-06-05 20:12
 Modified: 2015-06-06 20:36
-Category: Others
+Category: non-tech
+Type: non-tech
 Tags: google, journey
 Slug: why-i-want-to-work-at-google
 Authors: Jahongir Rahmonov

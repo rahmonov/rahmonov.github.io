@@ -2,6 +2,7 @@ Title: Why one plus one is not two
 Date: 2015-08-05 20:12
 Modified: 2015-08-06 20:36
 Category: Others
+Type: non-tech
 Tags: synergy, thought, philosophy
 Slug: why-one-plus-one-is-not-two
 Authors: Jahongir Rahmonov

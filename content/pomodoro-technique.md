@@ -2,6 +2,7 @@ Title: Be productive with the pomodoro technique
 Date: 2015-11-18 21:14
 Modified: 2015-11-18 21:14
 Category: productivity
+Type: non-tech
 Tags: productivity, pomodoro
 Slug: pomodoro-technique
 Authors: Jahongir Rahmonov
