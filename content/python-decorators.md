@@ -216,4 +216,8 @@ written in order to show why we need decorators and how they can improve our cod
 comprehensive, please go ahead and read the [these](http://simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/) 
 [blog posts](https://www.thecodeship.com/patterns/guide-to-python-function-decorators/) for details. They are awesome!
 
+P.S. There is the complementary video that I have made on Python Decorators :)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/IJTwV548Qn0" frameborder="0" allowfullscreen></iframe>
+
 Fight on!
