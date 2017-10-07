@@ -307,6 +307,9 @@ they go out of scope (&lt;a href="https://www.programiz.com/python-programming/c
 written in order to show why we need decorators and how they can improve our code. That's why, in order to make your decorators knowledge
 comprehensive, please go ahead and read the &lt;a href="http://simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/"&gt;these&lt;/a&gt; 
 &lt;a href="https://www.thecodeship.com/patterns/guide-to-python-function-decorators/"&gt;blog posts&lt;/a&gt; for details. They are awesome!&lt;/p&gt;
+&lt;p&gt;P.S. There is the complementary video that I have made on Python Decorators :)&lt;/p&gt;
+&lt;iframe width="560" height="315" src="https://www.youtube.com/embed/IJTwV548Qn0" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;
+
 &lt;p&gt;Fight on!&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jahongir Rahmonov</dc:creator><pubDate>Wed, 30 Aug 2017 20:10:00 +0500</pubDate><guid isPermaLink="false">tag:rahmonov.me,2017-08-30:posts/python-decorators/</guid><category>python</category><category>decorators</category><category>function</category></item><item><title>I gave a talk at Google IO Extended 2017</title><link>http://rahmonov.me/posts/i-gave-a-talk-at-google-io-extended/</link><description>&lt;p&gt;At Super Dispatch, we have this event so-called "Friday Talks" where all the people gather up and one person gives a talk on a topic
 of his own choice. This is done in order to foster a culture of knowledge sharing and growth. As a software developer at Super Dispatch,
 I have regularly been giving talks at this event. The topics I talked about include:&lt;/p&gt;
