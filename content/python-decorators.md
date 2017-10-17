@@ -79,7 +79,7 @@ It is Python after all. There should be something more pythonic. As [Raymond Het
  
 <div class="gallery medium">
     <a href="/static/images/post-images/python-decorators/raymondhettinger.jpg" rel="lightbox" title="Raymond Hettinger">
-        <img src="/static/images/post-images/python-decorators/raymondhettinger.jpg" alt="Raymond Hettinger">
+        <img src="https://s3.amazonaws.com/rahmonov.me/post-images/python-decorators/raymondhettinger.jpg" alt="Raymond Hettinger">
         <span>There must be a better way!</span>
     </a>
 </div> 

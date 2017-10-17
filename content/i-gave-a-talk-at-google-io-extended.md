@@ -32,7 +32,7 @@ So, when it was announced that [Google IO Extended](https://www.facebook.com/iut
 
 <div class="gallery medium">
     <a href="/static/images/post-images/i-gave-a-talk/after-talks.jpg" rel="lightbox" title="Google IO People">
-        <img src="/static/images/post-images/i-gave-a-talk/after-talks.jpg" alt="Google IO People">
+        <img src="https://s3.amazonaws.com/rahmonov.me/post-images/i-gave-a-talk/after-talks.jpg" alt="Google IO People">
         <span>Event organizers and participants</span>
     </a>
 </div>
@@ -43,7 +43,7 @@ Thankfully, the organizers accepted my talk and announced it on the event page:
  
 <div class="gallery medium">
     <a href="/static/images/post-images/i-gave-a-talk/announcing-me.png" rel="lightbox" title="My announcement">
-        <img src="/static/images/post-images/i-gave-a-talk/announcing-me.png" alt="My announcement">
+        <img src="https://s3.amazonaws.com/rahmonov.me/post-images/i-gave-a-talk/announcing-me.png" alt="My announcement">
     </a>
 </div> 
  
@@ -63,7 +63,7 @@ So the day came and I gave my talk called "How we deploy our Django apps now and
 
 <div class="gallery medium">
     <a href="/static/images/post-images/i-gave-a-talk/me-talking.jpg" rel="lightbox" title="The beginning of the talk">
-        <img src="/static/images/post-images/i-gave-a-talk/me-talking.jpg" alt="The beginning of the talk">
+        <img src="https://s3.amazonaws.com/rahmonov.me/post-images/i-gave-a-talk/me-talking.jpg" alt="The beginning of the talk">
     </a>
 </div> 
 
@@ -72,7 +72,7 @@ But hey, 50% is not that bad for the first time <i class="em em-sunglasses"></i>
 
 <div class="gallery medium">
     <a href="/static/images/post-images/i-gave-a-talk/audience.jpg" rel="lightbox" title="Audience">
-        <img src="/static/images/post-images/i-gave-a-talk/audience.jpg" alt="Audience">
+        <img src="https://s3.amazonaws.com/rahmonov.me/post-images/i-gave-a-talk/audience.jpg" alt="Audience">
     </a>
 </div>
 

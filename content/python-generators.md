@@ -50,7 +50,7 @@ have to wait for all 10000000 numbers to be generated. That sucks <i class="em e
 
 <div class="gallery large">
     <a href="/static/images/post-images/python-generators/large_number.gif" rel="lightbox" title="Large Number">
-        <img src="/static/images/post-images/python-generators/large_number.gif" alt="Large Number">
+            <img src="https://s3.amazonaws.com/rahmonov.me/post-images/python-generators/large_number.gif" alt="Large Number">
         <span>Waiting for the first number...</span>
     </a>
 </div> 
@@ -84,7 +84,7 @@ Let me try it out now:
 
 <div class="gallery large">
     <a href="/static/images/post-images/python-generators/better-random.gif" rel="lightbox" title="Better random generator">
-        <img src="/static/images/post-images/python-generators/better-random.gif" alt="Better random generator">
+        <img src="https://s3.amazonaws.com/rahmonov.me/post-images/python-generators/better-random.gif" alt="Better random generator">
         <span>Better random number generator</span>
     </a>
 </div> 
@@ -96,7 +96,7 @@ Now, if I try to access the first number, it will happen immediately:
 
 <div class="gallery large">
     <a href="/static/images/post-images/python-generators/fast-first-number.gif" rel="lightbox" title="Fast First Number">
-        <img src="/static/images/post-images/python-generators/fast-first-number.gif" alt="Fast First Number">
+        <img src="https://s3.amazonaws.com/rahmonov.me/post-images/python-generators/fast-first-number.gif" alt="Fast First Number">
         <span>Fast access to the first number</span>
     </a>
 </div>
@@ -128,7 +128,7 @@ Let's try it out:
 
 <div class="gallery large">
     <a href="/static/images/post-images/python-generators/generator.gif" rel="lightbox" title="Generator">
-        <img src="/static/images/post-images/python-generators/generator.gif" alt="Generator">
+        <img src="https://s3.amazonaws.com/rahmonov.me/post-images/python-generators/generator.gif" alt="Generator">
         <span>Generator at work</span>
     </a>
 </div>
@@ -138,7 +138,7 @@ magic methods that the class had. As PewDiePie would say:
 
 <div class="gallery medium">
     <a href="/static/images/post-images/python-generators/very-nice.jpg" rel="lightbox" title="Very nice">
-        <img src="/static/images/post-images/python-generators/very-nice.jpg" alt="Very nice">
+        <img src="https://s3.amazonaws.com/rahmonov.me/post-images/python-generators/very-nice.jpg" alt="Very nice">
         <span>Very nice</span>
     </a>
 </div>

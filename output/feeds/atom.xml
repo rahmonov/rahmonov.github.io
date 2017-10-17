@@ -36,7 +36,7 @@ if I want to do something like this:&lt;/p&gt;
 have to wait for all 10000000 numbers to be generated. That sucks &lt;i class="em em-confounded"&gt;&lt;/i&gt;&lt;/p&gt;
 &lt;div class="gallery large"&gt;
     &lt;a href="/static/images/post-images/python-generators/large_number.gif" rel="lightbox" title="Large Number"&gt;
-        &lt;img src="/static/images/post-images/python-generators/large_number.gif" alt="Large Number"&gt;
+            &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/python-generators/large_number.gif" alt="Large Number"&gt;
         &lt;span&gt;Waiting for the first number...&lt;/span&gt;
     &lt;/a&gt;
 &lt;/div&gt;
@@ -68,7 +68,7 @@ one number at a time and remember the last index:&lt;/p&gt;
 &lt;p&gt;Let me try it out now:&lt;/p&gt;
 &lt;div class="gallery large"&gt;
     &lt;a href="/static/images/post-images/python-generators/better-random.gif" rel="lightbox" title="Better random generator"&gt;
-        &lt;img src="/static/images/post-images/python-generators/better-random.gif" alt="Better random generator"&gt;
+        &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/python-generators/better-random.gif" alt="Better random generator"&gt;
         &lt;span&gt;Better random number generator&lt;/span&gt;
     &lt;/a&gt;
 &lt;/div&gt;
@@ -78,7 +78,7 @@ to create the next random number. Exactly what I wanted &lt;i class="em em-tada"
 &lt;p&gt;Now, if I try to access the first number, it will happen immediately:&lt;/p&gt;
 &lt;div class="gallery large"&gt;
     &lt;a href="/static/images/post-images/python-generators/fast-first-number.gif" rel="lightbox" title="Fast First Number"&gt;
-        &lt;img src="/static/images/post-images/python-generators/fast-first-number.gif" alt="Fast First Number"&gt;
+        &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/python-generators/fast-first-number.gif" alt="Fast First Number"&gt;
         &lt;span&gt;Fast access to the first number&lt;/span&gt;
     &lt;/a&gt;
 &lt;/div&gt;
@@ -107,7 +107,7 @@ produced one random number and wait for the user to continue. Only when the user
 &lt;p&gt;Let's try it out:&lt;/p&gt;
 &lt;div class="gallery large"&gt;
     &lt;a href="/static/images/post-images/python-generators/generator.gif" rel="lightbox" title="Generator"&gt;
-        &lt;img src="/static/images/post-images/python-generators/generator.gif" alt="Generator"&gt;
+        &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/python-generators/generator.gif" alt="Generator"&gt;
         &lt;span&gt;Generator at work&lt;/span&gt;
     &lt;/a&gt;
 &lt;/div&gt;
@@ -116,7 +116,7 @@ produced one random number and wait for the user to continue. Only when the user
 magic methods that the class had. As PewDiePie would say:&lt;/p&gt;
 &lt;div class="gallery medium"&gt;
     &lt;a href="/static/images/post-images/python-generators/very-nice.jpg" rel="lightbox" title="Very nice"&gt;
-        &lt;img src="/static/images/post-images/python-generators/very-nice.jpg" alt="Very nice"&gt;
+        &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/python-generators/very-nice.jpg" alt="Very nice"&gt;
         &lt;span&gt;Very nice&lt;/span&gt;
     &lt;/a&gt;
 &lt;/div&gt;
@@ -189,7 +189,7 @@ The function should accept an argument and a type and check if that argument is 
 It is Python after all. There should be something more pythonic. As &lt;a href="https://twitter.com/raymondh"&gt;Raymond Hettinger&lt;/a&gt; would say:&lt;/p&gt;
 &lt;div class="gallery medium"&gt;
     &lt;a href="/static/images/post-images/python-decorators/raymondhettinger.jpg" rel="lightbox" title="Raymond Hettinger"&gt;
-        &lt;img src="/static/images/post-images/python-decorators/raymondhettinger.jpg" alt="Raymond Hettinger"&gt;
+        &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/python-decorators/raymondhettinger.jpg" alt="Raymond Hettinger"&gt;
         &lt;span&gt;There must be a better way!&lt;/span&gt;
     &lt;/a&gt;
 &lt;/div&gt;
@@ -332,7 +332,7 @@ on how to build a good career as a developer, I realized that getting yourself o
 So, when it was announced that &lt;a href="https://www.facebook.com/iutextended/?ref=br_rs"&gt;Google IO Extended&lt;/a&gt; was happening in Tashkent, I knew that it was my chance to get started in this speaking journey. &lt;/p&gt;
 &lt;div class="gallery medium"&gt;
     &lt;a href="/static/images/post-images/i-gave-a-talk/after-talks.jpg" rel="lightbox" title="Google IO People"&gt;
-        &lt;img src="/static/images/post-images/i-gave-a-talk/after-talks.jpg" alt="Google IO People"&gt;
+        &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/i-gave-a-talk/after-talks.jpg" alt="Google IO People"&gt;
         &lt;span&gt;Event organizers and participants&lt;/span&gt;
     &lt;/a&gt;
 &lt;/div&gt;
@@ -341,7 +341,7 @@ So, when it was announced that &lt;a href="https://www.facebook.com/iutextended/
 &lt;p&gt;Thankfully, the organizers accepted my talk and announced it on the event page: &lt;/p&gt;
 &lt;div class="gallery medium"&gt;
     &lt;a href="/static/images/post-images/i-gave-a-talk/announcing-me.png" rel="lightbox" title="My announcement"&gt;
-        &lt;img src="/static/images/post-images/i-gave-a-talk/announcing-me.png" alt="My announcement"&gt;
+        &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/i-gave-a-talk/announcing-me.png" alt="My announcement"&gt;
     &lt;/a&gt;
 &lt;/div&gt;
 
@@ -361,7 +361,7 @@ So, when it was announced that &lt;a href="https://www.facebook.com/iutextended/
 &lt;/ul&gt;
 &lt;div class="gallery medium"&gt;
     &lt;a href="/static/images/post-images/i-gave-a-talk/me-talking.jpg" rel="lightbox" title="The beginning of the talk"&gt;
-        &lt;img src="/static/images/post-images/i-gave-a-talk/me-talking.jpg" alt="The beginning of the talk"&gt;
+        &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/i-gave-a-talk/me-talking.jpg" alt="The beginning of the talk"&gt;
     &lt;/a&gt;
 &lt;/div&gt;
 
@@ -369,7 +369,7 @@ So, when it was announced that &lt;a href="https://www.facebook.com/iutextended/
 But hey, 50% is not that bad for the first time &lt;i class="em em-sunglasses"&gt;&lt;/i&gt; &lt;/p&gt;
 &lt;div class="gallery medium"&gt;
     &lt;a href="/static/images/post-images/i-gave-a-talk/audience.jpg" rel="lightbox" title="Audience"&gt;
-        &lt;img src="/static/images/post-images/i-gave-a-talk/audience.jpg" alt="Audience"&gt;
+        &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/i-gave-a-talk/audience.jpg" alt="Audience"&gt;
     &lt;/a&gt;
 &lt;/div&gt;
 
