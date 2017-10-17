@@ -84,140 +84,139 @@
 <h2>Latest Post</h2>
 
 <h4>
-    <a href="posts/python-generators/">
-        02 September 2017
+    <a href="posts/python-chainmap/">
+        17 October 2017
     </a>
 </h4>
 
-<h1>Python Generators</h1>
+<h1>ChainMap in Python</h1>
 
-<p>This is a tale of how one programmer learned the basics of generators in Python and is told from his point of view.</p>
-<h2>The Tale</h2>
-<p>So, my boss told me to write a function that accepts <code>n</code> as a parameter and generates this many random numbers and returns the result.
-That should not be too difficult:</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
+<p>In <a href="/posts/python-collections-counter/">Part I</a> of these series about Python's collections module, we talked about the
+<code>Counter</code> class and its usage. In this blog post, we will be looking at another class in this module: <code>ChainMap</code>.</p>
+<p>Let's say that we are building this awesome web app which is expected to bring us billions of dollars. In this app, we have
+two environments: development and production. Each of these environments has its own configurations and we store 
+those configs in dictionaries, like this:</p>
+<div class="highlight"><pre><span></span><span class="n">development</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;app_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Billions&#39;</span><span class="p">,</span> <span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;132.123.33.2&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;development_user&#39;</span><span class="p">}</span>
 
-<span class="k">def</span> <span class="nf">random_nums</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-    <span class="n">nums</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-        <span class="n">nums</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>   <span class="c1"># random number is between 0 and 1000</span>
-    <span class="k">return</span> <span class="n">nums</span>
+<span class="n">production</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;222.44.55.16&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;production_user&#39;</span><span class="p">}</span>
 </pre></div>
 
 
-<p>Let me test it out:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">random_nums</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-<span class="p">[</span><span class="mi">886</span><span class="p">,</span> <span class="mi">348</span><span class="p">,</span> <span class="mi">763</span><span class="p">,</span> <span class="mi">493</span><span class="p">,</span> <span class="mi">401</span><span class="p">,</span> <span class="mi">219</span><span class="p">,</span> <span class="mi">911</span><span class="p">,</span> <span class="mi">789</span><span class="p">,</span> <span class="mi">834</span><span class="p">,</span> <span class="mi">940</span><span class="p">]</span>
-
-<span class="o">&gt;&gt;&gt;</span> <span class="n">random_nums</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-<span class="p">[</span><span class="mi">366</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">951</span><span class="p">,</span> <span class="mi">682</span><span class="p">,</span> <span class="mi">153</span><span class="p">]</span>
+<p>When deploying our app in production, we first look up the <code>production</code> dictionary for a value. If nothing is found, then 
+we look it up from the <code>development</code> dictionary. Nothing new, classic config; production overrides development.</p>
+<p>To do that, let's create a function called <code>get_config</code>, which takes <code>name</code> as a parameter and returns the result if it finds it, or else <code>None</code>:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="o">...</span>     <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">production</span><span class="p">:</span>
+<span class="o">...</span>         <span class="k">return</span> <span class="n">production</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+<span class="o">...</span>        
+<span class="o">...</span>     <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">development</span><span class="p">:</span>
+<span class="o">...</span>         <span class="k">return</span> <span class="n">development</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+<span class="o">...</span>        
+<span class="o">...</span>     <span class="k">return</span> <span class="bp">None</span>
 </pre></div>
 
 
-<p>It seems to be working well. However, I have a few concerns about this function. First of all, what if the <code>n</code> param is really large?
-Because the function stores the random numbers in a list (<code>nums = []</code>), that list will get bigger and bigger, and eventually the machine may run
-out of memory.</p>
-<p>Second of all, the function is <em>eager</em> which means that it will go from the start till the end without any pause. This, in turn, means that
-if I want to do something like this:</p>
-<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">random_nums</span><span class="p">(</span><span class="mi">10000000</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<p>Let's test it:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">get_config</span><span class="p">(</span><span class="s1">&#39;database&#39;</span><span class="p">)</span>
+<span class="s1">&#39;222.44.55.16&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">get_config</span><span class="p">(</span><span class="s1">&#39;db_username&#39;</span><span class="p">)</span>
+<span class="s1">&#39;production_user&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">get_config</span><span class="p">(</span><span class="s1">&#39;app_name&#39;</span><span class="p">)</span>
+<span class="s1">&#39;Billions&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">get_config</span><span class="p">(</span><span class="s1">&#39;api_key&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span>
+<span class="bp">True</span>
 </pre></div>
 
 
-<p>It will first execute <code>random_nums(10000000)</code> part and then start the loop. It means that even if I needed only the first element of the list, I would
-have to wait for all 10000000 numbers to be generated. That sucks <i class="em em-confounded"></i></p>
-<div class="gallery large">
-    <a href="/static/images/post-images/python-generators/large_number.gif" rel="lightbox" title="Large Number">
-            <img src="https://s3.amazonaws.com/rahmonov.me/post-images/python-generators/large_number.gif" alt="Large Number">
-        <span>Waiting for the first number...</span>
-    </a>
-</div>
-
-<p>Well, there must be a better way. There must be a solution which solves both memory and eagerness issues. So, in order to achieve that
-I must get rid of storing the numbers and make the function lazy so that it generates one number at a time. What if I create such a class?
-That should not be too difficult. I could use <code>__iter__</code> and <code>__next__</code> functions to make my class iterable and in that <code>__next__</code> I will return
-one number at a time and remember the last index:</p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">BetterRandomNums</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
-
-    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span>
-
-    <span class="k">def</span> <span class="nf">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">random_number</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">StopIteration</span><span class="p">(</span><span class="s1">&#39;No more numbers&#39;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
-
-        <span class="k">return</span> <span class="n">random_number</span>
+<p>Looks like it is working well. Please note that this method is for production only. In development, we would first search in the <code>development</code> dict and only
+then <code>production</code>.</p>
+<p>This is working well, but I don't like it. There has to be a better way. What if I combine them in one dict? Like this:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">development</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;app_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Billions&#39;</span><span class="p">,</span> <span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;132.123.33.2&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;development_user&#39;</span><span class="p">}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">production</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;222.44.55.16&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;production_user&#39;</span><span class="p">}</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">common</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">development</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">production</span><span class="p">)</span>
 </pre></div>
 
 
-<p>Let me try it out now:</p>
-<div class="gallery large">
-    <a href="/static/images/post-images/python-generators/better-random.gif" rel="lightbox" title="Better random generator">
-        <img src="https://s3.amazonaws.com/rahmonov.me/post-images/python-generators/better-random.gif" alt="Better random generator">
-        <span>Better random number generator</span>
-    </a>
-</div>
-
-<p>Now, it is better! Basically, it is generating one random number, giving me that number and letting me print it and only then going on
-to create the next random number. Exactly what I wanted <i class="em em-tada"></i></p>
-<p>Now, if I try to access the first number, it will happen immediately:</p>
-<div class="gallery large">
-    <a href="/static/images/post-images/python-generators/fast-first-number.gif" rel="lightbox" title="Fast First Number">
-        <img src="https://s3.amazonaws.com/rahmonov.me/post-images/python-generators/fast-first-number.gif" alt="Fast First Number">
-        <span>Fast access to the first number</span>
-    </a>
-</div>
-
-<p>There you go. This is what I wanted to do. But boy does it look ugly and I can't believe that I had to do all these things to get this done.
-This is Python, there must be a Pythonic way of doing it.</p>
-<div class="highlight"><pre><span></span>After doing a little research...
+<p>Looks good. Let's test it:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database&#39;</span><span class="p">)</span>
+<span class="s1">&#39;222.44.55.16&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;db_username&#39;</span><span class="p">)</span>
+<span class="s1">&#39;production_user&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app_name&#39;</span><span class="p">)</span>
+<span class="s1">&#39;Billions&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;api_key&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span>
+<span class="bp">True</span>
 </pre></div>
 
 
-<p>Hooray! It turns out there is such a thing and it is called <code>generators</code> <i class="em em-star2"></i></p>
-<p>Using a generator, our new function will look like this vs the old one:</p>
-<div class="highlight"><pre><span></span><span class="c1"># the new function                                            # the old one</span>
-<span class="k">def</span> <span class="nf">random_nums2</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>                                <span class="o">|</span>         <span class="k">def</span> <span class="nf">random_nums</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>                              <span class="o">|</span>            <span class="n">nums</span> <span class="o">=</span> <span class="p">[]</span>    
-        <span class="n">rand_num</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>          <span class="o">|</span>            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-                                                    <span class="o">|</span>                <span class="n">nums</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
-        <span class="k">yield</span> <span class="n">rand_num</span>                              <span class="o">|</span>            <span class="k">return</span> <span class="n">nums</span>
+<p>Cool! It is behaving in the same way as the method we wrote above. However, we did it without having to write a function.</p>
+<p>Well, it turns out that there is even better way. Welcome <a href="https://docs.python.org/3/library/collections.html#chainmap-objects">ChainMap</a>!</p>
+<p>Basically, what it does is to group multiple dicts into one, updateable view which has the same interface as the ordinary dict (with some additions, of course).
+Let's see it in action:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">ChainMap</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">development</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;app_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Billions&#39;</span><span class="p">,</span> <span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;132.123.33.2&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;development_user&#39;</span><span class="p">}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">production</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;222.44.55.16&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;production_user&#39;</span><span class="p">}</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span> <span class="o">=</span> <span class="n">ChainMap</span><span class="p">(</span><span class="n">production</span><span class="p">,</span> <span class="n">development</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database&#39;</span><span class="p">)</span>
+<span class="s1">&#39;222.44.55.16&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;db_username&#39;</span><span class="p">)</span>
+<span class="s1">&#39;production_user&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app_name&#39;</span><span class="p">)</span>
+<span class="s1">&#39;Billions&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;api_key&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span>
+<span class="bp">True</span>
 </pre></div>
 
 
-<p>So, what changed? They look very similar. The are two small differences, though. First, the new function does not store the results in a list.
-That's why, it will not use any memory for that. Second, instead of <code>return</code> we have <code>yield</code>. This is the <strong>keyword</strong> that turns a function
-into a generator. As a result, it will generate a random number, give a user that random number, and then that's it; it will remember that it 
-produced one random number and wait for the user to continue. Only when the user calls it again, it will generate the second random number. </p>
-<p>Let's try it out:</p>
-<div class="gallery large">
-    <a href="/static/images/post-images/python-generators/generator.gif" rel="lightbox" title="Generator">
-        <img src="https://s3.amazonaws.com/rahmonov.me/post-images/python-generators/generator.gif" alt="Generator">
-        <span>Generator at work</span>
-    </a>
-</div>
+<p>Awesome! Look how much cleaner it got. With one single line, we accomplished all those things that we did above.</p>
+<h2>Other Features</h2>
+<p>As I mentioned above, it looks and behaves just like an ordinary dict. However, it has some extra functionality.</p>
+<p>You can see the list of comprising dictionaries:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">maps</span>
+<span class="p">[{</span><span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;222.44.55.16&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;production_user&#39;</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;132.123.33.2&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;development_user&#39;</span><span class="p">,</span> <span class="s1">&#39;app_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Billions&#39;</span><span class="p">}]</span>
+</pre></div>
 
-<p>Basically, it is working just like the <code>BetterRandomNums</code> class above. But it is much more compact and does not require knowledge of all those
-magic methods that the class had. As PewDiePie would say:</p>
-<div class="gallery medium">
-    <a href="/static/images/post-images/python-generators/very-nice.jpg" rel="lightbox" title="Very nice">
-        <img src="https://s3.amazonaws.com/rahmonov.me/post-images/python-generators/very-nice.jpg" alt="Very nice">
-        <span>Very nice</span>
-    </a>
-</div>
 
+<p>You can reverse this order:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">maps</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">maps</span><span class="p">))</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">maps</span>
+<span class="p">[{</span><span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;132.123.33.2&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;development_user&#39;</span><span class="p">,</span> <span class="s1">&#39;app_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Billions&#39;</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;222.44.55.16&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;production_user&#39;</span><span class="p">}]</span>
+</pre></div>
+
+
+<p>This means that now when look something up, it will first loop up the <code>development</code> dictionary because we reversed the order:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;db_username&#39;</span><span class="p">)</span>
+<span class="s1">&#39;development_user&#39;</span>
+</pre></div>
+
+
+<p>Cool! </p>
+<p>You can also add another dictionary to the group:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">most_important_config</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;I am the king&#39;</span><span class="p">}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">new_child</span><span class="p">(</span><span class="n">most_important_config</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;db_username&#39;</span><span class="p">)</span>
+<span class="s1">&#39;I am the king&#39;</span>
+</pre></div>
+
+
+<p>As you can see, the one we just added was added as the first child and thus it will look it up first.</p>
+<p>And lastly, you can see <code>parents</code> of this chain which basically means see all comprising dictionaries except the first one:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">parents</span>
+<span class="n">ChainMap</span><span class="p">({</span><span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;132.123.33.2&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;jahongirr&#39;</span><span class="p">,</span> <span class="s1">&#39;app_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Billions&#39;</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;222.44.55.16&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;production_user&#39;</span><span class="p">})</span>
+</pre></div>
+
+
+<p>As you can see here, contents of <code>most_important_config</code> is missing as it is the first element of the <code>ChainMap</code>.</p>
 <h2>Conclusion</h2>
-<p>There you have it. We had problems of memory and an eager function. We solved them with the help of generators. This tale was intended to show 
-not only how to use generators but also why we need to use them. I hope it is more or less clear. If not, <a href="/pages/about.html#contact">contact me</a> 
-and I will do my best to explain things further.</p>
-<p>Thanks for reading and fight on!</p>
+<p>In this blog post, we saw what <code>ChainMap</code> is, how to use it and most importantly why to use it. Always learn why something should be used.
+Otherwise, it is easy to forget or misuse it.</p>
+<p>Fight on!</p>
 
 <div class="end">
     <span>
