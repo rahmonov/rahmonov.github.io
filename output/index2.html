@@ -84,139 +84,173 @@
 <h2>Latest Post</h2>
 
 <h4>
-    <a href="posts/python-chainmap/">
-        17 October 2017
+    <a href="posts/custom-chainmap-in-python/">
+        19 October 2017
     </a>
 </h4>
 
-<h1>ChainMap in Python</h1>
+<h1>Custom ChainMap in Python</h1>
 
-<p>In <a href="/posts/python-collections-counter/">Part I</a> of these series about Python's collections module, we talked about the
-<code>Counter</code> class and its usage. In this blog post, we will be looking at another class in this module: <code>ChainMap</code>.</p>
-<p>Let's say that we are building this awesome web app which is expected to bring us billions of dollars. In this app, we have
-two environments: development and production. Each of these environments has its own configurations and we store 
-those configs in dictionaries, like this:</p>
-<div class="highlight"><pre><span></span><span class="n">development</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;app_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Billions&#39;</span><span class="p">,</span> <span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;132.123.33.2&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;development_user&#39;</span><span class="p">}</span>
-
-<span class="n">production</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;222.44.55.16&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;production_user&#39;</span><span class="p">}</span>
-</pre></div>
-
-
-<p>When deploying our app in production, we first look up the <code>production</code> dictionary for a value. If nothing is found, then 
-we look it up from the <code>development</code> dictionary. Nothing new, classic config; production overrides development.</p>
-<p>To do that, let's create a function called <code>get_config</code>, which takes <code>name</code> as a parameter and returns the result if it finds it, or else <code>None</code>:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-<span class="o">...</span>     <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">production</span><span class="p">:</span>
-<span class="o">...</span>         <span class="k">return</span> <span class="n">production</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
-<span class="o">...</span>        
-<span class="o">...</span>     <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">development</span><span class="p">:</span>
-<span class="o">...</span>         <span class="k">return</span> <span class="n">development</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
-<span class="o">...</span>        
-<span class="o">...</span>     <span class="k">return</span> <span class="bp">None</span>
-</pre></div>
-
-
-<p>Let's test it:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">get_config</span><span class="p">(</span><span class="s1">&#39;database&#39;</span><span class="p">)</span>
-<span class="s1">&#39;222.44.55.16&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">get_config</span><span class="p">(</span><span class="s1">&#39;db_username&#39;</span><span class="p">)</span>
-<span class="s1">&#39;production_user&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">get_config</span><span class="p">(</span><span class="s1">&#39;app_name&#39;</span><span class="p">)</span>
-<span class="s1">&#39;Billions&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">get_config</span><span class="p">(</span><span class="s1">&#39;api_key&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span>
-<span class="bp">True</span>
-</pre></div>
-
-
-<p>Looks like it is working well. Please note that this method is for production only. In development, we would first search in the <code>development</code> dict and only
-then <code>production</code>.</p>
-<p>This is working well, but I don't like it. There has to be a better way. What if I combine them in one dict? Like this:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">development</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;app_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Billions&#39;</span><span class="p">,</span> <span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;132.123.33.2&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;development_user&#39;</span><span class="p">}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">production</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;222.44.55.16&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;production_user&#39;</span><span class="p">}</span>
-<span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">common</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">development</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">production</span><span class="p">)</span>
-</pre></div>
-
-
-<p>Looks good. Let's test it:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database&#39;</span><span class="p">)</span>
-<span class="s1">&#39;222.44.55.16&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;db_username&#39;</span><span class="p">)</span>
-<span class="s1">&#39;production_user&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app_name&#39;</span><span class="p">)</span>
-<span class="s1">&#39;Billions&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;api_key&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span>
-<span class="bp">True</span>
-</pre></div>
-
-
-<p>Cool! It is behaving in the same way as the method we wrote above. However, we did it without having to write a function.</p>
-<p>Well, it turns out that there is even better way. Welcome <a href="https://docs.python.org/3/library/collections.html#chainmap-objects">ChainMap</a>!</p>
-<p>Basically, what it does is to group multiple dicts into one, updateable view which has the same interface as the ordinary dict (with some additions, of course).
-Let's see it in action:</p>
+<p>In <a href="/posts/python-chainmap/">the previous post</a>, we learned what <code>ChainMap</code> is in Python and how/why to use it. In this blog
+post, we will awaken our inner hacker and try to implement the same thing ourselves. Just for fun :) Please, check out 
+<a href="/posts/python-chainmap/">this post</a> if you don't know what <code>ChainMap</code> is.</p>
+<p>As software developers, we often hear the words "Don't reinvent the wheel" which basically means "Don't recreate basic stuff which
+has been created before for you". However, I believe that occasional reinventions of some "wheels" help us understand some things
+from the inside out and grow as software developers.</p>
+<p>So, let's go ahead and reinvent <code>ChainMap</code> in Python.</p>
+<p>First things first, let's do the initialization process. The original version takes an undefined number of dictionaries upon initialization 
+and store them inside the <code>maps</code> property:</p>
 <div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">ChainMap</span>
-<span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">development</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;app_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Billions&#39;</span><span class="p">,</span> <span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;132.123.33.2&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;development_user&#39;</span><span class="p">}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">production</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;222.44.55.16&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;production_user&#39;</span><span class="p">}</span>
-<span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span> <span class="o">=</span> <span class="n">ChainMap</span><span class="p">(</span><span class="n">production</span><span class="p">,</span> <span class="n">development</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database&#39;</span><span class="p">)</span>
-<span class="s1">&#39;222.44.55.16&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;db_username&#39;</span><span class="p">)</span>
-<span class="s1">&#39;production_user&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app_name&#39;</span><span class="p">)</span>
-<span class="s1">&#39;Billions&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;api_key&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;hell&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;yeah&#39;</span><span class="p">}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;paradise&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;no&#39;</span><span class="p">}</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">first_chain</span> <span class="o">=</span> <span class="n">ChainMap</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">first_chain</span><span class="o">.</span><span class="n">maps</span><span class="p">)</span>
+<span class="p">[{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;yeah&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;hell&#39;</span><span class="p">}]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">second_chain</span> <span class="o">=</span> <span class="n">ChainMap</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">second_chain</span><span class="o">.</span><span class="n">maps</span><span class="p">)</span>
+<span class="p">[{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;yeah&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;hell&#39;</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;paradise&#39;</span><span class="p">}]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">third_chain</span> <span class="o">=</span> <span class="n">ChainMap</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">first_chain</span><span class="o">.</span><span class="n">maps</span><span class="p">)</span>
+<span class="p">[{}]</span>
+</pre></div>
+
+
+<p>Based on these observations, we can conclude that we should override the <code>__init__</code> method and it should take a number of dictionaries and store them in
+<code>maps</code> property which is a list. If no dictionary is given, <code>maps</code> should be equal to a list of one empty dict:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyChainMap</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">maps</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maps</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">maps</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[{}]</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">for</span> <span class="nb">map</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">default</span>
+</pre></div>
+
+
+<p><code>maps</code> should be converted to list because <code>*maps</code> is a tuple. Let's try it out:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">my_chain</span> <span class="o">=</span> <span class="n">MyChainMap</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">my_chain</span><span class="o">.</span><span class="n">maps</span><span class="p">)</span>
+<span class="p">[{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;hell&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;yeah&#39;</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;paradise&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;no&#39;</span><span class="p">}]</span>
+</pre></div>
+
+
+<p>Great! Next, let's do the <code>get()</code> method. In the original version, <code>get</code> takes two parameters: <code>key</code> and <code>default=None</code>. It tries
+to find the key and returns the value if found. Otherwise, it returns the <code>default</code> (whose default is <code>None</code>):</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">first_chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
+<span class="s1">&#39;hell&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">first_chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nonexistent_key&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">)</span>
 <span class="bp">True</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">first_chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nonexistent_key&#39;</span><span class="p">,</span> <span class="s1">&#39;default_value&#39;</span><span class="p">))</span>
+<span class="s1">&#39;default_value&#39;</span>
 </pre></div>
 
 
-<p>Awesome! Look how much cleaner it got. With one single line, we accomplished all those things that we did above.</p>
-<h2>Other Features</h2>
-<p>As I mentioned above, it looks and behaves just like an ordinary dict. However, it has some extra functionality.</p>
-<p>You can see the list of comprising dictionaries:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">maps</span>
-<span class="p">[{</span><span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;222.44.55.16&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;production_user&#39;</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;132.123.33.2&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;development_user&#39;</span><span class="p">,</span> <span class="s1">&#39;app_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Billions&#39;</span><span class="p">}]</span>
+<p>We will try to find the given key in our <code>maps</code> and return the first found result, otherwise we will return the default value:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyChainMap</span><span class="p">:</span>
+    <span class="o">...</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">for</span> <span class="nb">map</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">default</span>
 </pre></div>
 
 
-<p>You can reverse this order:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">maps</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">maps</span><span class="p">))</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">maps</span>
-<span class="p">[{</span><span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;132.123.33.2&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;development_user&#39;</span><span class="p">,</span> <span class="s1">&#39;app_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Billions&#39;</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;222.44.55.16&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;production_user&#39;</span><span class="p">}]</span>
+<p>Let's try it out:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">my_chain</span> <span class="o">=</span> <span class="n">MyChainMap</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">my_chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
+<span class="s1">&#39;hell&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">my_chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nonexistent_key&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">)</span>
+<span class="bp">True</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">my_chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nonexistent_key&#39;</span><span class="p">,</span> <span class="s1">&#39;default_value&#39;</span><span class="p">))</span>
+<span class="s1">&#39;default_value&#39;</span>
 </pre></div>
 
 
-<p>This means that now when look something up, it will first loop up the <code>development</code> dictionary because we reversed the order:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;db_username&#39;</span><span class="p">)</span>
-<span class="s1">&#39;development_user&#39;</span>
+<p>Works and looks the same. Great! We know that in the original <code>ChainMap</code>, we can retrieve values just like dicts:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">first_chain</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+<span class="s1">&#39;hell&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">first_chain</span><span class="p">[</span><span class="s1">&#39;nonexistent_key&#39;</span><span class="p">]</span>
+<span class="ne">KeyError</span><span class="p">:</span> <span class="s1">&#39;nonexistent_key&#39;</span>
 </pre></div>
 
 
-<p>Cool! </p>
-<p>You can also add another dictionary to the group:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">most_important_config</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;I am the king&#39;</span><span class="p">}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">new_child</span><span class="p">(</span><span class="n">most_important_config</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;db_username&#39;</span><span class="p">)</span>
-<span class="s1">&#39;I am the king&#39;</span>
+<p>It returns the value if found, otherwise throws <code>KeyError</code>. From Python's data model, we know that the special <code>__getitem__</code> method 
+is called when accessing a key like a dict: <code>first_chain['name']</code>. So, we will override it accordingly:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyChainMap</span><span class="p">:</span>
+    <span class="o">...</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">for</span> <span class="nb">map</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 </pre></div>
 
 
-<p>As you can see, the one we just added was added as the first child and thus it will look it up first.</p>
-<p>And lastly, you can see <code>parents</code> of this chain which basically means see all comprising dictionaries except the first one:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">parents</span>
-<span class="n">ChainMap</span><span class="p">({</span><span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;132.123.33.2&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;jahongirr&#39;</span><span class="p">,</span> <span class="s1">&#39;app_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Billions&#39;</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;222.44.55.16&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;production_user&#39;</span><span class="p">})</span>
+<p>Let's try it out:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">my_chain</span> <span class="o">=</span> <span class="n">MyChainMap</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">my_chain</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+<span class="s1">&#39;hell&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">my_chain</span><span class="p">[</span><span class="s1">&#39;nonexistent_key&#39;</span><span class="p">]</span>
+<span class="ne">KeyError</span><span class="p">:</span> <span class="s1">&#39;nonexistent_key&#39;</span>
 </pre></div>
 
 
-<p>As you can see here, contents of <code>most_important_config</code> is missing as it is the first element of the <code>ChainMap</code>.</p>
-<h2>Conclusion</h2>
-<p>In this blog post, we saw what <code>ChainMap</code> is, how to use it and most importantly why to use it. Always learn why something should be used.
-Otherwise, it is easy to forget or misuse it.</p>
-<p>Fight on!</p>
+<p>Very nice! </p>
+<p>Next, let's implement the <code>new_child</code> method of <code>ChainMap</code>. As we know, it takes one dictionary as a parameter and returns a new object with
+whose <code>maps</code> consists of this new dictionary and its other dictionaries:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyChainMap</span><span class="p">:</span>
+    <span class="o">...</span> 
+
+    <span class="k">def</span> <span class="nf">new_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_map</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">MyChainMap</span><span class="p">(</span><span class="n">new_map</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">)</span>
+</pre></div>
+
+
+<p>So, we just initialized a new object with the new map and old ones. Easy! Let's try it out:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">my_chain</span> <span class="o">=</span> <span class="n">MyChainMap</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">my_new_chain</span> <span class="o">=</span> <span class="n">my_chain</span><span class="o">.</span><span class="n">new_child</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">my_new_chain</span><span class="o">.</span><span class="n">maps</span>
+<span class="p">[{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;paradise&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;no&#39;</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;hell&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;yeah&#39;</span><span class="p">}]</span>
+</pre></div>
+
+
+<p>Great! And lastly, let's implement the <code>parents</code> property of the <code>ChainMap</code>. We know that it returns a new <code>ChainMap</code> with all the maps
+except for the first one. So, it should be pretty easy as well:</p>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyChainMap</span><span class="p">:</span>
+    <span class="o">...</span> 
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">parents</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">MyChainMap</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+</pre></div>
+
+
+<p>and there you go! Please note that it is a property not a callable function, just like in the original implementation. Let's try it out:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;hell&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;yeah&#39;</span><span class="p">}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;paradise&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;no&#39;</span><span class="p">}</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">my_chain</span> <span class="o">=</span> <span class="n">MyChainMap</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">my_chain</span><span class="o">.</span><span class="n">maps</span><span class="p">)</span>
+<span class="p">[{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;yeah&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;hell&#39;</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;paradise&#39;</span><span class="p">}]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">chain_parents</span> <span class="o">=</span> <span class="n">my_chain</span><span class="o">.</span><span class="n">parents</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">chain_parents</span><span class="o">.</span><span class="n">maps</span><span class="p">)</span>
+<span class="p">[{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;paradise&#39;</span><span class="p">}]</span>
+</pre></div>
+
+
+<p>Awesome! And there you have it. A custom version of <code>ChainMap</code>. But it is not yet complete. I will leave the rest of it up to you <i class="em em-innocent"></i>.</p>
+<p>Go ahead and try to implement <code>pop</code>, <code>clear</code>, <code>__setitem__</code> and <code>__delitem__</code> methods of <code>ChainMap</code> and let me know in the comments if you did or have any questions.</p>
+<p>Be a hacker and fight on!</p>
 
 <div class="end">
     <span>
