@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head prefix="og: http://ogp.me/ns#">
-        <title>Home</title>
+          <title> Custom ChainMap in Python </title>
 
         <link rel="stylesheet" href="/static/css/main.css" />
         <link rel="stylesheet" href="/static/css/pygment.css" />
@@ -12,19 +12,27 @@
 
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
-            <meta name="description" content="Jahongir Rahmonov's personal blog" />
+        <meta name="description" content="<p>Custom implementation of Python's standard ChainMap</p>" />
         <meta name="author" content="Jahongir Rahmonov" />
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 
-        <meta property="og:title" content="Home - Jahongir Rahmonov">
-        <meta property="og:type" content="website">
-        <meta property="og:image" content="/static/images/programming.jpg">
-        <meta property="og:url" content="http://rahmonov.me">
-        <meta property="og:description" content="Jahongir Rahmonov's personal blog about Python, Django, AngularJS and other things.">
+<meta property="og:title" content="Custom ChainMap in Python">
+<meta property="og:type" content="website">
+<meta property="og:image" content="/static/images/programming.jpg">
+<meta property="og:url" content="http://rahmonov.me/posts/custom-chainmap-in-python/">
+<meta property="og:description" content="<p>Custom implementation of Python's standard ChainMap</p>">
 
         <link href="http://rahmonov.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Full Atom Feed" />
         <link href="http://rahmonov.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="Jahongir Rahmonov Full RSS Feed" />
         <link href="http://rahmonov.me/feeds/programming.atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Categories Atom Feed" />
+
+
+        <meta name="description" content="<p>Custom implementation of Python's standard ChainMap</p>" />
+
+    <meta name="tags" content="python" />
+    <meta name="tags" content="collections" />
+    <meta name="tags" content="chainmap" />
+
 </head>
 
 <body id="index" class="home">
@@ -82,17 +90,12 @@
         <div class="wrap">
             <div class="content">
 
-<h2>Articles in the programming category</h2>
+  <h4>Thu 19 October 2017</h4>
 
-<h4>
-    <a href="posts/custom-chainmap-in-python/">
-        19 October 2017
-    </a>
-</h4>
+  <h1>Custom ChainMap in Python</h1>
 
-<h1>Custom ChainMap in Python</h1>
-
-<p>In <a href="/posts/python-chainmap/">the previous post</a>, we learned what <code>ChainMap</code> is in Python and how/why to use it. In this blog
+  <div class="entry-content">
+    <p>In <a href="/posts/python-chainmap/">the previous post</a>, we learned what <code>ChainMap</code> is in Python and how/why to use it. In this blog
 post, we will awaken our inner hacker and try to implement the same thing ourselves. Just for fun :) Please, check out 
 <a href="/posts/python-chainmap/">this post</a> if you don't know what <code>ChainMap</code> is.</p>
 <p>As software developers, we often hear the words "Don't reinvent the wheel" which basically means "Don't recreate basic stuff which
@@ -252,6 +255,7 @@ except for the first one. So, it should be pretty easy as well:</p>
 <p>Awesome! And there you have it. A custom version of <code>ChainMap</code>. But it is not yet complete. I will leave the rest of it up to you <i class="em em-innocent"></i>.</p>
 <p>Go ahead and try to implement <code>pop</code>, <code>clear</code>, <code>__setitem__</code> and <code>__delitem__</code> methods of <code>ChainMap</code> and let me know in the comments if you did or have any questions.</p>
 <p>Be a hacker and fight on!</p>
+  </div>
 
 <div class="end">
     <span>
@@ -293,6 +297,19 @@ except for the first one. So, it should be pretty easy as well:</p>
         </p>
     </div>
 </div>
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES * * */
+        var disqus_shortname = 'jrahmonov';
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
             </div>
         </div>
     </div>
