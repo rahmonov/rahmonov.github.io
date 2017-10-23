@@ -83,151 +83,33 @@
 
 <h2>Articles by Jahongir Rahmonov</h2>
 
-<h4>
-    <a href="posts/what-is-python/">
-        23 October 2017
-    </a>
-</h4>
+<div class="posts">
 
-<h1>What is Python?</h1>
-
-<p>Would you be surprised if I said that Python is not a programming language at all?</p>
-<p>Then, let me tell you that Python is actually this guy:</p>
-<div class="gallery medium">
-    <a href="https://s3.amazonaws.com/rahmonov.me/post-images/what-is-python/python.jpeg" rel="lightbox" title="Python">
-        <img src="https://s3.amazonaws.com/rahmonov.me/post-images/what-is-python/python.jpeg" alt="Python">
-        <span>This is the actual Python</span>
-    </a>
-</div>
-
-<p>Just kidding <i class="em em-innocent"></i>. However, even in a programming sense Python is not a language in itself.
-It is an <em><code>interface</code></em>. It is basically a description of what a language should do and how it should do it. Don't believe me?
-Here is the <a href="https://docs.python.org/3/reference/">official specification</a> of this interface. Take <code>if</code> statements as an example.
-Here is what this document says about them:</p>
-<div class="highlight"><pre><span></span>The if statement is used for conditional execution:
-
-if_stmt ::=  &quot;if&quot; expression &quot;:&quot; suite
-             ( &quot;elif&quot; expression &quot;:&quot; suite )*
-             [&quot;else&quot; &quot;:&quot; suite]
-
-It selects exactly one of the suites by evaluating the expressions one by one until one is found to be 
-true (see section Boolean operations for the definition of true and false); then that suite is executed 
-(and no other part of the if statement is executed or evaluated). If all expressions are false, the 
-suite of the else clause, if present, is executed.             
-</pre></div>
-
-
-<p>"But what have I been using all my life then <i class="em em-astonished"></i>?" I hear you ask. You have been using the default implementation of Python, which is 
-actually called <em><code>CPython</code></em>. That means that by <em><code>Python</code></em> most people mean <em><code>CPython</code></em>. Read on to understand what that is.</p>
-<p>As with any <code>interface</code>, there are its implementations. And the most popular Python implementations are the following:</p>
-<ol>
-<li><a href="https://github.com/python/cpython">CPython</a> - The default and most widely used implementation written in C</li>
-<li><a href="http://www.jython.org/">Jython</a> - Written in Java and for the JVM</li>
-<li><a href="http://ironpython.net/">IronPython</a> - Written in C# and tightly integrated with the .NET framework.</li>
-<li><a href="https://pypy.org/">PyPy</a> - Alternative implementation of Python written in (surprise!) Python.</li>
-</ol>
-<p>And here is the most interesting part: as these implementations are written in different languages, they allow you to use them inside
-your Python program. Specifically, <code>CPython</code> allows to use <code>C</code> and <code>C++</code>, <code>Jython</code> allows to use <code>Java</code> and <code>IronPath</code> allows to use 
-<code>C#</code> in your Python program.  How crazy is that? </p>
-<p>Let's see some examples. Let's say that I have this function called <code>example</code> written in <code>C</code>:</p>
-<div class="highlight"><pre><span></span><span class="n">static</span> <span class="n">PyObject</span> <span class="o">*</span> <span class="n">example</span><span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="bp">self</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="o">//</span> <span class="n">do</span> <span class="n">something</span>
-    <span class="k">return</span> <span class="n">Py_BuildValue</span><span class="p">(</span><span class="s">&quot;i&quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
-
-
-<p>In <code>CPython</code>, I can import it and call it like this:</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">example</span>
-
-<span class="n">result</span> <span class="o">=</span> <span class="n">example</span><span class="o">.</span><span class="n">do_something</span><span class="p">()</span>
-</pre></div>
-
-
-<p>These are called extensions. Read more about them <a href="https://docs.python.org/3/extending/extending.html">here</a>.</p>
-<p>The same thing with <code>Jython</code>. You can import <code>Java</code> classes and use them inside your Python:</p>
-<div class="highlight"><pre><span></span><span class="n">C</span><span class="p">:</span>\<span class="n">jython</span><span class="o">&gt;</span><span class="n">jython</span>
-<span class="n">Jython</span> <span class="mf">2.0</span> <span class="n">on</span> <span class="n">java1</span><span class="o">.</span><span class="mf">2.1</span>
-<span class="n">Type</span> <span class="s2">&quot;copyright&quot;</span><span class="p">,</span> <span class="s2">&quot;credits&quot;</span> <span class="ow">or</span> <span class="s2">&quot;license&quot;</span> <span class="k">for</span> <span class="n">more</span> <span class="n">information</span><span class="o">.</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">java.util</span> <span class="kn">import</span> <span class="n">Random</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">Random</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">nextInt</span><span class="p">()</span>
-<span class="o">-</span><span class="mi">790940041</span>
-</pre></div>
-
-
-<p>And the same thing with <code>IronPython</code>. Import <code>.NET</code> code and use it as you like:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">System.DateTime</span> <span class="kn">import</span> <span class="n">Now</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">Now</span> <span class="c1">#doctest: +ELLIPSIS</span>
-<span class="o">&lt;</span><span class="n">System</span><span class="o">.</span><span class="n">DateTime</span> <span class="nb">object</span> <span class="n">at</span> <span class="o">...&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="c1"># Let&#39;s make it even more obvious that &quot;Now&quot; is evaluated only once</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">a_second_ago</span> <span class="o">=</span> <span class="n">Now</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">time</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">a_second_ago</span> <span class="ow">is</span> <span class="n">Now</span>
-<span class="bp">True</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">a_second_ago</span> <span class="ow">is</span> <span class="n">System</span><span class="o">.</span><span class="n">DateTime</span><span class="o">.</span><span class="n">Now</span>
-<span class="bp">False</span>
-</pre></div>
-
-
-<p>I don't know about you but mixing up languages like this is fascinating to me, although I haven't had a chance to use any of them
-in a real project except for <code>CPython</code>, of course.</p>
-<p>However, that might be not too far away. Hailed as the future of Python, <code>PyPy</code> has been showing great progress. Even the creator of Python,
-Guido van Rossum said some nice words about it:</p>
-<blockquote>
-<p>If you want your code to run faster, you should probably just use PyPy.</p>
-</blockquote>
-<p>Its distinctive features, apart from being fast thanks to its Just-in-Time compiler, include optimized memory usage, support for stackless
-which makes massive concurrency possible and most importantly its compatibility. That means that you can swap your Python implementation with 
-<code>PyPy</code> without changing your codebase and you will have all those advantages that <code>PyPy</code> offers. You can read more about its 
-features <a href="https://pypy.org/features.html">here</a>.</p>
-<h2>Conclusion</h2>
-<p>Python is actually an interface and there are several different implementations, with the most commonly used being <code>CPython</code> and 
-most promising being <code>PyPy</code>. Thank you for reading!</p>
-<p>Fight on!</p>
-
-<div class="end">
-    <span>
-        If you liked what you read, subscribe below. Once in a while, I will send you a list of my new posts.
-    </span>
-
-    <div id="popup">
+        <span>03 October 2015</span> &mdash; <a href="/posts/close-modal-on-back-button/">Close modal on back button in AngularJS</a>
         <p>
-            <!-- Begin MailChimp Signup Form -->
-            <link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css">
-            <style type="text/css">
-                #mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; }
-                /* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
-                   We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
-            </style>
-            <div id="mc_embed_signup">
-            <form action="//rahmonov.us16.list-manage.com/subscribe/post?u=9e30bdfdfe0a7bd7cf7e0d50a&amp;id=af3f3c5f76" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
-                <div id="mc_embed_signup_scroll">
-            <div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
-            <div class="mc-field-group">
-                <label for="mce-MMERGE1">Name </label>
-                <input type="text" value="" name="MMERGE1" class="" id="mce-MMERGE1">
-            </div>
-            <div class="mc-field-group">
-                <label for="mce-EMAIL">Email Address  <span class="asterisk">*</span>
-            </label>
-                <input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
-            </div>
-                <div id="mce-responses" class="clear">
-                    <div class="response" id="mce-error-response" style="display:none"></div>
-                    <div class="response" id="mce-success-response" style="display:none"></div>
-                </div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-                <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_9e30bdfdfe0a7bd7cf7e0d50a_af3f3c5f76" tabindex="-1" value=""></div>
-                <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
-                </div>
-            </form>
-            </div>
-            <!--End mc_embed_signup-->
+           <p>How to close modal on back button in AngularJS without going back in browser history</p>
         </p>
-    </div>
+
+        <span>01 October 2015</span> &mdash; <a href="/posts/django-1.8-bug/">"Relation 'auth_user' does not exist" bug in Django 1.8</a>
+        <p>
+           <p>Bug in Django 1.8 when used with PostgreSQL</p>
+        </p>
+
+        <span>12 September 2015</span> &mdash; <a href="/posts/introduction-to-python-social-auth/">Introduction to Python Social Auth</a>
+        <p>
+           <p>Python Social Auth aims to be an easy to setup social authentication and authorization mechanism for Python projects</p>
+        </p>
+
+
+
 </div>
+
+
+<p class="paginator">
+        <a href="/author/jahongir-rahmonov2.html">&laquo;</a>
+    Page 3 of 3
+</p>
+
             </div>
         </div>
     </div>
