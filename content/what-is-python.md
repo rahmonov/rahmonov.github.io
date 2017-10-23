@@ -1,6 +1,6 @@
 Title: What is Python?
-Date: 2017-10-25 20:10
-Modified: 2017-10-25 20:10
+Date: 2017-10-23 20:10
+Modified: 2017-10-23 20:10
 Category: programming
 Tags: python, programming, language
 Slug: what-is-python
