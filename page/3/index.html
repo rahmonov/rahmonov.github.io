@@ -81,183 +81,131 @@
         <div class="wrap">
             <div class="content">
 
-<h2>Latest Post</h2>
+<h2>Posts</h2>
 
-<h4>
-    <a href="posts/python-chainmap/">
-        17 October 2017
-    </a>
-</h4>
+<div class="posts">
 
-<h1>ChainMap in Python</h1>
-
-<p>In <a href="/posts/python-collections-counter/">Part I</a> of these series about Python's collections module, we talked about the
-<code>Counter</code> class and its usage. In this blog post, we will be looking at another class in this module: <code>ChainMap</code>.</p>
-<p>Let's say that we are building this awesome web app which is expected to bring us billions of dollars. In this app, we have
-two environments: development and production. Each of these environments has its own configurations and we store 
-those configs in dictionaries, like this:</p>
-<div class="highlight"><pre><span></span><span class="n">development</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;app_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Billions&#39;</span><span class="p">,</span> <span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;132.123.33.2&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;development_user&#39;</span><span class="p">}</span>
-
-<span class="n">production</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;222.44.55.16&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;production_user&#39;</span><span class="p">}</span>
-</pre></div>
-
-
-<p>When deploying our app in production, we first look up the <code>production</code> dictionary for a value. If nothing is found, then 
-we look it up from the <code>development</code> dictionary. Nothing new, classic config; production overrides development.</p>
-<p>To do that, let's create a function called <code>get_config</code>, which takes <code>name</code> as a parameter and returns the result if it finds it, or else <code>None</code>:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-<span class="o">...</span>     <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">production</span><span class="p">:</span>
-<span class="o">...</span>         <span class="k">return</span> <span class="n">production</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
-<span class="o">...</span>        
-<span class="o">...</span>     <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">development</span><span class="p">:</span>
-<span class="o">...</span>         <span class="k">return</span> <span class="n">development</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
-<span class="o">...</span>        
-<span class="o">...</span>     <span class="k">return</span> <span class="bp">None</span>
-</pre></div>
-
-
-<p>Let's test it:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">get_config</span><span class="p">(</span><span class="s1">&#39;database&#39;</span><span class="p">)</span>
-<span class="s1">&#39;222.44.55.16&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">get_config</span><span class="p">(</span><span class="s1">&#39;db_username&#39;</span><span class="p">)</span>
-<span class="s1">&#39;production_user&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">get_config</span><span class="p">(</span><span class="s1">&#39;app_name&#39;</span><span class="p">)</span>
-<span class="s1">&#39;Billions&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">get_config</span><span class="p">(</span><span class="s1">&#39;api_key&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span>
-<span class="bp">True</span>
-</pre></div>
-
-
-<p>Looks like it is working well. Please note that this method is for production only. In development, we would first search in the <code>development</code> dict and only
-then <code>production</code>.</p>
-<p>This is working well, but I don't like it. There has to be a better way. What if I combine them in one dict? Like this:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">development</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;app_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Billions&#39;</span><span class="p">,</span> <span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;132.123.33.2&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;development_user&#39;</span><span class="p">}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">production</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;222.44.55.16&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;production_user&#39;</span><span class="p">}</span>
-<span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">common</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">development</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">production</span><span class="p">)</span>
-</pre></div>
-
-
-<p>Looks good. Let's test it:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database&#39;</span><span class="p">)</span>
-<span class="s1">&#39;222.44.55.16&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;db_username&#39;</span><span class="p">)</span>
-<span class="s1">&#39;production_user&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app_name&#39;</span><span class="p">)</span>
-<span class="s1">&#39;Billions&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">common</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;api_key&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span>
-<span class="bp">True</span>
-</pre></div>
-
-
-<p>Cool! It is behaving in the same way as the method we wrote above. However, we did it without having to write a function.</p>
-<p>Well, it turns out that there is even better way. Welcome <a href="https://docs.python.org/3/library/collections.html#chainmap-objects">ChainMap</a>!</p>
-<p>Basically, what it does is to group multiple dicts into one, updateable view which has the same interface as the ordinary dict (with some additions, of course).
-Let's see it in action:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">ChainMap</span>
-<span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">development</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;app_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Billions&#39;</span><span class="p">,</span> <span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;132.123.33.2&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;development_user&#39;</span><span class="p">}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">production</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;222.44.55.16&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;production_user&#39;</span><span class="p">}</span>
-<span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span> <span class="o">=</span> <span class="n">ChainMap</span><span class="p">(</span><span class="n">production</span><span class="p">,</span> <span class="n">development</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;database&#39;</span><span class="p">)</span>
-<span class="s1">&#39;222.44.55.16&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;db_username&#39;</span><span class="p">)</span>
-<span class="s1">&#39;production_user&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;app_name&#39;</span><span class="p">)</span>
-<span class="s1">&#39;Billions&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;api_key&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span>
-<span class="bp">True</span>
-</pre></div>
-
-
-<p>Awesome! Look how much cleaner it got. With one single line, we accomplished all those things that we did above.</p>
-<h2>Other Features</h2>
-<p>As I mentioned above, it looks and behaves just like an ordinary dict. However, it has some extra functionality.</p>
-<p>You can see the list of comprising dictionaries:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">maps</span>
-<span class="p">[{</span><span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;222.44.55.16&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;production_user&#39;</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;132.123.33.2&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;development_user&#39;</span><span class="p">,</span> <span class="s1">&#39;app_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Billions&#39;</span><span class="p">}]</span>
-</pre></div>
-
-
-<p>You can reverse this order:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">maps</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">maps</span><span class="p">))</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">maps</span>
-<span class="p">[{</span><span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;132.123.33.2&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;development_user&#39;</span><span class="p">,</span> <span class="s1">&#39;app_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Billions&#39;</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;222.44.55.16&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;production_user&#39;</span><span class="p">}]</span>
-</pre></div>
-
-
-<p>This means that now when look something up, it will first loop up the <code>development</code> dictionary because we reversed the order:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;db_username&#39;</span><span class="p">)</span>
-<span class="s1">&#39;development_user&#39;</span>
-</pre></div>
-
-
-<p>Cool! </p>
-<p>You can also add another dictionary to the group:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">most_important_config</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;I am the king&#39;</span><span class="p">}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">new_child</span><span class="p">(</span><span class="n">most_important_config</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;db_username&#39;</span><span class="p">)</span>
-<span class="s1">&#39;I am the king&#39;</span>
-</pre></div>
-
-
-<p>As you can see, the one we just added was added as the first child and thus it will look it up first.</p>
-<p>And lastly, you can see <code>parents</code> of this chain which basically means see all comprising dictionaries except the first one:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="o">&gt;&gt;&gt;</span> <span class="n">chain</span><span class="o">.</span><span class="n">parents</span>
-<span class="n">ChainMap</span><span class="p">({</span><span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;132.123.33.2&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;jahongirr&#39;</span><span class="p">,</span> <span class="s1">&#39;app_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Billions&#39;</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;database&#39;</span><span class="p">:</span> <span class="s1">&#39;222.44.55.16&#39;</span><span class="p">,</span> <span class="s1">&#39;db_username&#39;</span><span class="p">:</span> <span class="s1">&#39;production_user&#39;</span><span class="p">})</span>
-</pre></div>
-
-
-<p>As you can see here, contents of <code>most_important_config</code> is missing as it is the first element of the <code>ChainMap</code>.</p>
-<h2>Conclusion</h2>
-<p>In this blog post, we saw what <code>ChainMap</code> is, how to use it and most importantly why to use it. Always learn why something should be used.
-Otherwise, it is easy to forget or misuse it.</p>
-<p>Fight on!</p>
-
-<div class="end">
-    <span>
-        If you liked what you read, subscribe below. Once in a while, I will send you a list of my new posts.
-    </span>
-
-    <div id="popup">
+        <span>23 October 2017</span> &mdash; <a href="/posts/what-is-python/">What is Python?</a>
         <p>
-            <!-- Begin MailChimp Signup Form -->
-            <link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css">
-            <style type="text/css">
-                #mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; }
-                /* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
-                   We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
-            </style>
-            <div id="mc_embed_signup">
-            <form action="//rahmonov.us16.list-manage.com/subscribe/post?u=9e30bdfdfe0a7bd7cf7e0d50a&amp;id=af3f3c5f76" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
-                <div id="mc_embed_signup_scroll">
-            <div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
-            <div class="mc-field-group">
-                <label for="mce-MMERGE1">Name </label>
-                <input type="text" value="" name="MMERGE1" class="" id="mce-MMERGE1">
-            </div>
-            <div class="mc-field-group">
-                <label for="mce-EMAIL">Email Address  <span class="asterisk">*</span>
-            </label>
-                <input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
-            </div>
-                <div id="mce-responses" class="clear">
-                    <div class="response" id="mce-error-response" style="display:none"></div>
-                    <div class="response" id="mce-success-response" style="display:none"></div>
-                </div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-                <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_9e30bdfdfe0a7bd7cf7e0d50a_af3f3c5f76" tabindex="-1" value=""></div>
-                <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
-                </div>
-            </form>
-            </div>
-            <!--End mc_embed_signup-->
+           <p>Would you be surprised if I said that Python is not a programming language at all?</p>
         </p>
-    </div>
+
+        <span>21 October 2017</span> &mdash; <a href="/posts/custom-chainmap-in-python/">Custom ChainMap in Python</a>
+        <p>
+           <p>Custom implementation of Python's standard ChainMap</p>
+        </p>
+
+        <span>17 October 2017</span> &mdash; <a href="/posts/python-chainmap/">ChainMap in Python</a>
+        <p>
+           <p>The comprehensive guide to Python's collections module. Part Two: ChainMap</p>
+        </p>
+
+        <span>02 September 2017</span> &mdash; <a href="/posts/python-generators/">Python Generators</a>
+        <p>
+           <p>A tale of generators in Python</p>
+        </p>
+
+        <span>30 August 2017</span> &mdash; <a href="/posts/python-decorators/">Python Decorators</a>
+        <p>
+           <p>A tale of decorators in Python</p>
+        </p>
+
+        <span>11 August 2017</span> &mdash; <a href="/posts/i-gave-a-talk-at-google-io-extended/">I gave a talk at Google IO Extended 2017</a>
+        <p>
+           <p>My experience of giving a talk for the first time in front of a relatively big audience</p>
+        </p>
+
+        <span>25 July 2017</span> &mdash; <a href="/posts/what-the-hell-is-wsgi-anyway-and-what-do-you-eat-it-with/">What the hell is WSGI anyway and what do you eat it with?</a>
+        <p>
+           <p>Have you ever wondered what that wsgi.py file doing in your project files? Let's find out</p>
+        </p>
+
+        <span>23 July 2017</span> &mdash; <a href="/posts/my-first-open-source-project/">My first Open Source Project</a>
+        <p>
+           <p>My first open source project as a PyPI package</p>
+        </p>
+
+        <span>21 July 2017</span> &mdash; <a href="/posts/python-collections-counter/">Python Collections - Counter</a>
+        <p>
+           <p>The comprehensive guide to Python's collections module. Part One: Counter</p>
+        </p>
+
+        <span>11 June 2017</span> &mdash; <a href="/posts/testcase-vs-transactiontestcase-in-django/">TestCase vs TransactionTestCase in Django</a>
+        <p>
+           <p>The difference between TestCase and TransactionTestCase in Django</p>
+        </p>
+
+        <span>02 April 2017</span> &mdash; <a href="/posts/continuous-integration-and-continous-deployment-for-django-app-with-jenkins/">Set up Continuous Integration and Continuous Deployment for a Django app with Jenkins</a>
+        <p>
+           <p>How to set up CI and CD for a Django app with Jenkins</p>
+        </p>
+
+        <span>21 March 2017</span> &mdash; <a href="/posts/deploy-a-django-app-to-digitalocean/">Deploy a Django app to Digital Ocean</a>
+        <p>
+           <p>How to deploy a django application to DigitalOcean</p>
+        </p>
+
+        <span>08 March 2017</span> &mdash; <a href="/posts/run-a-django-app-with-nginx-gunicorn-and-supervisor/">Run a Django app with Nginx, Gunicorn and Supervisor in Ubuntu 16.04 (Part III)</a>
+        <p>
+           <p>How to run a Django app with Nginx, Gunicorn and Supervisor</p>
+        </p>
+
+        <span>26 February 2017</span> &mdash; <a href="/posts/run-a-django-app-with-nginx-and-gunicorn/">Run a Django app with Nginx and Gunicorn in Ubuntu 16.04 (Part II)</a>
+        <p>
+           <p>How to run a Django app with Nginx and Gunicorn</p>
+        </p>
+
+        <span>21 February 2017</span> &mdash; <a href="/posts/run-a-django-app-with-gunicorn-in-ubuntu-16-04/">Run a Django app with Gunicorn in Ubuntu 16.04 (Part I)</a>
+        <p>
+           <p>How to run a Django app with Gunicorn instead of a development server</p>
+        </p>
+
+        <span>15 June 2016</span> &mdash; <a href="/posts/how-to-write-clean-functions/">How to write clean functions</a>
+        <p>
+           <p>Key takeaways from the chapter Functions of the book Clean Code by Robert C. Martin</p>
+        </p>
+
+        <span>20 May 2016</span> &mdash; <a href="/posts/periodic-tasks-with-celery/">Periodic Tasks with Celery</a>
+        <p>
+           <p>How to implement periodic tasks with Celery</p>
+        </p>
+
+        <span>28 April 2016</span> &mdash; <a href="/posts/indroduction-to-celery/">Introduction to Celery</a>
+        <p>
+           <p>Introduction to Celery: a simple, flexible and reliable distributed task queue</p>
+        </p>
+
+
+        <span>18 October 2015</span> &mdash; <a href="/posts/customize-django-admin-templates/">Customize django admin templates</a>
+        <p>
+           <p>How to customize django admin templates</p>
+        </p>
+
+        <span>03 October 2015</span> &mdash; <a href="/posts/close-modal-on-back-button/">Close modal on back button in AngularJS</a>
+        <p>
+           <p>How to close modal on back button in AngularJS without going back in browser history</p>
+        </p>
+
+        <span>01 October 2015</span> &mdash; <a href="/posts/django-1.8-bug/">"Relation 'auth_user' does not exist" bug in Django 1.8</a>
+        <p>
+           <p>Bug in Django 1.8 when used with PostgreSQL</p>
+        </p>
+
+        <span>12 September 2015</span> &mdash; <a href="/posts/introduction-to-python-social-auth/">Introduction to Python Social Auth</a>
+        <p>
+           <p>Python Social Auth aims to be an easy to setup social authentication and authorization mechanism for Python projects</p>
+        </p>
+
+
+
 </div>
+
+
+<p class="paginator">
+        <a href="/page/2/">&laquo;</a>
+    Page 3 of 3
+</p>
+
             </div>
         </div>
     </div>

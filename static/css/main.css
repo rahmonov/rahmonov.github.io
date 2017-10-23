@@ -192,6 +192,14 @@ button.nav {
     font-weight: bold;
 }
 
+.list-post-title{
+    font-size: 17px;
+}
+
+.list-date{
+    font-size: 0.8em;
+}
+
 /*
  * Logo of me
  */
