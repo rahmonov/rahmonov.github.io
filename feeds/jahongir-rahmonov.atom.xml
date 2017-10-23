@@ -1,5 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.me/" rel="alternate"></link><link href="http://rahmonov.me/feeds/jahongir-rahmonov.atom.xml" rel="self"></link><id>http://rahmonov.me/</id><updated>2017-10-19T20:10:00+05:00</updated><entry><title>Custom ChainMap in Python</title><link href="http://rahmonov.me/posts/custom-chainmap-in-python/" rel="alternate"></link><published>2017-10-19T20:10:00+05:00</published><updated>2017-10-19T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2017-10-19:posts/custom-chainmap-in-python/</id><summary type="html">&lt;p&gt;In &lt;a href="/posts/python-chainmap/"&gt;the previous post&lt;/a&gt;, we learned what &lt;code&gt;ChainMap&lt;/code&gt; is in Python and how/why to use it. In this blog
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.me/" rel="alternate"></link><link href="http://rahmonov.me/feeds/jahongir-rahmonov.atom.xml" rel="self"></link><id>http://rahmonov.me/</id><updated>2017-10-23T20:10:00+05:00</updated><entry><title>What is Python?</title><link href="http://rahmonov.me/posts/what-is-python/" rel="alternate"></link><published>2017-10-23T20:10:00+05:00</published><updated>2017-10-23T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2017-10-23:posts/what-is-python/</id><summary type="html">&lt;p&gt;Would you be surprised if I said that Python is not a programming language at all?&lt;/p&gt;
+&lt;p&gt;Then, let me tell you that Python is actually this guy:&lt;/p&gt;
+&lt;div class="gallery medium"&gt;
+    &lt;a href="https://s3.amazonaws.com/rahmonov.me/post-images/what-is-python/python.jpeg" rel="lightbox" title="Python"&gt;
+        &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/what-is-python/python.jpeg" alt="Python"&gt;
+        &lt;span&gt;This is the actual Python&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Just kidding &lt;i class="em em-innocent"&gt;&lt;/i&gt;. However, even in a programming sense Python is not a language in itself.
+It is an &lt;em&gt;&lt;code&gt;interface&lt;/code&gt;&lt;/em&gt;. It is basically a description of what a language should do and how it should do it. Don't believe me?
+Here is the &lt;a href="https://docs.python.org/3/reference/"&gt;official specification&lt;/a&gt; of this interface. Take &lt;code&gt;if&lt;/code&gt; statements as an example.
+Here is what this document says about them:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;The if statement is used for conditional execution:
+
+if_stmt ::=  &amp;quot;if&amp;quot; expression &amp;quot;:&amp;quot; suite
+             ( &amp;quot;elif&amp;quot; expression &amp;quot;:&amp;quot; suite )*
+             [&amp;quot;else&amp;quot; &amp;quot;:&amp;quot; suite]
+
+It selects exactly one of the suites by evaluating the expressions one by one until one is found to be 
+true (see section Boolean operations for the definition of true and false); then that suite is executed 
+(and no other part of the if statement is executed or evaluated). If all expressions are false, the 
+suite of the else clause, if present, is executed.             
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;"But what have I been using all my life then &lt;i class="em em-astonished"&gt;&lt;/i&gt;?" I hear you ask. You have been using the default implementation of Python, which is 
+actually called &lt;em&gt;&lt;code&gt;CPython&lt;/code&gt;&lt;/em&gt;. That means that by &lt;em&gt;&lt;code&gt;Python&lt;/code&gt;&lt;/em&gt; most people mean &lt;em&gt;&lt;code&gt;CPython&lt;/code&gt;&lt;/em&gt;. Read on to understand what that is.&lt;/p&gt;
+&lt;p&gt;As with any &lt;code&gt;interface&lt;/code&gt;, there are its implementations. And the most popular Python implementations are the following:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="https://github.com/python/cpython"&gt;CPython&lt;/a&gt; - The default and most widely used implementation written in C&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://www.jython.org/"&gt;Jython&lt;/a&gt; - Written in Java and for the JVM&lt;/li&gt;
+&lt;li&gt;&lt;a href="http://ironpython.net/"&gt;IronPython&lt;/a&gt; - Written in C# and tightly integrated with the .NET framework.&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://pypy.org/"&gt;PyPy&lt;/a&gt; - Alternative implementation of Python written in (surprise!) Python.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;And here is the most interesting part: as these implementations are written in different languages, they allow you to use them inside
+your Python program. Specifically, &lt;code&gt;CPython&lt;/code&gt; allows to use &lt;code&gt;C&lt;/code&gt; and &lt;code&gt;C++&lt;/code&gt;, &lt;code&gt;Jython&lt;/code&gt; allows to use &lt;code&gt;Java&lt;/code&gt; and &lt;code&gt;IronPath&lt;/code&gt; allows to use 
+&lt;code&gt;C#&lt;/code&gt; in your Python program.  How crazy is that? &lt;/p&gt;
+&lt;p&gt;Let's see some examples. Let's say that I have this function called &lt;code&gt;example&lt;/code&gt; written in &lt;code&gt;C&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;static&lt;/span&gt; &lt;span class="n"&gt;PyObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="n"&gt;example&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;PyObject&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="o"&gt;//&lt;/span&gt; &lt;span class="n"&gt;do&lt;/span&gt; &lt;span class="n"&gt;something&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;Py_BuildValue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;i&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;result&lt;/span&gt;&lt;span class="p"&gt;);&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In &lt;code&gt;CPython&lt;/code&gt;, I can import it and call it like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;example&lt;/span&gt;
+
+&lt;span class="n"&gt;result&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;example&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;do_something&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;These are called extensions. Read more about them &lt;a href="https://docs.python.org/3/extending/extending.html"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The same thing with &lt;code&gt;Jython&lt;/code&gt;. You can import &lt;code&gt;Java&lt;/code&gt; classes and use them inside your Python:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;C&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;\&lt;span class="n"&gt;jython&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="n"&gt;jython&lt;/span&gt;
+&lt;span class="n"&gt;Jython&lt;/span&gt; &lt;span class="mf"&gt;2.0&lt;/span&gt; &lt;span class="n"&gt;on&lt;/span&gt; &lt;span class="n"&gt;java1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;2.1&lt;/span&gt;
+&lt;span class="n"&gt;Type&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;copyright&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;credits&amp;quot;&lt;/span&gt; &lt;span class="ow"&gt;or&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;license&amp;quot;&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;more&lt;/span&gt; &lt;span class="n"&gt;information&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;java.util&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Random&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;r&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Random&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;r&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;nextInt&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;790940041&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And the same thing with &lt;code&gt;IronPython&lt;/code&gt;. Import &lt;code&gt;.NET&lt;/code&gt; code and use it as you like:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;System.DateTime&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Now&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;Now&lt;/span&gt; &lt;span class="c1"&gt;#doctest: +ELLIPSIS&lt;/span&gt;
+&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DateTime&lt;/span&gt; &lt;span class="nb"&gt;object&lt;/span&gt; &lt;span class="n"&gt;at&lt;/span&gt; &lt;span class="o"&gt;...&amp;gt;&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="c1"&gt;# Let&amp;#39;s make it even more obvious that &amp;quot;Now&amp;quot; is evaluated only once&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;a_second_ago&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Now&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;a_second_ago&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="n"&gt;Now&lt;/span&gt;
+&lt;span class="bp"&gt;True&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;a_second_ago&lt;/span&gt; &lt;span class="ow"&gt;is&lt;/span&gt; &lt;span class="n"&gt;System&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DateTime&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Now&lt;/span&gt;
+&lt;span class="bp"&gt;False&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;I don't know about you but mixing up languages like this is fascinating to me, although I haven't had a chance to use any of them
+in a real project except for &lt;code&gt;CPython&lt;/code&gt;, of course.&lt;/p&gt;
+&lt;p&gt;However, that might be not too far away. Hailed as the future of Python, &lt;code&gt;PyPy&lt;/code&gt; has been showing great progress. Even the creator of Python,
+Guido van Rossum said some nice words about it:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;If you want your code to run faster, you should probably just use PyPy.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Its distinctive features, apart from being fast thanks to its Just-in-Time compiler, include optimized memory usage, support for stackless
+which makes massive concurrency possible and most importantly its compatibility. That means that you can swap your Python implementation with 
+&lt;code&gt;PyPy&lt;/code&gt; without changing your codebase and you will have all those advantages that &lt;code&gt;PyPy&lt;/code&gt; offers. You can read more about its 
+features &lt;a href="https://pypy.org/features.html"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;Python is actually an interface and there are several different implementations, with the most commonly used being &lt;code&gt;CPython&lt;/code&gt; and 
+most promising being &lt;code&gt;PyPy&lt;/code&gt;. Thank you for reading!&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="python"></category><category term="programming"></category><category term="language"></category></entry><entry><title>Custom ChainMap in Python</title><link href="http://rahmonov.me/posts/custom-chainmap-in-python/" rel="alternate"></link><published>2017-10-21T20:10:00+05:00</published><updated>2017-10-21T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2017-10-21:posts/custom-chainmap-in-python/</id><summary type="html">&lt;p&gt;In &lt;a href="/posts/python-chainmap/"&gt;the previous post&lt;/a&gt;, we learned what &lt;code&gt;ChainMap&lt;/code&gt; is in Python and how/why to use it. In this blog
 post, we will awaken our inner hacker and try to implement the same thing ourselves. Just for fun :) Please, check out 
 &lt;a href="/posts/python-chainmap/"&gt;this post&lt;/a&gt; if you don't know what &lt;code&gt;ChainMap&lt;/code&gt; is.&lt;/p&gt;
 &lt;p&gt;As software developers, we often hear the words "Don't reinvent the wheel" which basically means "Don't recreate basic stuff which

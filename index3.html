@@ -84,173 +84,109 @@
 <h2>Latest Post</h2>
 
 <h4>
-    <a href="posts/custom-chainmap-in-python/">
-        19 October 2017
+    <a href="posts/what-is-python/">
+        23 October 2017
     </a>
 </h4>
 
-<h1>Custom ChainMap in Python</h1>
+<h1>What is Python?</h1>
 
-<p>In <a href="/posts/python-chainmap/">the previous post</a>, we learned what <code>ChainMap</code> is in Python and how/why to use it. In this blog
-post, we will awaken our inner hacker and try to implement the same thing ourselves. Just for fun :) Please, check out 
-<a href="/posts/python-chainmap/">this post</a> if you don't know what <code>ChainMap</code> is.</p>
-<p>As software developers, we often hear the words "Don't reinvent the wheel" which basically means "Don't recreate basic stuff which
-has been created before for you". However, I believe that occasional reinventions of some "wheels" help us understand some things
-from the inside out and grow as software developers.</p>
-<p>So, let's go ahead and reinvent <code>ChainMap</code> in Python.</p>
-<p>First things first, let's do the initialization process. The original version takes an undefined number of dictionaries upon initialization 
-and store them inside the <code>maps</code> property:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">ChainMap</span>
+<p>Would you be surprised if I said that Python is not a programming language at all?</p>
+<p>Then, let me tell you that Python is actually this guy:</p>
+<div class="gallery medium">
+    <a href="https://s3.amazonaws.com/rahmonov.me/post-images/what-is-python/python.jpeg" rel="lightbox" title="Python">
+        <img src="https://s3.amazonaws.com/rahmonov.me/post-images/what-is-python/python.jpeg" alt="Python">
+        <span>This is the actual Python</span>
+    </a>
+</div>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;hell&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;yeah&#39;</span><span class="p">}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;paradise&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;no&#39;</span><span class="p">}</span>
+<p>Just kidding <i class="em em-innocent"></i>. However, even in a programming sense Python is not a language in itself.
+It is an <em><code>interface</code></em>. It is basically a description of what a language should do and how it should do it. Don't believe me?
+Here is the <a href="https://docs.python.org/3/reference/">official specification</a> of this interface. Take <code>if</code> statements as an example.
+Here is what this document says about them:</p>
+<div class="highlight"><pre><span></span>The if statement is used for conditional execution:
 
-<span class="o">&gt;&gt;&gt;</span> <span class="n">first_chain</span> <span class="o">=</span> <span class="n">ChainMap</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">first_chain</span><span class="o">.</span><span class="n">maps</span><span class="p">)</span>
-<span class="p">[{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;yeah&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;hell&#39;</span><span class="p">}]</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">second_chain</span> <span class="o">=</span> <span class="n">ChainMap</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">second_chain</span><span class="o">.</span><span class="n">maps</span><span class="p">)</span>
-<span class="p">[{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;yeah&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;hell&#39;</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;paradise&#39;</span><span class="p">}]</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">third_chain</span> <span class="o">=</span> <span class="n">ChainMap</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">first_chain</span><span class="o">.</span><span class="n">maps</span><span class="p">)</span>
-<span class="p">[{}]</span>
+if_stmt ::=  &quot;if&quot; expression &quot;:&quot; suite
+             ( &quot;elif&quot; expression &quot;:&quot; suite )*
+             [&quot;else&quot; &quot;:&quot; suite]
+
+It selects exactly one of the suites by evaluating the expressions one by one until one is found to be 
+true (see section Boolean operations for the definition of true and false); then that suite is executed 
+(and no other part of the if statement is executed or evaluated). If all expressions are false, the 
+suite of the else clause, if present, is executed.             
 </pre></div>
 
 
-<p>Based on these observations, we can conclude that we should override the <code>__init__</code> method and it should take a number of dictionaries and store them in
-<code>maps</code> property which is a list. If no dictionary is given, <code>maps</code> should be equal to a list of one empty dict:</p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyChainMap</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">maps</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">maps</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">maps</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[{}]</span>
-
-    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="k">for</span> <span class="nb">map</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">:</span>
-                <span class="k">return</span> <span class="nb">map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-
-        <span class="k">return</span> <span class="n">default</span>
+<p>"But what have I been using all my life then <i class="em em-astonished"></i>?" I hear you ask. You have been using the default implementation of Python, which is 
+actually called <em><code>CPython</code></em>. That means that by <em><code>Python</code></em> most people mean <em><code>CPython</code></em>. Read on to understand what that is.</p>
+<p>As with any <code>interface</code>, there are its implementations. And the most popular Python implementations are the following:</p>
+<ol>
+<li><a href="https://github.com/python/cpython">CPython</a> - The default and most widely used implementation written in C</li>
+<li><a href="http://www.jython.org/">Jython</a> - Written in Java and for the JVM</li>
+<li><a href="http://ironpython.net/">IronPython</a> - Written in C# and tightly integrated with the .NET framework.</li>
+<li><a href="https://pypy.org/">PyPy</a> - Alternative implementation of Python written in (surprise!) Python.</li>
+</ol>
+<p>And here is the most interesting part: as these implementations are written in different languages, they allow you to use them inside
+your Python program. Specifically, <code>CPython</code> allows to use <code>C</code> and <code>C++</code>, <code>Jython</code> allows to use <code>Java</code> and <code>IronPath</code> allows to use 
+<code>C#</code> in your Python program.  How crazy is that? </p>
+<p>Let's see some examples. Let's say that I have this function called <code>example</code> written in <code>C</code>:</p>
+<div class="highlight"><pre><span></span><span class="n">static</span> <span class="n">PyObject</span> <span class="o">*</span> <span class="n">example</span><span class="p">(</span><span class="n">PyObject</span> <span class="o">*</span><span class="bp">self</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="o">//</span> <span class="n">do</span> <span class="n">something</span>
+    <span class="k">return</span> <span class="n">Py_BuildValue</span><span class="p">(</span><span class="s">&quot;i&quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">);</span>
+<span class="p">}</span>
 </pre></div>
 
 
-<p><code>maps</code> should be converted to list because <code>*maps</code> is a tuple. Let's try it out:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">my_chain</span> <span class="o">=</span> <span class="n">MyChainMap</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">my_chain</span><span class="o">.</span><span class="n">maps</span><span class="p">)</span>
-<span class="p">[{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;hell&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;yeah&#39;</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;paradise&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;no&#39;</span><span class="p">}]</span>
+<p>In <code>CPython</code>, I can import it and call it like this:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">example</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">example</span><span class="o">.</span><span class="n">do_something</span><span class="p">()</span>
 </pre></div>
 
 
-<p>Great! Next, let's do the <code>get()</code> method. In the original version, <code>get</code> takes two parameters: <code>key</code> and <code>default=None</code>. It tries
-to find the key and returns the value if found. Otherwise, it returns the <code>default</code> (whose default is <code>None</code>):</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">first_chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
-<span class="s1">&#39;hell&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">first_chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nonexistent_key&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">)</span>
+<p>These are called extensions. Read more about them <a href="https://docs.python.org/3/extending/extending.html">here</a>.</p>
+<p>The same thing with <code>Jython</code>. You can import <code>Java</code> classes and use them inside your Python:</p>
+<div class="highlight"><pre><span></span><span class="n">C</span><span class="p">:</span>\<span class="n">jython</span><span class="o">&gt;</span><span class="n">jython</span>
+<span class="n">Jython</span> <span class="mf">2.0</span> <span class="n">on</span> <span class="n">java1</span><span class="o">.</span><span class="mf">2.1</span>
+<span class="n">Type</span> <span class="s2">&quot;copyright&quot;</span><span class="p">,</span> <span class="s2">&quot;credits&quot;</span> <span class="ow">or</span> <span class="s2">&quot;license&quot;</span> <span class="k">for</span> <span class="n">more</span> <span class="n">information</span><span class="o">.</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">java.util</span> <span class="kn">import</span> <span class="n">Random</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">Random</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">nextInt</span><span class="p">()</span>
+<span class="o">-</span><span class="mi">790940041</span>
+</pre></div>
+
+
+<p>And the same thing with <code>IronPython</code>. Import <code>.NET</code> code and use it as you like:</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">System.DateTime</span> <span class="kn">import</span> <span class="n">Now</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">Now</span> <span class="c1">#doctest: +ELLIPSIS</span>
+<span class="o">&lt;</span><span class="n">System</span><span class="o">.</span><span class="n">DateTime</span> <span class="nb">object</span> <span class="n">at</span> <span class="o">...&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="c1"># Let&#39;s make it even more obvious that &quot;Now&quot; is evaluated only once</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a_second_ago</span> <span class="o">=</span> <span class="n">Now</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">time</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a_second_ago</span> <span class="ow">is</span> <span class="n">Now</span>
 <span class="bp">True</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">first_chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nonexistent_key&#39;</span><span class="p">,</span> <span class="s1">&#39;default_value&#39;</span><span class="p">))</span>
-<span class="s1">&#39;default_value&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a_second_ago</span> <span class="ow">is</span> <span class="n">System</span><span class="o">.</span><span class="n">DateTime</span><span class="o">.</span><span class="n">Now</span>
+<span class="bp">False</span>
 </pre></div>
 
 
-<p>We will try to find the given key in our <code>maps</code> and return the first found result, otherwise we will return the default value:</p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyChainMap</span><span class="p">:</span>
-    <span class="o">...</span>
-
-    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="k">for</span> <span class="nb">map</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">:</span>
-                <span class="k">return</span> <span class="nb">map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-
-        <span class="k">return</span> <span class="n">default</span>
-</pre></div>
-
-
-<p>Let's try it out:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">my_chain</span> <span class="o">=</span> <span class="n">MyChainMap</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">my_chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span>
-<span class="s1">&#39;hell&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">my_chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nonexistent_key&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">)</span>
-<span class="bp">True</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">my_chain</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nonexistent_key&#39;</span><span class="p">,</span> <span class="s1">&#39;default_value&#39;</span><span class="p">))</span>
-<span class="s1">&#39;default_value&#39;</span>
-</pre></div>
-
-
-<p>Works and looks the same. Great! We know that in the original <code>ChainMap</code>, we can retrieve values just like dicts:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">first_chain</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
-<span class="s1">&#39;hell&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">first_chain</span><span class="p">[</span><span class="s1">&#39;nonexistent_key&#39;</span><span class="p">]</span>
-<span class="ne">KeyError</span><span class="p">:</span> <span class="s1">&#39;nonexistent_key&#39;</span>
-</pre></div>
-
-
-<p>It returns the value if found, otherwise throws <code>KeyError</code>. From Python's data model, we know that the special <code>__getitem__</code> method 
-is called when accessing a key like a dict: <code>first_chain['name']</code>. So, we will override it accordingly:</p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyChainMap</span><span class="p">:</span>
-    <span class="o">...</span>
-
-    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="k">for</span> <span class="nb">map</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">:</span>
-                <span class="k">return</span> <span class="nb">map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-
-        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-</pre></div>
-
-
-<p>Let's try it out:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">my_chain</span> <span class="o">=</span> <span class="n">MyChainMap</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">my_chain</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
-<span class="s1">&#39;hell&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">my_chain</span><span class="p">[</span><span class="s1">&#39;nonexistent_key&#39;</span><span class="p">]</span>
-<span class="ne">KeyError</span><span class="p">:</span> <span class="s1">&#39;nonexistent_key&#39;</span>
-</pre></div>
-
-
-<p>Very nice! </p>
-<p>Next, let's implement the <code>new_child</code> method of <code>ChainMap</code>. As we know, it takes one dictionary as a parameter and returns a new object with
-whose <code>maps</code> consists of this new dictionary and its other dictionaries:</p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyChainMap</span><span class="p">:</span>
-    <span class="o">...</span> 
-
-    <span class="k">def</span> <span class="nf">new_child</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_map</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">MyChainMap</span><span class="p">(</span><span class="n">new_map</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">)</span>
-</pre></div>
-
-
-<p>So, we just initialized a new object with the new map and old ones. Easy! Let's try it out:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">my_chain</span> <span class="o">=</span> <span class="n">MyChainMap</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">my_new_chain</span> <span class="o">=</span> <span class="n">my_chain</span><span class="o">.</span><span class="n">new_child</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">my_new_chain</span><span class="o">.</span><span class="n">maps</span>
-<span class="p">[{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;paradise&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;no&#39;</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;hell&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;yeah&#39;</span><span class="p">}]</span>
-</pre></div>
-
-
-<p>Great! And lastly, let's implement the <code>parents</code> property of the <code>ChainMap</code>. We know that it returns a new <code>ChainMap</code> with all the maps
-except for the first one. So, it should be pretty easy as well:</p>
-<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyChainMap</span><span class="p">:</span>
-    <span class="o">...</span> 
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">parents</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">MyChainMap</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">maps</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-</pre></div>
-
-
-<p>and there you go! Please note that it is a property not a callable function, just like in the original implementation. Let's try it out:</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;hell&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;yeah&#39;</span><span class="p">}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;paradise&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;no&#39;</span><span class="p">}</span>
-
-<span class="o">&gt;&gt;&gt;</span> <span class="n">my_chain</span> <span class="o">=</span> <span class="n">MyChainMap</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">my_chain</span><span class="o">.</span><span class="n">maps</span><span class="p">)</span>
-<span class="p">[{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;yeah&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;hell&#39;</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;paradise&#39;</span><span class="p">}]</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">chain_parents</span> <span class="o">=</span> <span class="n">my_chain</span><span class="o">.</span><span class="n">parents</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">chain_parents</span><span class="o">.</span><span class="n">maps</span><span class="p">)</span>
-<span class="p">[{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;paradise&#39;</span><span class="p">}]</span>
-</pre></div>
-
-
-<p>Awesome! And there you have it. A custom version of <code>ChainMap</code>. But it is not yet complete. I will leave the rest of it up to you <i class="em em-innocent"></i>.</p>
-<p>Go ahead and try to implement <code>pop</code>, <code>clear</code>, <code>__setitem__</code> and <code>__delitem__</code> methods of <code>ChainMap</code> and let me know in the comments if you did or have any questions.</p>
-<p>Be a hacker and fight on!</p>
+<p>I don't know about you but mixing up languages like this is fascinating to me, although I haven't had a chance to use any of them
+in a real project except for <code>CPython</code>, of course.</p>
+<p>However, that might be not too far away. Hailed as the future of Python, <code>PyPy</code> has been showing great progress. Even the creator of Python,
+Guido van Rossum said some nice words about it:</p>
+<blockquote>
+<p>If you want your code to run faster, you should probably just use PyPy.</p>
+</blockquote>
+<p>Its distinctive features, apart from being fast thanks to its Just-in-Time compiler, include optimized memory usage, support for stackless
+which makes massive concurrency possible and most importantly its compatibility. That means that you can swap your Python implementation with 
+<code>PyPy</code> without changing your codebase and you will have all those advantages that <code>PyPy</code> offers. You can read more about its 
+features <a href="https://pypy.org/features.html">here</a>.</p>
+<h2>Conclusion</h2>
+<p>Python is actually an interface and there are several different implementations, with the most commonly used being <code>CPython</code> and 
+most promising being <code>PyPy</code>. Thank you for reading!</p>
+<p>Fight on!</p>
 
 <div class="end">
     <span>
