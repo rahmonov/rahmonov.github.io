@@ -7,13 +7,25 @@
 
 <div class="posts">
 {% for post in (articles_page.object_list if articles_page else articles) %}
-  <a href="/{{ post.url }}" class="list-post-title">{{ post.title }}</a> <span class="list-date">&mdash; {{ post.date | strftime('%d %B %Y') }}</span>
-  <p>
-     {{ post.summary   }}
-  </p>
+  {% if loop.index == 10 %}
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-format="fluid"
+         data-ad-layout-key="-gm+33+8k-89-aq"
+         data-ad-client="ca-pub-7110437178205620"
+         data-ad-slot="6475072035"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  {% else %}
+    <a href="/{{ post.url }}" class="list-post-title">{{ post.title }}</a> <span class="list-date">&mdash; {{ post.date | strftime('%d %B %Y') }}</span>
+    <p>
+       {{ post.summary   }}
+    </p>
+  {% endif %}
 {% endfor %}
 </div>
-
 
 {% include 'pagination.html' %}
 
