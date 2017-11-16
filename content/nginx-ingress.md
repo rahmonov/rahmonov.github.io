@@ -105,6 +105,13 @@ other urls should return 404. Such container has already been written for us. Th
 Create `default-backend.yaml` with the following content:
 
 ```yaml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: default-http-backend
+  labels:
+    app: default-http-backend
+  namespace: ingress-nginx
 spec:
   replicas: 1
   template:
