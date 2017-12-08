@@ -1,5 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.me/" rel="alternate"></link><link href="http://rahmonov.me/feeds/all-en.atom.xml" rel="self"></link><id>http://rahmonov.me/</id><updated>2017-11-11T20:10:00+05:00</updated><entry><title>Nginx Ingress Controller</title><link href="http://rahmonov.me/posts/nginx-ingress-controller/" rel="alternate"></link><published>2017-11-11T20:10:00+05:00</published><updated>2017-11-11T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2017-11-11:posts/nginx-ingress-controller/</id><summary type="html">&lt;p&gt;This tutorial assumes that you know the basics of &lt;a href="https://kubernetes.io/"&gt;Kubernetes&lt;/a&gt;.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.me/" rel="alternate"></link><link href="http://rahmonov.me/feeds/all-en.atom.xml" rel="self"></link><id>http://rahmonov.me/</id><updated>2017-12-08T20:10:00+05:00</updated><entry><title>Python GIL</title><link href="http://rahmonov.me/posts/python-gil/" rel="alternate"></link><published>2017-12-08T20:10:00+05:00</published><updated>2017-12-08T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2017-12-08:posts/python-gil/</id><summary type="html">&lt;p&gt;Let's say that we want to write a function that takes a number as an argument and simply counts down. Pretty easy:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;count_down&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="n"&gt;n&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;n&lt;/span&gt; &lt;span class="o"&gt;-=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Let's call this function with a big number and measure how much it takes:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;
+
+&lt;span class="n"&gt;before&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;count_down&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;100000000&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;after&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;after&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;before&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;On my machine, it takes 8.54 seconds. Now, let's call it twice and measure that:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;
+
+&lt;span class="n"&gt;before&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;count_down&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;100000000&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;count_down&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;100000000&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;after&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;after&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;before&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;On my machine, it takes 17.38 seconds. &lt;/p&gt;
+&lt;p&gt;It is working fine but our boss is not happy. He wants us to make it faster. How do we make it faster? We use threads so
+that these two function calls run in parallel, right? In theory, running a function twice in parallel should take as much as running 
+it once. Because, well, those two function calls run in parallel. Let's try this out by calling the function twice but in different threads:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;threading&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Thread&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;
+
+&lt;span class="n"&gt;before&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="n"&gt;thread1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Thread&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;count_down&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;100000000&lt;/span&gt;&lt;span class="p"&gt;,))&lt;/span&gt;
+&lt;span class="n"&gt;thread2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Thread&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;count_down&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;100000000&lt;/span&gt;&lt;span class="p"&gt;,))&lt;/span&gt;
+
+&lt;span class="n"&gt;thread1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;thread2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="n"&gt;thread1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;thread2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="n"&gt;after&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;after&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;before&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It takes around 18.4 seconds on my machine. Wait, WHAT? &lt;i class="em em-astonished"&gt;&lt;/i&gt; It not only did not take as much as calling the function once
+but in fact it was even slower than calling the function twice without Threads. Try that with Python2.7 and you will get even worse results. 
+A prominent software developer, David Beazly reported that it even took almost 2x time in his talk &lt;a href="http://www.dabeaz.com/python/GIL.pdf"&gt;Inside the Python GIL&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;But, WHY?&lt;/h2&gt;
+&lt;p&gt;Please, welcome the notorious GIL - Global Interpreter Lock. This guy is to blame for all the problems in the world. GIL allows only 
+one thread to run at a time. In the above example, when we thought we were using two threads, we were only using just one, because the big boss 
+GIL did not allow us to. That's why, it did not run faster. But, why was it even slower? That's because every now and then Python 
+tries to switch Threads as we asked him to use two. GIL does not allow him to do so. However, when he tries to switch to no avail, there is 
+some overhead associated with it. Thus, the end result is even slower.&lt;/p&gt;
+&lt;h2&gt;But, WHY?&lt;/h2&gt;
+&lt;p&gt;We all know that Threads can be a good thing and help us make our programs run much faster. Why does the GIL exist, then? Damn you, GIL! 
+You are like Negan from the Walking Dead. &lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="https://s3.amazonaws.com/rahmonov.me/post-images/python-gil/negan.jpg" rel="lightbox" title="Negan - GIL"&gt;
+        &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/python-gil/negan.jpg" alt="Negan - GIL"&gt;
+        &lt;span&gt;Negan - GIL&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Well, it turns out GIL is not the villain after all. Actually, GIL is the good guy. It turns out that Python's memory management is not 
+thread-safe! That is, if you run multiple threads, your program may behave in weird and even catastrophic ways. GIL is there to help us from such 
+scenarios.&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="https://s3.amazonaws.com/rahmonov.me/post-images/python-gil/superman.jpg" rel="lightbox" title="Superman - GIL"&gt;
+        &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/python-gil/superman.jpg" alt="Superman - GIL"&gt;
+        &lt;span&gt;Superman - GIL&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;h2&gt;But, wouldn't it be easier to remove the Thread class instead?&lt;/h2&gt;
+&lt;p&gt;Excellent question! Instead of writing an additional tool that would prevent Threads from doing bad things to our programs, why not just 
+delete the &lt;code&gt;Thread&lt;/code&gt; classes so that programmers simply won't be able to use them? We are not allowed to use them anyways.&lt;/p&gt;
+&lt;p&gt;Turns out, there are some cases when &lt;code&gt;Thread&lt;/code&gt; can be of use. All above examples were CPU bound, meaning that they would use a lot of 
+CPU power. However, if your code is IO bound or image processing or NumPy number crunching, GIL won't be in your way as these operations happen outside 
+the GIL. That's where you can use the &lt;code&gt;Thread&lt;/code&gt; class safely and effectively.&lt;/p&gt;
+&lt;p&gt;For example, if we were to write a function that would download images from the internet and call it twice in separate threads, it would actually 
+take as much as calling it once but with twice the result. &lt;a href="https://github.com/volker48/python-concurrency"&gt;This repo in GitHub&lt;/a&gt; is an excellent example for that. &lt;/p&gt;
+&lt;h2&gt;There is still hope!&lt;/h2&gt;
+&lt;p&gt;Turns out there is &lt;code&gt;multiprocessing.Process&lt;/code&gt; class in Python which offers similar functionality and interface to the &lt;code&gt;Thread&lt;/code&gt; class. The difference is 
+that it uses sub-processes instead of threads. That's why, it won't be blocked by the GIL. Awesome! Let's try that out with the above examples. 
+As I said, it offers a similar interface to the &lt;code&gt;Thread&lt;/code&gt; class and thus we will just have to replace &lt;code&gt;Thread&lt;/code&gt; with &lt;code&gt;Process&lt;/code&gt; and we are done:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;multiprocessing&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Process&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;
+
+&lt;span class="n"&gt;before&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="n"&gt;process1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;count_down&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;100000000&lt;/span&gt;&lt;span class="p"&gt;,))&lt;/span&gt;
+&lt;span class="n"&gt;process2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Process&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;count_down&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;100000000&lt;/span&gt;&lt;span class="p"&gt;,))&lt;/span&gt;
+
+&lt;span class="n"&gt;process1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;process2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="n"&gt;process1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;process2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="n"&gt;after&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;after&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;before&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It took ~8 seconds on my machine. That is as much as it took when we called the function just once. Cool! Try adding one more process and it will still take 
+the same time. That is awesome! However, do keep in mind that processes run in a separate memory space thus can't share data with each other, whereas, 
+threads can.&lt;/p&gt;
+&lt;p&gt;Also keep in mind that we are talking about the CPython here. Other implementations such Jython and IronPython don't have GIL so they can use &lt;code&gt;Thread&lt;/code&gt;s.
+If you don't know what Jython or IronPython are, refer to this &lt;a href="/posts/what-is-python/"&gt;post of mine&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Thanks for reading and make sure to leave a comment if you have any questions.&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="python"></category></entry><entry><title>Nginx Ingress Controller</title><link href="http://rahmonov.me/posts/nginx-ingress-controller/" rel="alternate"></link><published>2017-11-11T20:10:00+05:00</published><updated>2017-11-11T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2017-11-11:posts/nginx-ingress-controller/</id><summary type="html">&lt;p&gt;This tutorial assumes that you know the basics of &lt;a href="https://kubernetes.io/"&gt;Kubernetes&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;We all know that the easiest way to forward the external traffic to your app is to create a service of type &lt;code&gt;LoadBalancer&lt;/code&gt;. 
 If you are running in a cloud environment such as AWS or GCP, of course. That might be OK for some simple apps. However,
 if you want to do SSL termination, path based routing or host based routing, you get stuck. This is where &lt;a href="https://kubernetes.io/docs/concepts/services-networking/ingress/"&gt;Ingress&lt;/a&gt; 
