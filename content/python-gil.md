@@ -105,14 +105,44 @@ scenarios.
 Excellent question! Instead of writing an additional tool that would prevent Threads from doing bad things to our programs, why not just 
 delete the `Thread` classes so that programmers simply won't be able to use them? We are not allowed to use them anyways.
 
-Turns out, there are some cases when `Thread` can be of use. All above examples were CPU bound, meaning that they would use a lot of 
-CPU power. However, if your code is IO bound or image processing or NumPy number crunching, GIL won't be in your way as these operations happen outside 
+Turns out, there are some cases when `Thread` can be of use. All above examples were CPU bound, meaning that they need only CPU to run, they wait on CPU. 
+However, if your code is IO bound or image processing or NumPy number crunching, GIL won't be in your way as these operations happen outside 
 the GIL. That's where you can use the `Thread` class safely and effectively.
  
-For example, if we were to write a function that would download images from the internet and call it twice in separate threads, it would actually 
-take as much as calling it once but with twice the result. [This repo in GitHub](https://github.com/volker48/python-concurrency) is an excellent example for that. 
+Let's write some IO bound function. A function that requests a web url and returns its content as a text:
+ 
+```python
+import requests
+
+def get_content(url):
+    response = requests.get(url)
+    return response.text
+``` 
   
-## There is still hope!  
+Calling this function once with the argument `https://google.com` takes 0.88 seconds on my machine. Calling it twice - 1.72 seconds, of course.
+Now, let's call it twice in different threads and see the `Thread`'s effect:
+  
+```python
+before = time()
+
+thread1 = Thread(target=get_content, args=('https://google.com',))
+thread2 = Thread(target=get_content, args=('https://google.com',))
+
+thread1.start()
+thread2.start()
+
+thread1.join()
+thread2.join()
+
+after = time()
+
+print(after - before)
+```  
+  
+It takes 0.89 seconds. Hooray! Calling the function twice in different threads took as much as calling it just once. Once again, it worked 
+because our function was IO bound. The same thing did not work above when the function was CPU bound.  
+  
+## There is still hope with CPU bound tasks!  
 
 Turns out there is `multiprocessing.Process` class in Python which offers similar functionality and interface to the `Thread` class. The difference is 
 that it uses sub-processes instead of threads. That's why, it won't be blocked by the GIL. Awesome! Let's try that out with the above examples. 
