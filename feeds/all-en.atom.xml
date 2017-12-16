@@ -84,12 +84,40 @@ scenarios.&lt;/p&gt;
 &lt;h2&gt;But, wouldn't it be easier to remove the Thread class instead?&lt;/h2&gt;
 &lt;p&gt;Excellent question! Instead of writing an additional tool that would prevent Threads from doing bad things to our programs, why not just 
 delete the &lt;code&gt;Thread&lt;/code&gt; classes so that programmers simply won't be able to use them? We are not allowed to use them anyways.&lt;/p&gt;
-&lt;p&gt;Turns out, there are some cases when &lt;code&gt;Thread&lt;/code&gt; can be of use. All above examples were CPU bound, meaning that they would use a lot of 
-CPU power. However, if your code is IO bound or image processing or NumPy number crunching, GIL won't be in your way as these operations happen outside 
+&lt;p&gt;Turns out, there are some cases when &lt;code&gt;Thread&lt;/code&gt; can be of use. All above examples were CPU bound, meaning that they need only CPU to run, they wait on CPU. 
+However, if your code is IO bound or image processing or NumPy number crunching, GIL won't be in your way as these operations happen outside 
 the GIL. That's where you can use the &lt;code&gt;Thread&lt;/code&gt; class safely and effectively.&lt;/p&gt;
-&lt;p&gt;For example, if we were to write a function that would download images from the internet and call it twice in separate threads, it would actually 
-take as much as calling it once but with twice the result. &lt;a href="https://github.com/volker48/python-concurrency"&gt;This repo in GitHub&lt;/a&gt; is an excellent example for that. &lt;/p&gt;
-&lt;h2&gt;There is still hope!&lt;/h2&gt;
+&lt;p&gt;Let's write some IO bound function. A function that requests a web url and returns its content as a text:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;requests&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get_content&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;response&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;requests&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Calling this function once with the argument &lt;code&gt;https://google.com&lt;/code&gt; takes 0.88 seconds on my machine. Calling it twice - 1.72 seconds, of course.
+Now, let's call it twice in different threads and see the &lt;code&gt;Thread&lt;/code&gt;'s effect:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;before&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="n"&gt;thread1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Thread&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;get_content&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;https://google.com&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,))&lt;/span&gt;
+&lt;span class="n"&gt;thread2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Thread&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;target&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;get_content&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;https://google.com&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,))&lt;/span&gt;
+
+&lt;span class="n"&gt;thread1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;thread2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;start&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="n"&gt;thread1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;thread2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="n"&gt;after&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;after&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;before&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It takes 0.89 seconds. Hooray! Calling the function twice in different threads took as much as calling it just once. Once again, it worked 
+because our function was IO bound. The same thing did not work above when the function was CPU bound.  &lt;/p&gt;
+&lt;h2&gt;There is still hope with CPU bound tasks!&lt;/h2&gt;
 &lt;p&gt;Turns out there is &lt;code&gt;multiprocessing.Process&lt;/code&gt; class in Python which offers similar functionality and interface to the &lt;code&gt;Thread&lt;/code&gt; class. The difference is 
 that it uses sub-processes instead of threads. That's why, it won't be blocked by the GIL. Awesome! Let's try that out with the above examples. 
 As I said, it offers a similar interface to the &lt;code&gt;Thread&lt;/code&gt; class and thus we will just have to replace &lt;code&gt;Thread&lt;/code&gt; with &lt;code&gt;Process&lt;/code&gt; and we are done:&lt;/p&gt;
