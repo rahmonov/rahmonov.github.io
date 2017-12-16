@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.me/" rel="alternate"></link><link href="http://rahmonov.me/feeds/atom.xml" rel="self"></link><id>http://rahmonov.me/</id><updated>2017-12-08T20:10:00+05:00</updated><entry><title>Python GIL</title><link href="http://rahmonov.me/posts/python-gil/" rel="alternate"></link><published>2017-12-08T20:10:00+05:00</published><updated>2017-12-08T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2017-12-08:posts/python-gil/</id><summary type="html">&lt;p&gt;Let's say that we want to write a function that takes a number as an argument and simply counts down. Pretty easy:&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.me/" rel="alternate"></link><link href="http://rahmonov.me/feeds/atom.xml" rel="self"></link><id>http://rahmonov.me/</id><updated>2017-12-08T20:10:00+05:00</updated><entry><title>Python GIL</title><link href="http://rahmonov.me/posts/python-gil/" rel="alternate"></link><published>2017-12-08T20:10:00+05:00</published><updated>2017-12-08T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2017-12-08:posts/python-gil/</id><summary type="html">&lt;p&gt;In this blog post, we will look at Python GIL, Threads, Processes and AsyncIO.&lt;/p&gt;
+&lt;p&gt;Let's say that we want to write a function that takes a number as an argument and simply counts down. Pretty easy:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;count_down&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="n"&gt;n&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
         &lt;span class="n"&gt;n&lt;/span&gt; &lt;span class="o"&gt;-=&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
@@ -116,8 +117,51 @@ Now, let's call it twice in different threads and see the &lt;code&gt;Thread&lt;
 
 
 &lt;p&gt;It takes 0.89 seconds. Hooray! Calling the function twice in different threads took as much as calling it just once. Once again, it worked 
-because our function was IO bound. The same thing did not work above when the function was CPU bound.  &lt;/p&gt;
-&lt;h2&gt;There is still hope with CPU bound tasks!&lt;/h2&gt;
+because our function was IO bound. The same thing did not work above when the function was CPU bound.&lt;/p&gt;
+&lt;h2&gt;There is a catch&lt;/h2&gt;
+&lt;p&gt;Each thread takes some additional memory and thread switching takes some time. Although it is not a lot, it adds up when you have thousands 
+of threads running. Think gigabytes of extra RAM and at least 5% of CPU time spent only for context switching.&lt;/p&gt;
+&lt;p&gt;In order to solve this, Python developers came up with the &lt;a href="https://docs.python.org/3/library/asyncio.html"&gt;&lt;code&gt;asyncio&lt;/code&gt;&lt;/a&gt; library. Basically, 
+it has its own event loop to control the execution of functions in an asynchronous way inside a single thread. If &lt;code&gt;Thread&lt;/code&gt;s were controlled by the underlying OS, 
+&lt;code&gt;asyncio&lt;/code&gt; knows when to switch tasks with the help of some keywords written by developers themselves. That's right! You get to decide when to switch. 
+Let's convert the above example to use &lt;code&gt;asyncio&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;asyncio&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;aiohttp&lt;/span&gt;
+
+&lt;span class="n"&gt;loop&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;asyncio&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get_event_loop&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;session&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;aiohttp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;ClientSession&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;loop&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;loop&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="n"&gt;async&lt;/span&gt; &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get_content&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;async&lt;/span&gt; &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;content&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;await&lt;/span&gt; &lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;read&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;pid&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;content&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;loop&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_task&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;get_content&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;http://asyncio.readthedocs.io/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="n"&gt;loop&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_task&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;get_content&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;http://asyncio.readthedocs.io/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="n"&gt;loop&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_task&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;get_content&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;http://asyncio.readthedocs.io/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="n"&gt;loop&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_task&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;get_content&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;http://asyncio.readthedocs.io/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="n"&gt;loop&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;create_task&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;get_content&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;http://asyncio.readthedocs.io/&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+&lt;span class="n"&gt;loop&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run_forever&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Note that we are using &lt;code&gt;aiohttp&lt;/code&gt; instead of &lt;code&gt;requests&lt;/code&gt; because it is an asynchronous http library. Without going into the details, what this code does 
+is define an async function (aka coroutine) and call it 5 times with some id (just to illustrate asynchronicity). Output would be something like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&amp;lt;!DOCTYPE html PUBLIC...&lt;/span&gt;
+&lt;span class="mi"&gt;4&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&amp;lt;!DOCTYPE html PUBLIC...&lt;/span&gt;
+&lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&amp;lt;!DOCTYPE html PUBLIC...&lt;/span&gt;
+&lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&amp;lt;!DOCTYPE html PUBLIC...&lt;/span&gt;
+&lt;span class="mi"&gt;5&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&amp;lt;!DOCTYPE html PUBLIC...&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Note that ids are not in the order they were called, meaning that the tasks were switched when they encountered the keyword &lt;code&gt;await&lt;/code&gt;. 
+We get the same results as using &lt;code&gt;Thread&lt;/code&gt;s but &lt;code&gt;asyncio&lt;/code&gt; uses less overhead and you control the switching process.&lt;/p&gt;
+&lt;p&gt;Although this does not explain the details of &lt;code&gt;asyncio&lt;/code&gt;, I hope it at least explains why it is useful.&lt;/p&gt;
+&lt;p&gt;Okay, now that we dealt with IO bound tasks, let's go back to our first CPU bound problem.  &lt;/p&gt;
+&lt;h2&gt;There is still hope for CPU bound tasks!&lt;/h2&gt;
 &lt;p&gt;Turns out there is &lt;code&gt;multiprocessing.Process&lt;/code&gt; class in Python which offers similar functionality and interface to the &lt;code&gt;Thread&lt;/code&gt; class. The difference is 
 that it uses sub-processes instead of threads. That's why, it won't be blocked by the GIL. Awesome! Let's try that out with the above examples. 
 As I said, it offers a similar interface to the &lt;code&gt;Thread&lt;/code&gt; class and thus we will just have to replace &lt;code&gt;Thread&lt;/code&gt; with &lt;code&gt;Process&lt;/code&gt; and we are done:&lt;/p&gt;

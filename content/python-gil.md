@@ -5,7 +5,9 @@ Category: programming
 Tags: python
 Slug: python-gil
 Authors: Jahongir Rahmonov
-Summary: What is the Global Interpreter Lock in Python?
+Summary: What is the Global Interpreter Lock in Python? 
+
+In this blog post, we will look at Python GIL, Threads, Processes and AsyncIO.
 
 Let's say that we want to write a function that takes a number as an argument and simply counts down. Pretty easy:
 
@@ -140,9 +142,58 @@ print(after - before)
 ```  
   
 It takes 0.89 seconds. Hooray! Calling the function twice in different threads took as much as calling it just once. Once again, it worked 
-because our function was IO bound. The same thing did not work above when the function was CPU bound.  
+because our function was IO bound. The same thing did not work above when the function was CPU bound.
   
-## There is still hope with CPU bound tasks!  
+## There is a catch
+Each thread takes some additional memory and thread switching takes some time. Although it is not a lot, it adds up when you have thousands 
+of threads running. Think gigabytes of extra RAM and at least 5% of CPU time spent only for context switching.
+   
+In order to solve this, Python developers came up with the [`asyncio`](https://docs.python.org/3/library/asyncio.html) library. Basically, 
+it has its own event loop to control the execution of functions in an asynchronous way inside a single thread. If `Thread`s were controlled by the underlying OS, 
+`asyncio` knows when to switch tasks with the help of some keywords written by developers themselves. That's right! You get to decide when to switch. 
+Let's convert the above example to use `asyncio`:
+   
+```python
+import asyncio
+import aiohttp
+
+loop = asyncio.get_event_loop()
+session = aiohttp.ClientSession(loop=loop)
+
+
+async def get_content(pid, url):
+    async with session.get(url) as response:
+        content = await response.read()
+        print(pid, content)
+
+loop.create_task(get_content(1, 'http://asyncio.readthedocs.io/'))
+loop.create_task(get_content(2, 'http://asyncio.readthedocs.io/'))
+loop.create_task(get_content(3, 'http://asyncio.readthedocs.io/'))
+loop.create_task(get_content(4, 'http://asyncio.readthedocs.io/'))
+loop.create_task(get_content(5, 'http://asyncio.readthedocs.io/'))
+
+loop.run_forever()
+```   
+
+Note that we are using `aiohttp` instead of `requests` because it is an asynchronous http library. Without going into the details, what this code does 
+is define an async function (aka coroutine) and call it 5 times with some id (just to illustrate asynchronicity). Output would be something like this:
+   
+```python
+3 b'<!DOCTYPE html PUBLIC...
+4 b'<!DOCTYPE html PUBLIC...
+2 b'<!DOCTYPE html PUBLIC...
+1 b'<!DOCTYPE html PUBLIC...
+5 b'<!DOCTYPE html PUBLIC...
+```   
+
+Note that ids are not in the order they were called, meaning that the tasks were switched when they encountered the keyword `await`. 
+We get the same results as using `Thread`s but `asyncio` uses less overhead and you control the switching process.
+  
+Although this does not explain the details of `asyncio`, I hope it at least explains why it is useful.
+  
+Okay, now that we dealt with IO bound tasks, let's go back to our first CPU bound problem.  
+  
+## There is still hope for CPU bound tasks!  
 
 Turns out there is `multiprocessing.Process` class in Python which offers similar functionality and interface to the `Thread` class. The difference is 
 that it uses sub-processes instead of threads. That's why, it won't be blocked by the GIL. Awesome! Let's try that out with the above examples. 

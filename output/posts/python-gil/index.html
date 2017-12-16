@@ -105,7 +105,8 @@
   <h1>Python GIL</h1>
 
   <div class="entry-content">
-    <p>Let's say that we want to write a function that takes a number as an argument and simply counts down. Pretty easy:</p>
+    <p>In this blog post, we will look at Python GIL, Threads, Processes and AsyncIO.</p>
+<p>Let's say that we want to write a function that takes a number as an argument and simply counts down. Pretty easy:</p>
 <div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">count_down</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="k">while</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">n</span> <span class="o">-=</span> <span class="mi">1</span>
@@ -222,8 +223,51 @@ Now, let's call it twice in different threads and see the <code>Thread</code>'s 
 
 
 <p>It takes 0.89 seconds. Hooray! Calling the function twice in different threads took as much as calling it just once. Once again, it worked 
-because our function was IO bound. The same thing did not work above when the function was CPU bound.  </p>
-<h2>There is still hope with CPU bound tasks!</h2>
+because our function was IO bound. The same thing did not work above when the function was CPU bound.</p>
+<h2>There is a catch</h2>
+<p>Each thread takes some additional memory and thread switching takes some time. Although it is not a lot, it adds up when you have thousands 
+of threads running. Think gigabytes of extra RAM and at least 5% of CPU time spent only for context switching.</p>
+<p>In order to solve this, Python developers came up with the <a href="https://docs.python.org/3/library/asyncio.html"><code>asyncio</code></a> library. Basically, 
+it has its own event loop to control the execution of functions in an asynchronous way inside a single thread. If <code>Thread</code>s were controlled by the underlying OS, 
+<code>asyncio</code> knows when to switch tasks with the help of some keywords written by developers themselves. That's right! You get to decide when to switch. 
+Let's convert the above example to use <code>asyncio</code>:</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">aiohttp</span>
+
+<span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+<span class="n">session</span> <span class="o">=</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientSession</span><span class="p">(</span><span class="n">loop</span><span class="o">=</span><span class="n">loop</span><span class="p">)</span>
+
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">get_content</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">url</span><span class="p">):</span>
+    <span class="n">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">await</span> <span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
+
+<span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">get_content</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;http://asyncio.readthedocs.io/&#39;</span><span class="p">))</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">get_content</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;http://asyncio.readthedocs.io/&#39;</span><span class="p">))</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">get_content</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;http://asyncio.readthedocs.io/&#39;</span><span class="p">))</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">get_content</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;http://asyncio.readthedocs.io/&#39;</span><span class="p">))</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">get_content</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;http://asyncio.readthedocs.io/&#39;</span><span class="p">))</span>
+
+<span class="n">loop</span><span class="o">.</span><span class="n">run_forever</span><span class="p">()</span>
+</pre></div>
+
+
+<p>Note that we are using <code>aiohttp</code> instead of <code>requests</code> because it is an asynchronous http library. Without going into the details, what this code does 
+is define an async function (aka coroutine) and call it 5 times with some id (just to illustrate asynchronicity). Output would be something like this:</p>
+<div class="highlight"><pre><span></span><span class="mi">3</span> <span class="n">b</span><span class="s1">&#39;&lt;!DOCTYPE html PUBLIC...</span>
+<span class="mi">4</span> <span class="n">b</span><span class="s1">&#39;&lt;!DOCTYPE html PUBLIC...</span>
+<span class="mi">2</span> <span class="n">b</span><span class="s1">&#39;&lt;!DOCTYPE html PUBLIC...</span>
+<span class="mi">1</span> <span class="n">b</span><span class="s1">&#39;&lt;!DOCTYPE html PUBLIC...</span>
+<span class="mi">5</span> <span class="n">b</span><span class="s1">&#39;&lt;!DOCTYPE html PUBLIC...</span>
+</pre></div>
+
+
+<p>Note that ids are not in the order they were called, meaning that the tasks were switched when they encountered the keyword <code>await</code>. 
+We get the same results as using <code>Thread</code>s but <code>asyncio</code> uses less overhead and you control the switching process.</p>
+<p>Although this does not explain the details of <code>asyncio</code>, I hope it at least explains why it is useful.</p>
+<p>Okay, now that we dealt with IO bound tasks, let's go back to our first CPU bound problem.  </p>
+<h2>There is still hope for CPU bound tasks!</h2>
 <p>Turns out there is <code>multiprocessing.Process</code> class in Python which offers similar functionality and interface to the <code>Thread</code> class. The difference is 
 that it uses sub-processes instead of threads. That's why, it won't be blocked by the GIL. Awesome! Let's try that out with the above examples. 
 As I said, it offers a similar interface to the <code>Thread</code> class and thus we will just have to replace <code>Thread</code> with <code>Process</code> and we are done:</p>
