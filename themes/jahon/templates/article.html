@@ -35,6 +35,16 @@
     {{ article.content }}
   </div>
 
+  <div class="pagination clearfix">
+     {% if article.prev_article %}
+         <a class="prev" href="/{{ article.prev_article.url}}">« Previous</a>
+     {% endif %}
+     {% if article.next_article %}
+         <a class="next" href="/{{ article.next_article.url}}">Next »</a>
+     {% endif %}
+    </ul>
+  </div>
+
   {% include 'footer.html' %}
     <div style="text-align: center">
         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>

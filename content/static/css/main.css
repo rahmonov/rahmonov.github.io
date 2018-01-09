@@ -501,9 +501,6 @@ table.pretty thead tr th {
     border-bottom: 1px solid #ddd;
 }
 
-/*code{*/
-    /*font-size: 15px;*/
-/*}*/
 code {
     padding: 2px 4px;
     color: #c7254e;
@@ -523,4 +520,36 @@ code {
 #mc_embed_signup{
     border: 1px solid;
     border-radius: 6px;
+}
+
+.pagination {
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.pagination a {
+    border: solid thin #08C;
+    background: #fff;
+    display: inline-block;
+    margin-right: 3px;
+    padding: 4px 12px;
+    text-decoration: none;
+	line-height: 1.5em;
+
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.pagination a.next {
+    float: right;
+}
+
+.pagination a:hover {
+    background-color: #08C;
+    color: #fff;
+}
+
+.pagination a:active {
+	background: rgba(190, 190, 190, 0.75);
 }

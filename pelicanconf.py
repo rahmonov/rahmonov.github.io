@@ -75,3 +75,6 @@ DISQUS_PUBLIC_KEY = u'NKDqpbbBmL1Li8U6uhI001AgTTxtaMZX5FqccTvyLRpfkHUU3uLeYpqeYp
 FEED_ALL_ATOM = 'feeds/atom.xml'
 FEED_ALL_RSS = 'feeds/rss.xml'
 FEED_DOMAIN = SITEURL
+
+PLUGIN_PATHS = ['../pelican-plugins']
+PLUGINS = ['neighbors']
