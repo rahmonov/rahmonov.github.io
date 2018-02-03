@@ -193,7 +193,12 @@ old setup and this is how we split traffic between upstreams:&lt;/p&gt;
 &lt;p&gt;It means that 90% of the traffic goes to old old-setup.com and 10% goes to new-kubernetes-cluster.com. Pretty easy.&lt;/p&gt;
 &lt;h2&gt;Conclusion&lt;/h2&gt;
 &lt;p&gt;I wish I had this material when I was learning Kubernetes. It would save me weeks of my time. I hope it saves for somebody
-else. Make sure to check out the &lt;a href="/posts/nginx-ingress-controller/"&gt;full example&lt;/a&gt;. Thanks for reading.&lt;/p&gt;
+else. Make sure to check out the &lt;a href="/posts/nginx-ingress-controller/"&gt;full example&lt;/a&gt;. And always remember this quote
+from &lt;a href="https://twitter.com/kelseyhightower"&gt;Kelsey Hightower&lt;/a&gt; himself:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Kubernetes is going to set you free. But it is going to piss you off first.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Thanks for reading.&lt;/p&gt;
 &lt;p&gt;Fight on!  &lt;/p&gt;</summary><category term="kubernetes"></category></entry><entry><title>Python GIL</title><link href="http://rahmonov.me/posts/python-gil/" rel="alternate"></link><published>2017-12-08T20:10:00+05:00</published><updated>2017-12-08T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2017-12-08:posts/python-gil/</id><summary type="html">&lt;p&gt;In this blog post, we will look at Python GIL, Threads, Processes and AsyncIO.&lt;/p&gt;
 &lt;p&gt;Let's say that we want to write a function that takes a number as an argument and simply counts down. Pretty easy:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;count_down&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;

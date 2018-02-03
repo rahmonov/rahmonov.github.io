@@ -189,6 +189,11 @@ It means that 90% of the traffic goes to old old-setup.com and 10% goes to new-k
 
 ## Conclusion
 I wish I had this material when I was learning Kubernetes. It would save me weeks of my time. I hope it saves for somebody
-else. Make sure to check out the <a href="/posts/nginx-ingress-controller/">full example</a>. Thanks for reading.
+else. Make sure to check out the <a href="/posts/nginx-ingress-controller/">full example</a>. And always remember this quote
+from [Kelsey Hightower](https://twitter.com/kelseyhightower) himself:
+
+> Kubernetes is going to set you free. But it is going to piss you off first.
+
+Thanks for reading.
   
 Fight on!  
