@@ -1,5 +1,200 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.me/" rel="alternate"></link><link href="http://rahmonov.me/feeds/jahongir-rahmonov.atom.xml" rel="self"></link><id>http://rahmonov.me/</id><updated>2017-12-08T20:10:00+05:00</updated><entry><title>Python GIL</title><link href="http://rahmonov.me/posts/python-gil/" rel="alternate"></link><published>2017-12-08T20:10:00+05:00</published><updated>2017-12-08T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2017-12-08:posts/python-gil/</id><summary type="html">&lt;p&gt;In this blog post, we will look at Python GIL, Threads, Processes and AsyncIO.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.me/" rel="alternate"></link><link href="http://rahmonov.me/feeds/jahongir-rahmonov.atom.xml" rel="self"></link><id>http://rahmonov.me/</id><updated>2018-02-03T20:10:00+05:00</updated><entry><title>Introduction to Kubernetes</title><link href="http://rahmonov.me/posts/introduction-to-kubernetes/" rel="alternate"></link><published>2018-02-03T20:10:00+05:00</published><updated>2018-02-03T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2018-02-03:posts/introduction-to-kubernetes/</id><summary type="html">&lt;p&gt;Looking back, 2017 was the year Kubernetes conquered the container orchestration space. For years, Kubernetes' rivals 
+such as Docker Swarm and Mesos have been offering their own container orchestration tools and now they both added 
+support for Kubernetes within their ecosystems. The largest cloud providers such as AWS, Microsoft Azure and Oracle 
+Cloud announced Kubernetes integrations into their respective cloud platforms, not mentioning Google where Kubernetes 
+came from originally. So, every developer would benefit from at least learning the basics of Kubernetes. That's exactly 
+what we are going to do in this post.&lt;/p&gt;
+&lt;p&gt;Before we get started I want you to watch this awesome animated guide first. Then come back and we will discuss the 
+details:&lt;/p&gt;
+&lt;iframe width="760" height="415" src="https://www.youtube.com/embed/4ht22ReBjno" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen&gt;&lt;/iframe&gt;
+
+&lt;p&gt;Did you watch it? NO? GO BACK TO THE VIDEO YOU STUBBORN LITTLE DEVELOPER! Good. Now let's get the formal definition of 
+Kubernetes out of the way:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Kubernetes is a system for managing containerized applications across a cluster of nodes&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;In simple terms, you have a group of machines (e.g. VMs) and containerized applications (e.g. Dockerized applications), 
+and Kubernetes will help you to easily manage those apps across those machines. We will see a practical example later.&lt;/p&gt;
+&lt;h2&gt;Kubernetes components&lt;/h2&gt;
+&lt;p&gt;Kubernetes cluster consists of Master and Nodes:&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="https://s3.amazonaws.com/rahmonov.me/post-images/intro-to-k8s/cluster.svg" rel="lightbox" title="Kubernetes Cluster"&gt;
+        &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/intro-to-k8s/cluster.svg" alt="Kubernetes Cluster"&gt;
+        &lt;span&gt;Kubernetes Cluster (https://kubernetes.io)&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Master is the controlling machine and has components which operate as the main management contact point for users. 
+Nodes are where your containerized apps run. Simply put, you run your containerized apps in nodes and you control them 
+through the master.&lt;/p&gt;
+&lt;p&gt;Both master and nodes have very important components which we discuss below.&lt;/p&gt;
+&lt;h3&gt;Master Components&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Etcd&lt;/strong&gt; is a consistent and highly-available key-value store used as Kubernetes’ backing store for all cluster data. 
+Basically, it is a database for Kubernetes data and represents the state of the cluster.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;API Server&lt;/strong&gt; is what exposes Kubernetes API, as its name suggests. It is the main management point of the entire 
+cluster. It acts as the bridge between various components disseminating information and commands. In simple terms, it is
+the frontend of the Kubernetes control pane.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Controller Manager&lt;/strong&gt; is responsible for regulating the state of the cluster and performing routine tasks. For example, 
+the replication controller ensures that the number of replicas defined for a service matches the number currently deployed
+on the cluster. Another example is the endpoints controller adjusting, well, endpoints by watching for changes in Etcd.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Scheduler Service&lt;/strong&gt; is what assigns workloads to nodes. This is how it does it:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Reads the workload's operating requirements&lt;/li&gt;
+&lt;li&gt;Analyze the current infrastructure environment&lt;/li&gt;
+&lt;li&gt;Place the workload on an acceptable node(s)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Node Components&lt;/h3&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="https://s3.amazonaws.com/rahmonov.me/post-images/intro-to-k8s/node.svg" rel="lightbox" title="Node components"&gt;
+        &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/intro-to-k8s/node.svg" alt="Node components"&gt;
+        &lt;span&gt;Node Components (https://kubernetes.io)&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Docker&lt;/strong&gt; is used in order to run your containers, duh! &lt;code&gt;rkt&lt;/code&gt; can be used as an alternative to docker.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Kubelet&lt;/strong&gt; is the main contact point for each node with the cluster group, relaying to and from control pane
+services (master).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Proxy&lt;/strong&gt; is used for maintaning network rules and performing connection forwarding. This is what enables the 
+Kubernetes service abstraction (DNS).&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;You won't directly interact with these components directly but it is good to know what is happening behind the magic.&lt;/p&gt;
+&lt;p&gt;If the above components are something you don't have to know, the following you must know. Pay great attention.&lt;/p&gt;
+&lt;h2&gt;Kubernetes Work Units&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Pod&lt;/strong&gt; is the most basic unit in Kubernetes. It represents a unit of deployment, i.e. a single instance of an 
+application which may consist of either a single container or a small number of containers that are tightly coupled and 
+that share resources (for example, a cloud sql proxy container should run in the same pod as the main application). Other
+than an application container (or multiple containers), a pod encapsulates storage resources, a unique network IP and options
+that govern how the container(s) should run.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="https://s3.amazonaws.com/rahmonov.me/post-images/intro-to-k8s/pods.svg" rel="lightbox" title="Pods"&gt;
+        &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/intro-to-k8s/pods.svg" alt="Pods"&gt;
+        &lt;span&gt;Pods (https://kubernetes.io)&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Excuse the image size. You rarely have to directly deploy pods (I never have). You mostly will attach into the process 
+for debugging and testing purposes.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Service&lt;/strong&gt; groups together logical collections of pods that perform the same function and presents them as a single 
+entity. Also, it acts as a basic load balancer between pods and enables consumers not to worry about anything beyond a 
+single access location.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="https://s3.amazonaws.com/rahmonov.me/post-images/intro-to-k8s/service1.svg" rel="lightbox" title="Service"&gt;
+        &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/intro-to-k8s/service1.svg" alt="Service"&gt;
+        &lt;span&gt;Service (https://kubernetes.io)&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Label&lt;/strong&gt; is an arbitrary tag to mark work units. Basic key-value pairs. They are what enable services to group 
+several pods together. Let's say you give your pods this label "microservice: auth" and the service with the same selector
+("microservice: auth") will be able to forward traffic to those pods.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="https://s3.amazonaws.com/rahmonov.me/post-images/intro-to-k8s/service2.svg" rel="lightbox" title="Lables"&gt;
+        &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/intro-to-k8s/service2.svg" alt="Labels"&gt;
+        &lt;span&gt;Labels (https://kubernetes.io)&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Deployment&lt;/strong&gt; provides a declarative syntax to create/update pods. You tell a deployment your desired state (how many, 
+how fast, when) and it changes the actual state to the desired state at a specified rate&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="https://s3.amazonaws.com/rahmonov.me/post-images/intro-to-k8s/deployment2.svg" rel="lightbox" title="Deployment"&gt;
+        &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/intro-to-k8s/deployment2.svg" alt="Deployment"&gt;
+        &lt;span&gt;Deployment (https://kubernetes.io)&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Ingress&lt;/strong&gt; manages external access to the services. Provides load balancing, SSL termination and path/hos based routing, 
+which are considered its advantages over services of "Load Balancer" type. See below for more details.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Ingress Controller&lt;/strong&gt; is what implements &lt;code&gt;Ingress&lt;/code&gt; definitions. That is, you write what you need in &lt;code&gt;Ingress&lt;/code&gt; objects
+and ingress controllers will turn them into reality. It means that &lt;code&gt;Ingress&lt;/code&gt; itself is nothing without &lt;code&gt;Ingress Controllers&lt;/code&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Full example&lt;/h2&gt;
+&lt;p&gt;I know that this is all theory and it is boring. You need to set these things up yourself in order to fully understand.
+That's why, carefully go trough this post and get your hands dirty:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href="/posts/nginx-ingress-controller/"&gt;Full Kubernetes Example&lt;/a&gt; &lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Did you go through the example? Pretty cool huh? Kubernetes makes everything very easy. Now that you have seen a practical
+example, read these common pitfalls that I have been a victim of while learning Kubernetes. They will save you weeks of 
+your time.&lt;/p&gt;
+&lt;h2&gt;Common pitfalls&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Using services of type "LoadBalancer" to expose externally&lt;/strong&gt;: In most tutorials, even in the official documentation,
+they use &lt;code&gt;LoadBalancer&lt;/code&gt; services to expose the application. The reason is that it is really easy to do and great of testing.
+However, when you want to do SSL termination or route/host based routing, services are not your friends. Use &lt;code&gt;Ingress&lt;/code&gt; for 
+real applications.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;GKE Ingress Controller&lt;/strong&gt;: In GKE, you don't have to manage your own ingress controller 
+because GKE has its own managed for you. It is great and it works great. However, it cannot force &lt;code&gt;https&lt;/code&gt; at the time of 
+this writing. Maybe it will change in the future. But for now, you will have to manage your own Ingress Controller if &lt;code&gt;https&lt;/code&gt;
+is a must for your app, which it should be in 2018. See the full example about on how to do that.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;SSL certificates&lt;/strong&gt;: Don't manage them yourself. Use &lt;a href="https://github.com/jetstack/kube-lego"&gt;&lt;code&gt;kube-lego&lt;/code&gt;&lt;/a&gt; which 
+automatically updates your certificates when they are about to expire.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Bonus&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Zero Downtime&lt;/strong&gt;: By using something called &lt;code&gt;readiness-probe&lt;/code&gt; and a rolling update strategy it is very easy to achieve
+zero-downtime deployment. Let me know in the comments if you want a post showing how to do this.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Don't be afraid to switch to Kubernetes&lt;/strong&gt;: Kubernetes is a new technology and is full of &lt;strike&gt;dark&lt;/strike&gt; magic.
+That's why, it is very natural to be afraid to switch from old tools to Kubernetes, especially in production. I know I was
+terrified. So, what I did was to switch gradually. First step was to forward 10% of the production traffic to our 
+Kubernetes cluster and the rest 90% to our old setup. Next step was to monitor how it was doing. If it was doing OK we changed 
+those numbers to 30% and 70%. And on it goes until it reaches 100% to Kubernetes cluster and 0% to our old setup. This way,
+you can make sure that your new Kuberbetes cluster will do just fine even in production. We were using &lt;code&gt;NGINX&lt;/code&gt; in our 
+old setup and this is how we split traffic between upstreams:&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;upstream dashboard_app_server &lt;span class="o"&gt;{&lt;/span&gt;
+    server old-setup.com &lt;span class="nv"&gt;weight&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;9&lt;span class="p"&gt;;&lt;/span&gt;
+    server new-kubernetes-cluster.com &lt;span class="nv"&gt;weight&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;1&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It means that 90% of the traffic goes to old old-setup.com and 10% goes to new-kubernetes-cluster.com. Pretty easy.&lt;/p&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;I wish I had this material when I was learning Kubernetes. It would save me weeks of my time. I hope it saves for somebody
+else. Make sure to check out the &lt;a href="/posts/nginx-ingress-controller/"&gt;full example&lt;/a&gt;. Thanks for reading.&lt;/p&gt;
+&lt;p&gt;Fight on!  &lt;/p&gt;</summary><category term="kubernetes"></category></entry><entry><title>Python GIL</title><link href="http://rahmonov.me/posts/python-gil/" rel="alternate"></link><published>2017-12-08T20:10:00+05:00</published><updated>2017-12-08T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2017-12-08:posts/python-gil/</id><summary type="html">&lt;p&gt;In this blog post, we will look at Python GIL, Threads, Processes and AsyncIO.&lt;/p&gt;
 &lt;p&gt;Let's say that we want to write a function that takes a number as an argument and simply counts down. Pretty easy:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;count_down&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="n"&gt;n&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
@@ -1448,7 +1643,7 @@ Okay, I am joking here, that would have been awesome and fun to watch. But the f
 on how to build a good career as a developer, I realized that getting yourself out there by starting a blog or giving a talk is essential to be successful in this industry.
 So, when it was announced that &lt;a href="https://www.facebook.com/iutextended/?ref=br_rs"&gt;Google IO Extended&lt;/a&gt; was happening in Tashkent, I knew that it was my chance to get started in this speaking journey. &lt;/p&gt;
 &lt;div class="gallery medium"&gt;
-    &lt;a href="/static/images/post-images/i-gave-a-talk/after-talks.jpg" rel="lightbox" title="Google IO People"&gt;
+    &lt;a href="https://s3.amazonaws.com/rahmonov.me/post-images/i-gave-a-talk/after-talks.jpg" rel="lightbox" title="Google IO People"&gt;
         &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/i-gave-a-talk/after-talks.jpg" alt="Google IO People"&gt;
         &lt;span&gt;Event organizers and participants&lt;/span&gt;
     &lt;/a&gt;
@@ -1457,7 +1652,7 @@ So, when it was announced that &lt;a href="https://www.facebook.com/iutextended/
 &lt;p&gt;So, I went ahead and submitted a talk. And the rest is history...okay, I am joking again. No history here, just an ordinary tech even, phew &lt;i class="em em-sleepy"&gt;&lt;/i&gt;  &lt;/p&gt;
 &lt;p&gt;Thankfully, the organizers accepted my talk and announced it on the event page: &lt;/p&gt;
 &lt;div class="gallery medium"&gt;
-    &lt;a href="/static/images/post-images/i-gave-a-talk/announcing-me.png" rel="lightbox" title="My announcement"&gt;
+    &lt;a href="https://s3.amazonaws.com/rahmonov.me/post-images/i-gave-a-talk/announcing-me.png" rel="lightbox" title="My announcement"&gt;
         &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/i-gave-a-talk/announcing-me.png" alt="My announcement"&gt;
     &lt;/a&gt;
 &lt;/div&gt;
@@ -1477,7 +1672,7 @@ So, when it was announced that &lt;a href="https://www.facebook.com/iutextended/
 &lt;li&gt;The future: when we plan to use Docker, Kubernetes and CI&amp;amp;CD to deploy our apps&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class="gallery medium"&gt;
-    &lt;a href="/static/images/post-images/i-gave-a-talk/me-talking.jpg" rel="lightbox" title="The beginning of the talk"&gt;
+    &lt;a href="https://s3.amazonaws.com/rahmonov.me/post-images/i-gave-a-talk/me-talking.jpg" rel="lightbox" title="The beginning of the talk"&gt;
         &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/i-gave-a-talk/me-talking.jpg" alt="The beginning of the talk"&gt;
     &lt;/a&gt;
 &lt;/div&gt;
@@ -1485,7 +1680,7 @@ So, when it was announced that &lt;a href="https://www.facebook.com/iutextended/
 &lt;p&gt;It went pretty well. At least, better than I thought it would be. The audience was great. They laughed at approximately half of my jokes.
 But hey, 50% is not that bad for the first time &lt;i class="em em-sunglasses"&gt;&lt;/i&gt; &lt;/p&gt;
 &lt;div class="gallery medium"&gt;
-    &lt;a href="/static/images/post-images/i-gave-a-talk/audience.jpg" rel="lightbox" title="Audience"&gt;
+    &lt;a href="https://s3.amazonaws.com/rahmonov.me/post-images/i-gave-a-talk/audience.jpg" rel="lightbox" title="Audience"&gt;
         &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/i-gave-a-talk/audience.jpg" alt="Audience"&gt;
     &lt;/a&gt;
 &lt;/div&gt;
