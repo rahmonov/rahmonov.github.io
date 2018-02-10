@@ -197,3 +197,7 @@ from [Kelsey Hightower](https://twitter.com/kelseyhightower) himself:
 Thanks for reading.
   
 Fight on!  
+
+<hr>
+
+You mal also find this <strong>related</strong> post interesting: <a href="/posts/nginx-ingress-controller/">Nginx Ingress Controller</a>

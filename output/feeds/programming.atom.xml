@@ -199,7 +199,10 @@ from &lt;a href="https://twitter.com/kelseyhightower"&gt;Kelsey Hightower&lt;/a&
 &lt;p&gt;Kubernetes is going to set you free. But it is going to piss you off first.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;Thanks for reading.&lt;/p&gt;
-&lt;p&gt;Fight on!  &lt;/p&gt;</summary><category term="kubernetes"></category></entry><entry><title>Python GIL</title><link href="http://rahmonov.me/posts/python-gil/" rel="alternate"></link><published>2017-12-08T20:10:00+05:00</published><updated>2017-12-08T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2017-12-08:posts/python-gil/</id><summary type="html">&lt;p&gt;In this blog post, we will look at Python GIL, Threads, Processes and AsyncIO.&lt;/p&gt;
+&lt;p&gt;Fight on!  &lt;/p&gt;
+&lt;hr&gt;
+
+&lt;p&gt;You mal also find this &lt;strong&gt;related&lt;/strong&gt; post interesting: &lt;a href="/posts/nginx-ingress-controller/"&gt;Nginx Ingress Controller&lt;/a&gt;&lt;/p&gt;</summary><category term="kubernetes"></category></entry><entry><title>Python GIL</title><link href="http://rahmonov.me/posts/python-gil/" rel="alternate"></link><published>2017-12-08T20:10:00+05:00</published><updated>2017-12-08T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2017-12-08:posts/python-gil/</id><summary type="html">&lt;p&gt;In this blog post, we will look at Python GIL, Threads, Processes and AsyncIO.&lt;/p&gt;
 &lt;p&gt;Let's say that we want to write a function that takes a number as an argument and simply counts down. Pretty easy:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;count_down&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="n"&gt;n&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
@@ -390,7 +393,7 @@ threads can.&lt;/p&gt;
 &lt;p&gt;Also keep in mind that we are talking about the CPython here. Other implementations such Jython and IronPython don't have GIL so they can use &lt;code&gt;Thread&lt;/code&gt;s.
 If you don't know what Jython or IronPython are, refer to this &lt;a href="/posts/what-is-python/"&gt;post of mine&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Thanks for reading and make sure to leave a comment if you have any questions.&lt;/p&gt;
-&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="python"></category></entry><entry><title>Nginx Ingress Controller</title><link href="http://rahmonov.me/posts/nginx-ingress-controller/" rel="alternate"></link><published>2017-11-11T20:10:00+05:00</published><updated>2017-11-11T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2017-11-11:posts/nginx-ingress-controller/</id><summary type="html">&lt;p&gt;This tutorial assumes that you know the basics of &lt;a href="https://kubernetes.io/"&gt;Kubernetes&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="python"></category></entry><entry><title>Nginx Ingress Controller</title><link href="http://rahmonov.me/posts/nginx-ingress-controller/" rel="alternate"></link><published>2017-11-11T20:10:00+05:00</published><updated>2017-11-11T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2017-11-11:posts/nginx-ingress-controller/</id><summary type="html">&lt;p&gt;This tutorial assumes that you know the basics of &lt;a href="/posts/introduction-to-kubernetes/"&gt;Kubernetes&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;We all know that the easiest way to forward the external traffic to your app is to create a service of type &lt;code&gt;LoadBalancer&lt;/code&gt;. 
 If you are running in a cloud environment such as AWS or GCP, of course. That might be OK for some simple apps. However,
 if you want to do SSL termination, path based routing or host based routing, you get stuck. This is where &lt;a href="https://kubernetes.io/docs/concepts/services-networking/ingress/"&gt;Ingress&lt;/a&gt; 
@@ -899,7 +902,10 @@ append this:&lt;/p&gt;
 &lt;h2&gt;Conclusion&lt;/h2&gt;
 &lt;p&gt;This is something that I have had tons of problems setting up and getting my heads around. I hope that this will save some time for some of you guys.
 Thanks for reading.&lt;/p&gt;
-&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="kubernetes"></category></entry><entry><title>What is Python?</title><link href="http://rahmonov.me/posts/what-is-python/" rel="alternate"></link><published>2017-10-23T20:10:00+05:00</published><updated>2017-10-23T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2017-10-23:posts/what-is-python/</id><summary type="html">&lt;p&gt;Would you be surprised if I said that Python is not a programming language at all?&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;
+&lt;hr&gt;
+
+&lt;p&gt;You mal also find this &lt;strong&gt;related&lt;/strong&gt; post interesting: &lt;a href="/posts/introduction-to-kubernetes/"&gt;Introduction to Kubernetes&lt;/a&gt;&lt;/p&gt;</summary><category term="kubernetes"></category></entry><entry><title>What is Python?</title><link href="http://rahmonov.me/posts/what-is-python/" rel="alternate"></link><published>2017-10-23T20:10:00+05:00</published><updated>2017-10-23T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2017-10-23:posts/what-is-python/</id><summary type="html">&lt;p&gt;Would you be surprised if I said that Python is not a programming language at all?&lt;/p&gt;
 &lt;p&gt;Then, let me tell you that Python is actually this guy:&lt;/p&gt;
 &lt;div class="gallery medium"&gt;
     &lt;a href="https://s3.amazonaws.com/rahmonov.me/post-images/what-is-python/python.jpeg" rel="lightbox" title="Python"&gt;

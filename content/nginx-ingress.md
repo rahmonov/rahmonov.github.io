@@ -7,7 +7,7 @@ Slug: nginx-ingress-controller
 Authors: Jahongir Rahmonov
 Summary: Nginx Ingress Controller Tutorial
 
-This tutorial assumes that you know the basics of [Kubernetes](https://kubernetes.io/).
+This tutorial assumes that you know the basics of [Kubernetes](/posts/introduction-to-kubernetes/).
 
 We all know that the easiest way to forward the external traffic to your app is to create a service of type `LoadBalancer`. 
 If you are running in a cloud environment such as AWS or GCP, of course. That might be OK for some simple apps. However,
@@ -565,3 +565,7 @@ This is something that I have had tons of problems setting up and getting my hea
 Thanks for reading.
 
 Fight on!
+
+<hr>
+
+You mal also find this <strong>related</strong> post interesting: <a href="/posts/introduction-to-kubernetes/">Introduction to Kubernetes</a>
