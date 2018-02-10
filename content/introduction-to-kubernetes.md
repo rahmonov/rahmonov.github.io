@@ -200,4 +200,4 @@ Fight on!
 
 <hr>
 
-You mal also find this <strong>related</strong> post interesting: <a href="/posts/nginx-ingress-controller/">Nginx Ingress Controller</a>
+You may also find this <strong>related</strong> post interesting: <a href="/posts/nginx-ingress-controller/">Nginx Ingress Controller</a>

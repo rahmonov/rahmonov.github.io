@@ -568,4 +568,4 @@ Fight on!
 
 <hr>
 
-You mal also find this <strong>related</strong> post interesting: <a href="/posts/introduction-to-kubernetes/">Introduction to Kubernetes</a>
+You may also find this <strong>related</strong> post interesting: <a href="/posts/introduction-to-kubernetes/">Introduction to Kubernetes</a>

@@ -303,3 +303,7 @@ mythical and dark anymore.
 Let me know in the comments if you have any questions regarding this. Thanks for reading.
 
 Fight on!
+
+<hr>
+
+You may also find these <strong>related</strong> posts interesting: <a href="/posts/introduction-to-kubernetes/">Introduction to Kubernetes</a>, <a href="/posts/nginx-ingress-controller/">Nginx Ingress Controller</a>  
