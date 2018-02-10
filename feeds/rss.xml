@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0"><channel><title>Jahongir Rahmonov</title><link>http://rahmonov.me/</link><description></description><lastBuildDate>Sat, 10 Feb 2018 20:10:00 +0500</lastBuildDate><item><title>Zero Downtime Deployment with Kubernetes</title><link>http://rahmonov.me/posts/zero-downtime-deployment-with-kubernetes/</link><description>&lt;p&gt;It is 2018 and your users will not, I repeat, WILL NOT tolerate any downtime or outage with your application. Especially if 
-your app is in the B2B sector and other people's money depend on your app. That's why, as a responsible developer you come 
+your app is in the B2B sector and other people's money depends on your app. That's why, as a responsible developer you come 
 to the office on Sundays and deploy the new version of your application hoping that people are not using your application on 
 weekends and that everything will go smoothly and there will be only 10 minutes of downtime as usual. You go to Intercom (
 or whatever you use for customer support) and see that there are already a few people complaining about the outage. You tell them
@@ -265,7 +265,10 @@ You are free!&lt;/p&gt;
 &lt;p&gt;As you can see with 10 more lines of code we have achieved that mythical zero-downtime deployment. With Kubernetes it is not 
 mythical and dark anymore. &lt;/p&gt;
 &lt;p&gt;Let me know in the comments if you have any questions regarding this. Thanks for reading.&lt;/p&gt;
-&lt;p&gt;Fight on!&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jahongir Rahmonov</dc:creator><pubDate>Sat, 10 Feb 2018 20:10:00 +0500</pubDate><guid isPermaLink="false">tag:rahmonov.me,2018-02-10:posts/zero-downtime-deployment-with-kubernetes/</guid><category>kubernetes</category></item><item><title>Introduction to Kubernetes</title><link>http://rahmonov.me/posts/introduction-to-kubernetes/</link><description>&lt;p&gt;Looking back, 2017 was the year Kubernetes conquered the container orchestration space. For years, Kubernetes' rivals 
+&lt;p&gt;Fight on!&lt;/p&gt;
+&lt;hr&gt;
+
+&lt;p&gt;You mal also find these &lt;strong&gt;related&lt;/strong&gt; posts interesting: &lt;a href="/posts/introduction-to-kubernetes/"&gt;Introduction to Kubernetes&lt;/a&gt;, &lt;a href="/posts/nginx-ingress-controller/"&gt;Nginx Ingress Controller&lt;/a&gt;  &lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jahongir Rahmonov</dc:creator><pubDate>Sat, 10 Feb 2018 20:10:00 +0500</pubDate><guid isPermaLink="false">tag:rahmonov.me,2018-02-10:posts/zero-downtime-deployment-with-kubernetes/</guid><category>kubernetes</category></item><item><title>Introduction to Kubernetes</title><link>http://rahmonov.me/posts/introduction-to-kubernetes/</link><description>&lt;p&gt;Looking back, 2017 was the year Kubernetes conquered the container orchestration space. For years, Kubernetes' rivals 
 such as Docker Swarm and Mesos have been offering their own container orchestration tools and now they both added 
 support for Kubernetes within their ecosystems. The largest cloud providers such as AWS, Microsoft Azure and Oracle 
 Cloud announced Kubernetes integrations into their respective cloud platforms, not mentioning Google where Kubernetes 
