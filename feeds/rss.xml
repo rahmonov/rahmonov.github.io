@@ -199,7 +199,10 @@ from &lt;a href="https://twitter.com/kelseyhightower"&gt;Kelsey Hightower&lt;/a&
 &lt;p&gt;Kubernetes is going to set you free. But it is going to piss you off first.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;Thanks for reading.&lt;/p&gt;
-&lt;p&gt;Fight on!  &lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jahongir Rahmonov</dc:creator><pubDate>Sat, 03 Feb 2018 20:10:00 +0500</pubDate><guid isPermaLink="false">tag:rahmonov.me,2018-02-03:posts/introduction-to-kubernetes/</guid><category>kubernetes</category></item><item><title>Python GIL</title><link>http://rahmonov.me/posts/python-gil/</link><description>&lt;p&gt;In this blog post, we will look at Python GIL, Threads, Processes and AsyncIO.&lt;/p&gt;
+&lt;p&gt;Fight on!  &lt;/p&gt;
+&lt;hr&gt;
+
+&lt;p&gt;You mal also find this &lt;strong&gt;related&lt;/strong&gt; post interesting: &lt;a href="/posts/nginx-ingress-controller/"&gt;Nginx Ingress Controller&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jahongir Rahmonov</dc:creator><pubDate>Sat, 03 Feb 2018 20:10:00 +0500</pubDate><guid isPermaLink="false">tag:rahmonov.me,2018-02-03:posts/introduction-to-kubernetes/</guid><category>kubernetes</category></item><item><title>Python GIL</title><link>http://rahmonov.me/posts/python-gil/</link><description>&lt;p&gt;In this blog post, we will look at Python GIL, Threads, Processes and AsyncIO.&lt;/p&gt;
 &lt;p&gt;Let's say that we want to write a function that takes a number as an argument and simply counts down. Pretty easy:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;count_down&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="n"&gt;n&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
@@ -390,7 +393,7 @@ threads can.&lt;/p&gt;
 &lt;p&gt;Also keep in mind that we are talking about the CPython here. Other implementations such Jython and IronPython don't have GIL so they can use &lt;code&gt;Thread&lt;/code&gt;s.
 If you don't know what Jython or IronPython are, refer to this &lt;a href="/posts/what-is-python/"&gt;post of mine&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Thanks for reading and make sure to leave a comment if you have any questions.&lt;/p&gt;
-&lt;p&gt;Fight on!&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jahongir Rahmonov</dc:creator><pubDate>Fri, 08 Dec 2017 20:10:00 +0500</pubDate><guid isPermaLink="false">tag:rahmonov.me,2017-12-08:posts/python-gil/</guid><category>python</category></item><item><title>Nginx Ingress Controller</title><link>http://rahmonov.me/posts/nginx-ingress-controller/</link><description>&lt;p&gt;This tutorial assumes that you know the basics of &lt;a href="https://kubernetes.io/"&gt;Kubernetes&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jahongir Rahmonov</dc:creator><pubDate>Fri, 08 Dec 2017 20:10:00 +0500</pubDate><guid isPermaLink="false">tag:rahmonov.me,2017-12-08:posts/python-gil/</guid><category>python</category></item><item><title>Nginx Ingress Controller</title><link>http://rahmonov.me/posts/nginx-ingress-controller/</link><description>&lt;p&gt;This tutorial assumes that you know the basics of &lt;a href="/posts/introduction-to-kubernetes/"&gt;Kubernetes&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;We all know that the easiest way to forward the external traffic to your app is to create a service of type &lt;code&gt;LoadBalancer&lt;/code&gt;. 
 If you are running in a cloud environment such as AWS or GCP, of course. That might be OK for some simple apps. However,
 if you want to do SSL termination, path based routing or host based routing, you get stuck. This is where &lt;a href="https://kubernetes.io/docs/concepts/services-networking/ingress/"&gt;Ingress&lt;/a&gt; 
@@ -899,7 +902,10 @@ append this:&lt;/p&gt;
 &lt;h2&gt;Conclusion&lt;/h2&gt;
 &lt;p&gt;This is something that I have had tons of problems setting up and getting my heads around. I hope that this will save some time for some of you guys.
 Thanks for reading.&lt;/p&gt;
-&lt;p&gt;Fight on!&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jahongir Rahmonov</dc:creator><pubDate>Sat, 11 Nov 2017 20:10:00 +0500</pubDate><guid isPermaLink="false">tag:rahmonov.me,2017-11-11:posts/nginx-ingress-controller/</guid><category>kubernetes</category></item><item><title>You are a genius!</title><link>http://rahmonov.me/posts/you-are-a-genius/</link><description>&lt;p&gt;There are tons of videos and tests out there that will tell you if you are genius or not. Look at these:&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;
+&lt;hr&gt;
+
+&lt;p&gt;You mal also find this &lt;strong&gt;related&lt;/strong&gt; post interesting: &lt;a href="/posts/introduction-to-kubernetes/"&gt;Introduction to Kubernetes&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jahongir Rahmonov</dc:creator><pubDate>Sat, 11 Nov 2017 20:10:00 +0500</pubDate><guid isPermaLink="false">tag:rahmonov.me,2017-11-11:posts/nginx-ingress-controller/</guid><category>kubernetes</category></item><item><title>You are a genius!</title><link>http://rahmonov.me/posts/you-are-a-genius/</link><description>&lt;p&gt;There are tons of videos and tests out there that will tell you if you are genius or not. Look at these:&lt;/p&gt;
 &lt;iframe width="560" height="315" src="https://www.youtube.com/embed/kFHXDRvHbw8" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;
 
 &lt;p&gt;&lt;a href="http://brainfall.com/quizzes/are-you-a-genius/#HJBMYZiAZ"&gt;Are you a genius?&lt;/a&gt; by BrainFall.&lt;/p&gt;

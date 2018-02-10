@@ -38,6 +38,15 @@ ul.pretty:after {
     clear:both;
 }
 
+hr {
+    border: 0;
+    border-top: 1px solid #d0d0d0;
+    height: 0;
+    margin-top: 38px;
+    margin-bottom: 38px;
+    text-align: left;
+}
+
 .buttons {
     text-align: center;
 }
