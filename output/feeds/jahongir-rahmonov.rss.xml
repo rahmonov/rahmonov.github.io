@@ -1,5 +1,271 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Jahongir Rahmonov</title><link>http://rahmonov.me/</link><description></description><lastBuildDate>Sat, 03 Feb 2018 20:10:00 +0500</lastBuildDate><item><title>Introduction to Kubernetes</title><link>http://rahmonov.me/posts/introduction-to-kubernetes/</link><description>&lt;p&gt;Looking back, 2017 was the year Kubernetes conquered the container orchestration space. For years, Kubernetes' rivals 
+<rss version="2.0"><channel><title>Jahongir Rahmonov</title><link>http://rahmonov.me/</link><description></description><lastBuildDate>Sat, 10 Feb 2018 20:10:00 +0500</lastBuildDate><item><title>Zero Downtime Deployment with Kubernetes</title><link>http://rahmonov.me/posts/zero-downtime-deployment-with-kubernetes/</link><description>&lt;p&gt;It is 2018 and your users will not, I repeat, WILL NOT tolerate any downtime or outage with your application. Especially if 
+your app is in the B2B sector and other people's money depend on your app. That's why, as a responsible developer you come 
+to the office on Sundays and deploy the new version of your application hoping that people are not using your application on 
+weekends and that everything will go smoothly and there will be only 10 minutes of downtime as usual. You go to Intercom (
+or whatever you use for customer support) and see that there are already a few people complaining about the outage. You tell them
+everything is fine now and go home with a bad mood. You don't want to do anything now but drink/smoke/(insert your bad habit here).&lt;/p&gt;
+&lt;p&gt;Instead of all that BS, you could have used your Sunday for something more useful. Only if there was no downtime while deploying a new version. 
+But that's just an unachievable dream. Even Kelsey Hightower himself admitted that it is a tough thing to do in his &lt;a href="https://youtu.be/u_iAXzy3xBA?t=1915"&gt;PyCon Keynote in 2017&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Well, I am happy to tell you that with Kubernetes it is extremely easy, I repeat, EXTREMELY EASY to do a zero-downtime deployment &lt;i class="em em-sunglasses"&gt;&lt;/i&gt;.
+Are you feeling excited? Let's see a practical example then, shall we?&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt; that this post assumes that you know the basics of Kubernetes. If not, see &lt;a href="/posts/introduction-to-kubernetes/"&gt;this post&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;Deploy your app&lt;/h2&gt;
+&lt;p&gt;I have prepared Docker images for an app that simply states this in the first version:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Version 1 of my awesome app! Money is pouring in!&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;and the second version of this app says this:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Version 2 of my awesome app! More Money is pouring in!&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;But before it starts running it will wait for 20 seconds. This is needed in order to illustrate downtime between deployments.&lt;/p&gt;
+&lt;p&gt;Now let's write a deployment for the app (&lt;code&gt;deployment.yaml&lt;/code&gt;):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: myapp-deployment
+spec:
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: myapp-container
+        image: jahongirr/myapp:1
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 80
+            protocol: TCP
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Everything is simple here. We are running our app on the port 80. Time to create the deployment:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;kubectl create -f deployment.yaml
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Verify that the app is running by doing &lt;code&gt;kubectl get pods&lt;/code&gt;. If you see something like the following, you should be good:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;myapp-deployment-5c66bd8856-t6rrt                                 1/1       Running   &lt;span class="m"&gt;0&lt;/span&gt;          6m
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now, let's expose our deployment so that it has an external IP through which it can receive traffic to the app:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;kubectl expose deployment/myapp-deployment --type&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;LoadBalancer&amp;quot;&lt;/span&gt; --port 80
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt; that exposing a deployment like this is not good. For how this should be done in a real project, see &lt;a href="/posts/introduction-to-kubernetes/"&gt;this post&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;After some time, do &lt;code&gt;kubectl get services&lt;/code&gt; in order to find out the external IP of our app. You should see something like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;NAME                        TYPE           CLUSTER-IP     EXTERNAL-IP      PORT&lt;span class="o"&gt;(&lt;/span&gt;S&lt;span class="o"&gt;)&lt;/span&gt;             AGE
+myapp-deployment            LoadBalancer   10.3.248.68    100.193.114.176   80:31483/TCP        10m
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Type that EXTERNAL-IP in your browser and you should see this:&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="https://s3.amazonaws.com/rahmonov.me/post-images/zero-downtime-with-k8s/v1.png" rel="lightbox" title="First version"&gt;
+        &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/zero-downtime-with-k8s/v1.png" alt="First version"&gt;
+        &lt;span&gt;First version&lt;/span&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now, let's deploy the second version of our app. To do that, change the version of the container in your &lt;code&gt;deployment.yaml&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: myapp-deployment
+spec:
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: myapp-container
+        image: jahongirr/myapp:2
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 80
+            protocol: TCP
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Before we apply the change, open your terminal and do this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;while&lt;/span&gt; True
+    &lt;span class="k"&gt;do&lt;/span&gt;
+        curl 100.193.114.176
+        sleep 1s
+    &lt;span class="k"&gt;done&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Make sure you use your own external IP here. This will send a request to our app every second. Run it and you will see this every second:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;lt;!doctype html&amp;gt;
+&amp;lt;html &lt;span class="nv"&gt;lang&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;en&amp;quot;&lt;/span&gt;&amp;gt;
+&amp;lt;head&amp;gt;
+  &amp;lt;meta &lt;span class="nv"&gt;charset&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;utf-8&amp;quot;&lt;/span&gt;&amp;gt;
+  &amp;lt;title&amp;gt;My Awesome App&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+
+  Version &lt;span class="m"&gt;1&lt;/span&gt; of my awesome app! Money is pouring in!
+
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Cool. We know that our app is working. Now, in another terminal, let's apply our change:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;kubectl apply -f deployment.yaml
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Go back to the previous terminal window and watch. You will see that some of the requests did not go through and said this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;curl: &lt;span class="o"&gt;(&lt;/span&gt;7&lt;span class="o"&gt;)&lt;/span&gt; Failed to connect to 100.193.114.176 port 80: Connection refused
+curl: &lt;span class="o"&gt;(&lt;/span&gt;7&lt;span class="o"&gt;)&lt;/span&gt; Failed to connect to 100.193.114.176 port 80: Connection refused
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Only after some time we see that our app started working again with the version 2:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;curl: &lt;span class="o"&gt;(&lt;/span&gt;7&lt;span class="o"&gt;)&lt;/span&gt; Failed to connect to 35.193.114.176 port 80: Connection refused
+curl: &lt;span class="o"&gt;(&lt;/span&gt;7&lt;span class="o"&gt;)&lt;/span&gt; Failed to connect to 35.193.114.176 port 80: Connection refused
+curl: &lt;span class="o"&gt;(&lt;/span&gt;7&lt;span class="o"&gt;)&lt;/span&gt; Failed to connect to 35.193.114.176 port 80: Connection refused
+curl: &lt;span class="o"&gt;(&lt;/span&gt;7&lt;span class="o"&gt;)&lt;/span&gt; Failed to connect to 35.193.114.176 port 80: Connection refused
+curl: &lt;span class="o"&gt;(&lt;/span&gt;7&lt;span class="o"&gt;)&lt;/span&gt; Failed to connect to 35.193.114.176 port 80: Connection refused
+&amp;lt;!doctype html&amp;gt;
+&amp;lt;html &lt;span class="nv"&gt;lang&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;en&amp;quot;&lt;/span&gt;&amp;gt;
+&amp;lt;head&amp;gt;
+  &amp;lt;meta &lt;span class="nv"&gt;charset&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;utf-8&amp;quot;&lt;/span&gt;&amp;gt;
+  &amp;lt;title&amp;gt;My Awesome App&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+
+  Version &lt;span class="m"&gt;2&lt;/span&gt; of my awesome app! More Money is pouring in!
+
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&amp;lt;!doctype html&amp;gt;
+&amp;lt;html &lt;span class="nv"&gt;lang&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;en&amp;quot;&lt;/span&gt;&amp;gt;
+&amp;lt;head&amp;gt;
+  &amp;lt;meta &lt;span class="nv"&gt;charset&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;utf-8&amp;quot;&lt;/span&gt;&amp;gt;
+  &amp;lt;title&amp;gt;My Awesome App&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+
+  Version &lt;span class="m"&gt;2&lt;/span&gt; of my awesome app! More Money is pouring in!
+
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This is the downtime we have been afraid of. Now, the time has come to awaken our inner ninja and remove this downtime so that 
+users don't feel let down by us.&lt;/p&gt;
+&lt;p&gt;To do that, we use something called &lt;code&gt;readiness probe&lt;/code&gt;. Basically, this is a check that Kubernetes does in order to make sure that
+your pod is ready to send traffic to it. Until it is not ready, Kubernetes will not use your pod. Easy! In our case, it looks like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;readinessProbe:
+  httpGet:
+    path: /
+    port: 80
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  successThreshold: 1
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;We are basically telling Kubernetes to send an http get request to the path &lt;code&gt;/&lt;/code&gt; every five seconds and if it is successful, mark the 
+pod ready and start sending traffic to it.&lt;/p&gt;
+&lt;p&gt;Another thing that we should know is something called &lt;code&gt;RollingUpdate strategy&lt;/code&gt;. It looks like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It basically tells Kubernetes that there should be zero unavailable pods while deploying (&lt;code&gt;maxUnavailable: 0&lt;/code&gt;) and there should be 
+one new pod at a time (&lt;code&gt;maxSurge: 0&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;Combine these two things and our &lt;code&gt;deployment.yaml&lt;/code&gt; will look like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: myapp-deployment
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: myapp-container
+        image: jahongirr/myapp:1
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 80
+            protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Make sure that our &lt;code&gt;while loop&lt;/code&gt; check is running and saying that the v2 of our app is working. Let's apply our changes now and watch the while loop:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;kubectl apply -f deployment.yaml
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;After some time you will see that &lt;code&gt;v1&lt;/code&gt; start to run right after &lt;code&gt;v2&lt;/code&gt; without any delay:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;lt;!doctype html&amp;gt;
+&amp;lt;html &lt;span class="nv"&gt;lang&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;en&amp;quot;&lt;/span&gt;&amp;gt;
+&amp;lt;head&amp;gt;
+  &amp;lt;meta &lt;span class="nv"&gt;charset&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;utf-8&amp;quot;&lt;/span&gt;&amp;gt;
+  &amp;lt;title&amp;gt;My Awesome App&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+
+  Version &lt;span class="m"&gt;2&lt;/span&gt; of my awesome app! More Money is pouring in!
+
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+
+&amp;lt;!doctype html&amp;gt;
+&amp;lt;html &lt;span class="nv"&gt;lang&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;en&amp;quot;&lt;/span&gt;&amp;gt;
+&amp;lt;head&amp;gt;
+  &amp;lt;meta &lt;span class="nv"&gt;charset&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;utf-8&amp;quot;&lt;/span&gt;&amp;gt;
+  &amp;lt;title&amp;gt;My Awesome App&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+&amp;lt;body&amp;gt;
+
+  Version &lt;span class="m"&gt;1&lt;/span&gt; of my awesome app! Money is pouring in!
+
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;God, this feels great, doesn't it. No more &lt;code&gt;Connection refused&lt;/code&gt; errors between deployments.&lt;/p&gt;
+&lt;p&gt;Congratulations!!! We have done it. Pat yourself in the back. You know what the implications of this are? You don't have 
+to deploy on Sundays now and use it for something better. You can deploy any day you want. No more customer complaints about downtime/outage. 
+You are free!&lt;/p&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;As you can see with 10 more lines of code we have achieved that mythical zero-downtime deployment. With Kubernetes it is not 
+mythical and dark anymore. &lt;/p&gt;
+&lt;p&gt;Let me know in the comments if you have any questions regarding this. Thanks for reading.&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jahongir Rahmonov</dc:creator><pubDate>Sat, 10 Feb 2018 20:10:00 +0500</pubDate><guid isPermaLink="false">tag:rahmonov.me,2018-02-10:posts/zero-downtime-deployment-with-kubernetes/</guid><category>kubernetes</category></item><item><title>Introduction to Kubernetes</title><link>http://rahmonov.me/posts/introduction-to-kubernetes/</link><description>&lt;p&gt;Looking back, 2017 was the year Kubernetes conquered the container orchestration space. For years, Kubernetes' rivals 
 such as Docker Swarm and Mesos have been offering their own container orchestration tools and now they both added 
 support for Kubernetes within their ecosystems. The largest cloud providers such as AWS, Microsoft Azure and Oracle 
 Cloud announced Kubernetes integrations into their respective cloud platforms, not mentioning Google where Kubernetes 
