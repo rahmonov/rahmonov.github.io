@@ -295,7 +295,7 @@ pod ready and start sending traffic to it.</p>
 
 
 <p>It basically tells Kubernetes that there should be zero unavailable pods while deploying (<code>maxUnavailable: 0</code>) and there should be 
-one new pod at a time (<code>maxSurge: 0</code>).</p>
+one new pod at a time (<code>maxSurge: 1</code>).</p>
 <p>Combine these two things and our <code>deployment.yaml</code> will look like this:</p>
 <div class="highlight"><pre><span></span>apiVersion: extensions/v1beta1
 kind: Deployment
@@ -374,7 +374,7 @@ mythical and dark anymore. </p>
 <p>Fight on!</p>
 <hr>
 
-<p>You mal also find these <strong>related</strong> posts interesting: <a href="/posts/introduction-to-kubernetes/">Introduction to Kubernetes</a>, <a href="/posts/nginx-ingress-controller/">Nginx Ingress Controller</a>  </p>
+<p>You may also find these <strong>related</strong> posts interesting: <a href="/posts/introduction-to-kubernetes/">Introduction to Kubernetes</a>, <a href="/posts/nginx-ingress-controller/">Nginx Ingress Controller</a>  </p>
   </div>
 
   <div class="pagination clearfix">

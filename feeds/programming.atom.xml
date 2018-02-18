@@ -189,7 +189,7 @@ pod ready and start sending traffic to it.&lt;/p&gt;
 
 
 &lt;p&gt;It basically tells Kubernetes that there should be zero unavailable pods while deploying (&lt;code&gt;maxUnavailable: 0&lt;/code&gt;) and there should be 
-one new pod at a time (&lt;code&gt;maxSurge: 0&lt;/code&gt;).&lt;/p&gt;
+one new pod at a time (&lt;code&gt;maxSurge: 1&lt;/code&gt;).&lt;/p&gt;
 &lt;p&gt;Combine these two things and our &lt;code&gt;deployment.yaml&lt;/code&gt; will look like this:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apiVersion: extensions/v1beta1
 kind: Deployment
@@ -268,7 +268,7 @@ mythical and dark anymore. &lt;/p&gt;
 &lt;p&gt;Fight on!&lt;/p&gt;
 &lt;hr&gt;
 
-&lt;p&gt;You mal also find these &lt;strong&gt;related&lt;/strong&gt; posts interesting: &lt;a href="/posts/introduction-to-kubernetes/"&gt;Introduction to Kubernetes&lt;/a&gt;, &lt;a href="/posts/nginx-ingress-controller/"&gt;Nginx Ingress Controller&lt;/a&gt;  &lt;/p&gt;</summary><category term="kubernetes"></category></entry><entry><title>Introduction to Kubernetes</title><link href="http://rahmonov.me/posts/introduction-to-kubernetes/" rel="alternate"></link><published>2018-02-03T20:10:00+05:00</published><updated>2018-02-03T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2018-02-03:posts/introduction-to-kubernetes/</id><summary type="html">&lt;p&gt;Looking back, 2017 was the year Kubernetes conquered the container orchestration space. For years, Kubernetes' rivals 
+&lt;p&gt;You may also find these &lt;strong&gt;related&lt;/strong&gt; posts interesting: &lt;a href="/posts/introduction-to-kubernetes/"&gt;Introduction to Kubernetes&lt;/a&gt;, &lt;a href="/posts/nginx-ingress-controller/"&gt;Nginx Ingress Controller&lt;/a&gt;  &lt;/p&gt;</summary><category term="kubernetes"></category></entry><entry><title>Introduction to Kubernetes</title><link href="http://rahmonov.me/posts/introduction-to-kubernetes/" rel="alternate"></link><published>2018-02-03T20:10:00+05:00</published><updated>2018-02-03T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2018-02-03:posts/introduction-to-kubernetes/</id><summary type="html">&lt;p&gt;Looking back, 2017 was the year Kubernetes conquered the container orchestration space. For years, Kubernetes' rivals 
 such as Docker Swarm and Mesos have been offering their own container orchestration tools and now they both added 
 support for Kubernetes within their ecosystems. The largest cloud providers such as AWS, Microsoft Azure and Oracle 
 Cloud announced Kubernetes integrations into their respective cloud platforms, not mentioning Google where Kubernetes 
@@ -471,7 +471,7 @@ from &lt;a href="https://twitter.com/kelseyhightower"&gt;Kelsey Hightower&lt;/a&
 &lt;p&gt;Fight on!  &lt;/p&gt;
 &lt;hr&gt;
 
-&lt;p&gt;You mal also find this &lt;strong&gt;related&lt;/strong&gt; post interesting: &lt;a href="/posts/nginx-ingress-controller/"&gt;Nginx Ingress Controller&lt;/a&gt;&lt;/p&gt;</summary><category term="kubernetes"></category></entry><entry><title>Python GIL</title><link href="http://rahmonov.me/posts/python-gil/" rel="alternate"></link><published>2017-12-08T20:10:00+05:00</published><updated>2017-12-08T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2017-12-08:posts/python-gil/</id><summary type="html">&lt;p&gt;In this blog post, we will look at Python GIL, Threads, Processes and AsyncIO.&lt;/p&gt;
+&lt;p&gt;You may also find this &lt;strong&gt;related&lt;/strong&gt; post interesting: &lt;a href="/posts/nginx-ingress-controller/"&gt;Nginx Ingress Controller&lt;/a&gt;&lt;/p&gt;</summary><category term="kubernetes"></category></entry><entry><title>Python GIL</title><link href="http://rahmonov.me/posts/python-gil/" rel="alternate"></link><published>2017-12-08T20:10:00+05:00</published><updated>2017-12-08T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2017-12-08:posts/python-gil/</id><summary type="html">&lt;p&gt;In this blog post, we will look at Python GIL, Threads, Processes and AsyncIO.&lt;/p&gt;
 &lt;p&gt;Let's say that we want to write a function that takes a number as an argument and simply counts down. Pretty easy:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;count_down&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="n"&gt;n&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
@@ -1174,7 +1174,7 @@ Thanks for reading.&lt;/p&gt;
 &lt;p&gt;Fight on!&lt;/p&gt;
 &lt;hr&gt;
 
-&lt;p&gt;You mal also find this &lt;strong&gt;related&lt;/strong&gt; post interesting: &lt;a href="/posts/introduction-to-kubernetes/"&gt;Introduction to Kubernetes&lt;/a&gt;&lt;/p&gt;</summary><category term="kubernetes"></category></entry><entry><title>What is Python?</title><link href="http://rahmonov.me/posts/what-is-python/" rel="alternate"></link><published>2017-10-23T20:10:00+05:00</published><updated>2017-10-23T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2017-10-23:posts/what-is-python/</id><summary type="html">&lt;p&gt;Would you be surprised if I said that Python is not a programming language at all?&lt;/p&gt;
+&lt;p&gt;You may also find this &lt;strong&gt;related&lt;/strong&gt; post interesting: &lt;a href="/posts/introduction-to-kubernetes/"&gt;Introduction to Kubernetes&lt;/a&gt;&lt;/p&gt;</summary><category term="kubernetes"></category></entry><entry><title>What is Python?</title><link href="http://rahmonov.me/posts/what-is-python/" rel="alternate"></link><published>2017-10-23T20:10:00+05:00</published><updated>2017-10-23T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2017-10-23:posts/what-is-python/</id><summary type="html">&lt;p&gt;Would you be surprised if I said that Python is not a programming language at all?&lt;/p&gt;
 &lt;p&gt;Then, let me tell you that Python is actually this guy:&lt;/p&gt;
 &lt;div class="gallery medium"&gt;
     &lt;a href="https://s3.amazonaws.com/rahmonov.me/post-images/what-is-python/python.jpeg" rel="lightbox" title="Python"&gt;
