@@ -189,7 +189,7 @@ pod ready and start sending traffic to it.&lt;/p&gt;
 
 
 &lt;p&gt;It basically tells Kubernetes that there should be zero unavailable pods while deploying (&lt;code&gt;maxUnavailable: 0&lt;/code&gt;) and there should be 
-one new pod at a time (&lt;code&gt;maxSurge: 0&lt;/code&gt;).&lt;/p&gt;
+one new pod at a time (&lt;code&gt;maxSurge: 1&lt;/code&gt;).&lt;/p&gt;
 &lt;p&gt;Combine these two things and our &lt;code&gt;deployment.yaml&lt;/code&gt; will look like this:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;apiVersion: extensions/v1beta1
 kind: Deployment
@@ -268,7 +268,7 @@ mythical and dark anymore. &lt;/p&gt;
 &lt;p&gt;Fight on!&lt;/p&gt;
 &lt;hr&gt;
 
-&lt;p&gt;You mal also find these &lt;strong&gt;related&lt;/strong&gt; posts interesting: &lt;a href="/posts/introduction-to-kubernetes/"&gt;Introduction to Kubernetes&lt;/a&gt;, &lt;a href="/posts/nginx-ingress-controller/"&gt;Nginx Ingress Controller&lt;/a&gt;  &lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jahongir Rahmonov</dc:creator><pubDate>Sat, 10 Feb 2018 20:10:00 +0500</pubDate><guid isPermaLink="false">tag:rahmonov.me,2018-02-10:posts/zero-downtime-deployment-with-kubernetes/</guid><category>kubernetes</category></item><item><title>Introduction to Kubernetes</title><link>http://rahmonov.me/posts/introduction-to-kubernetes/</link><description>&lt;p&gt;Looking back, 2017 was the year Kubernetes conquered the container orchestration space. For years, Kubernetes' rivals 
+&lt;p&gt;You may also find these &lt;strong&gt;related&lt;/strong&gt; posts interesting: &lt;a href="/posts/introduction-to-kubernetes/"&gt;Introduction to Kubernetes&lt;/a&gt;, &lt;a href="/posts/nginx-ingress-controller/"&gt;Nginx Ingress Controller&lt;/a&gt;  &lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jahongir Rahmonov</dc:creator><pubDate>Sat, 10 Feb 2018 20:10:00 +0500</pubDate><guid isPermaLink="false">tag:rahmonov.me,2018-02-10:posts/zero-downtime-deployment-with-kubernetes/</guid><category>kubernetes</category></item><item><title>Introduction to Kubernetes</title><link>http://rahmonov.me/posts/introduction-to-kubernetes/</link><description>&lt;p&gt;Looking back, 2017 was the year Kubernetes conquered the container orchestration space. For years, Kubernetes' rivals 
 such as Docker Swarm and Mesos have been offering their own container orchestration tools and now they both added 
 support for Kubernetes within their ecosystems. The largest cloud providers such as AWS, Microsoft Azure and Oracle 
 Cloud announced Kubernetes integrations into their respective cloud platforms, not mentioning Google where Kubernetes 
@@ -471,7 +471,7 @@ from &lt;a href="https://twitter.com/kelseyhightower"&gt;Kelsey Hightower&lt;/a&
 &lt;p&gt;Fight on!  &lt;/p&gt;
 &lt;hr&gt;
 
-&lt;p&gt;You mal also find this &lt;strong&gt;related&lt;/strong&gt; post interesting: &lt;a href="/posts/nginx-ingress-controller/"&gt;Nginx Ingress Controller&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jahongir Rahmonov</dc:creator><pubDate>Sat, 03 Feb 2018 20:10:00 +0500</pubDate><guid isPermaLink="false">tag:rahmonov.me,2018-02-03:posts/introduction-to-kubernetes/</guid><category>kubernetes</category></item><item><title>Python GIL</title><link>http://rahmonov.me/posts/python-gil/</link><description>&lt;p&gt;In this blog post, we will look at Python GIL, Threads, Processes and AsyncIO.&lt;/p&gt;
+&lt;p&gt;You may also find this &lt;strong&gt;related&lt;/strong&gt; post interesting: &lt;a href="/posts/nginx-ingress-controller/"&gt;Nginx Ingress Controller&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jahongir Rahmonov</dc:creator><pubDate>Sat, 03 Feb 2018 20:10:00 +0500</pubDate><guid isPermaLink="false">tag:rahmonov.me,2018-02-03:posts/introduction-to-kubernetes/</guid><category>kubernetes</category></item><item><title>Python GIL</title><link>http://rahmonov.me/posts/python-gil/</link><description>&lt;p&gt;In this blog post, we will look at Python GIL, Threads, Processes and AsyncIO.&lt;/p&gt;
 &lt;p&gt;Let's say that we want to write a function that takes a number as an argument and simply counts down. Pretty easy:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;count_down&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="n"&gt;n&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
@@ -1174,7 +1174,7 @@ Thanks for reading.&lt;/p&gt;
 &lt;p&gt;Fight on!&lt;/p&gt;
 &lt;hr&gt;
 
-&lt;p&gt;You mal also find this &lt;strong&gt;related&lt;/strong&gt; post interesting: &lt;a href="/posts/introduction-to-kubernetes/"&gt;Introduction to Kubernetes&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jahongir Rahmonov</dc:creator><pubDate>Sat, 11 Nov 2017 20:10:00 +0500</pubDate><guid isPermaLink="false">tag:rahmonov.me,2017-11-11:posts/nginx-ingress-controller/</guid><category>kubernetes</category></item><item><title>You are a genius!</title><link>http://rahmonov.me/posts/you-are-a-genius/</link><description>&lt;p&gt;There are tons of videos and tests out there that will tell you if you are genius or not. Look at these:&lt;/p&gt;
+&lt;p&gt;You may also find this &lt;strong&gt;related&lt;/strong&gt; post interesting: &lt;a href="/posts/introduction-to-kubernetes/"&gt;Introduction to Kubernetes&lt;/a&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jahongir Rahmonov</dc:creator><pubDate>Sat, 11 Nov 2017 20:10:00 +0500</pubDate><guid isPermaLink="false">tag:rahmonov.me,2017-11-11:posts/nginx-ingress-controller/</guid><category>kubernetes</category></item><item><title>You are a genius!</title><link>http://rahmonov.me/posts/you-are-a-genius/</link><description>&lt;p&gt;There are tons of videos and tests out there that will tell you if you are genius or not. Look at these:&lt;/p&gt;
 &lt;iframe width="560" height="315" src="https://www.youtube.com/embed/kFHXDRvHbw8" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;
 
 &lt;p&gt;&lt;a href="http://brainfall.com/quizzes/are-you-a-genius/#HJBMYZiAZ"&gt;Are you a genius?&lt;/a&gt; by BrainFall.&lt;/p&gt;

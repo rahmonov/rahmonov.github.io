@@ -217,7 +217,7 @@ Another thing that we should know is something called `RollingUpdate strategy`. 
 ``` 
 
 It basically tells Kubernetes that there should be zero unavailable pods while deploying (`maxUnavailable: 0`) and there should be 
-one new pod at a time (`maxSurge: 0`).
+one new pod at a time (`maxSurge: 1`).
 
 Combine these two things and our `deployment.yaml` will look like this:
 
