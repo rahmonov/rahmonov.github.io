@@ -1,5 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.me/" rel="alternate"></link><link href="http://rahmonov.me/feeds/all-en.atom.xml" rel="self"></link><id>http://rahmonov.me/</id><updated>2018-02-10T20:10:00+05:00</updated><entry><title>Zero Downtime Deployment with Kubernetes</title><link href="http://rahmonov.me/posts/zero-downtime-deployment-with-kubernetes/" rel="alternate"></link><published>2018-02-10T20:10:00+05:00</published><updated>2018-02-10T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2018-02-10:posts/zero-downtime-deployment-with-kubernetes/</id><summary type="html">&lt;p&gt;It is 2018 and your users will not, I repeat, WILL NOT tolerate any downtime or outage with your application. Especially if 
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.me/" rel="alternate"></link><link href="http://rahmonov.me/feeds/all-en.atom.xml" rel="self"></link><id>http://rahmonov.me/</id><updated>2018-02-25T20:10:00+05:00</updated><entry><title>How to become a senior software developer</title><link href="http://rahmonov.me/posts/how-to-become-senior-software-developer/" rel="alternate"></link><published>2018-02-25T20:10:00+05:00</published><updated>2018-02-25T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2018-02-25:posts/how-to-become-senior-software-developer/</id><summary type="html">&lt;p&gt;You have been a junior or a middle developer for too long now. You feel like you deserve more. You feel like it is time 
+to grab life by the balls and rise up the career ladder. Well, congratulations! You are so lucky to be reading this blog post 
+because I am about to reveal a secret ingredient I used to become a senior software developer. This is a unique ingredient
+which no one else is aware of and which will skyrocket your career in no time. But I warn you! This is not an easy feat 
+to accomplish. Ready? Let's go.&lt;/p&gt;
+&lt;h2&gt;The Secret Ingredient&lt;/h2&gt;
+&lt;p&gt;First, you need to get the following four things:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;A drop of a virgin's blood&lt;/li&gt;
+&lt;li&gt;Vibranium from Wakanda&lt;/li&gt;
+&lt;li&gt;Some twigs of yew that were broken off during a lunar eclipse&lt;/li&gt;
+&lt;li&gt;A strand of Steve Harvey's mustache&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Mix them up and drink the result on the third Sunday of every month for the next 3 months. Right after your first intake,
+you will start feeling that your coding abilities start to improve. You will immediately start coming up with algorithms
+to solve &lt;a href="https://en.wikipedia.org/wiki/NP-completeness"&gt;NP-complete problems&lt;/a&gt; and who knows? Maybe you will be receiving your
+well-deserved Nobel prize pretty soon.&lt;/p&gt;
+&lt;h2&gt;Wait, what?!&lt;/h2&gt;
+&lt;p&gt;Just kidding, just kidding. But if you have managed to get some vibranium already, let me know. I will buy some. I am dead 
+serious!&lt;/p&gt;
+&lt;h2&gt;On a serious note&lt;/h2&gt;
+&lt;p&gt;Before I get started with my advice, I want you to understand the following things first:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;"Senior" does not mean that you are a super skilled developer or a 10x ninja. It does not mean that you are the best
+in the team. It simply means that you have a little more responsibilities than others. It means that your management will
+talk to YOU, not somebody else, if they have questions or feedback about the things you and your team are responsible for.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;If you are a senior in your current company, it does not mean that you will surely be a senior in another company. I hate 
+to tell you this but you can even go down to become a junior somewhere else before the company can trust you enough to give you
+more responsibilities.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The following is only my experience. Some of the points may not apply to you. But I am sure they do.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;"Goddammit, tell me how to become a senior developer already!" I hear you say. Okay, okay. Calm down. Here it is, in no particular order:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Take responsibilities and execute&lt;/strong&gt;. This is the most important advice I can give you. Other points are derived from this in one way or another. 
+So, if you learn one thing from this post, this should be it. Take on more responsibilities. When talking to your 
+management or colleagues or in meetings, there will be many questions of "Who will do X or Y?". Raise your hand and 
+volunteer to be responsible for those X and Y. Most importantly, do what said you would do and when you said you would do it. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Always go an extra mile&lt;/strong&gt;. This one should be obvious. You have a task. Do it well and do it on time. Good job. But 
+this does not make you stand out from the rest. Others are doing their tasks on time as well. That's why try to do something
+extra. For example, you have a task of automating the deployment pipeline. Do it so that there is &lt;a href="/posts/zero-downtime-deployment-with-kubernetes/"&gt;zero downtime between deployments&lt;/a&gt; 
+even if it is not required. How cool would that make you look? The answer is "very cool". But make sure that you do what's required first
+and only then do the extra stuff. I don't want your colleagues emailing me saying you are trying to make everything perfect and thus
+running late on other tasks.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Be a problem solver&lt;/strong&gt;. Again, when talking to your colleagues you will often hear them say something like "It is very hard to look through the logs 
+because all of them are in different places and not visually attractive" or "It is very hard to deploy our microservices now". 
+This is exactly what happened in our company. What did I do? I went ahead and set up &lt;a href="https://www.graylog.org"&gt;Graylog&lt;/a&gt; to solve the first problem and 
+migrated our services to &lt;a href="https://kubernetes.io"&gt;Kubernetes&lt;/a&gt; to solve the second problem. Of course, it took months to do it but it was 
+very worth the effort. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Be continuously learning&lt;/strong&gt;. Well, this is a must in our industry and very obvious. Be a go-to guy for some specific subjects.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Market yourself&lt;/strong&gt;. This is very important as well. If you are doing an awesome job but nobody knows about it, it is not any good for you.
+You did something cool, just let your colleagues know by sending a small message in a slack channel or an email. Better yet, let the whole 
+world know about your experience by writing about it in a blog or giving a talk in a tech meetup or conference.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Be likable&lt;/strong&gt;. Be a guy who others want to get a beer with after work. You are not truly a senior if others don't like you.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Be a mentor&lt;/strong&gt;. You do everything I mentioned above. Great! But this one will make your "seniority" official. Get a junior 
+developer under your wings. Teach him everything you know and this will pay off big way.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;This has worked pretty well for me. I hope it does for you too. Now go ahead and start thinking about how you can implement these 
+things in your own workplace. &lt;/p&gt;
+&lt;p&gt;P.S. I believe these things can be applied to any job, not only a software developer.&lt;/p&gt;
+&lt;p&gt;Thanks for reading.&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="career"></category></entry><entry><title>Zero Downtime Deployment with Kubernetes</title><link href="http://rahmonov.me/posts/zero-downtime-deployment-with-kubernetes/" rel="alternate"></link><published>2018-02-10T20:10:00+05:00</published><updated>2018-02-10T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2018-02-10:posts/zero-downtime-deployment-with-kubernetes/</id><summary type="html">&lt;p&gt;It is 2018 and your users will not, I repeat, WILL NOT tolerate any downtime or outage with your application. Especially if 
 your app is in the B2B sector and other people's money depends on your app. That's why, as a responsible developer you come 
 to the office on Sundays and deploy the new version of your application hoping that people are not using your application on 
 weekends and that everything will go smoothly and there will be only 10 minutes of downtime as usual. You go to Intercom (
