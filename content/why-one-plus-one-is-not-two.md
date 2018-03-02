@@ -12,8 +12,10 @@ If you plant two plants close together, the roots commingle and improve the qual
 plants will grow better than if they were separated. If you put two pieces of wood together, they will hold much 
 more than the total of the weight held by each separately.
 
-That is what Steven Covey said in his wonderful book [Seven Habits of Highly Effective People](http://www.amazon.com/7-Habits-Highly-Effective-People/dp/0935721800)
+That is what Steven Covey said in his wonderful book [Seven Habits of Highly Effective People](https://www.amazon.com/gp/product/0935721800/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=0935721800&linkCode=as2&tag=rahmonov-20&linkId=6a4d21fa067bcb22f3cded03b7cbda33)
 about synergy: One plus one equals three or more.
+
+<a target="_blank"  href="https://www.amazon.com/gp/product/0935721800/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=0935721800&linkCode=as2&tag=rahmonov-20&linkId=6a4d21fa067bcb22f3cded03b7cbda33"><img border="0" src="//ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&MarketPlace=US&ASIN=0935721800&ServiceVersion=20070822&ID=AsinImage&WS=1&Format=_SL250_&tag=rahmonov-20" ></a><img src="//ir-na.amazon-adsystem.com/e/ir?t=rahmonov-20&l=am2&o=1&a=0935721800" width="1" height="1" border="0" alt="7 Habits" style="border:none !important; margin:0px !important;" />
 
 What follows is mostly Steven’s opinion and words. It just highly resonated with me and I decided to write about 
 it here.

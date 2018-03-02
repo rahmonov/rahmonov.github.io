@@ -7,7 +7,9 @@ Slug: how-to-write-clean-functions
 Authors: Jahongir Rahmonov
 Summary: Key takeaways from the chapter Functions of the book Clean Code by Robert C. Martin 
 
-The following is heavily influenced (99%) by one of the must-read books for any developer: [Clean Code: A Handbook of Agile Software Craftsmanship](https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882)
+The following is heavily influenced (99%) by one of the must-read books for any developer: [Clean Code: A Handbook of Agile Software Craftsmanship](https://www.amazon.com/gp/product/0132350882/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=0132350882&linkCode=as2&tag=rahmonov-20&linkId=8f50e156683243a557687dbe7c8fda9e)
+
+<a target="_blank" href="https://www.amazon.com/gp/product/0132350882/ref=as_li_tl?ie=UTF8&camp=1789&creative=9325&creativeASIN=0132350882&linkCode=as2&tag=rahmonov-20&linkId=8f50e156683243a557687dbe7c8fda9e"><img border="0" src="//ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&MarketPlace=US&ASIN=0132350882&ServiceVersion=20070822&ID=AsinImage&WS=1&Format=_SL250_&tag=rahmonov-20" ></a><img src="//ir-na.amazon-adsystem.com/e/ir?t=rahmonov-20&l=am2&o=1&a=0132350882" width="1" height="1" border="0" alt="Clean Code" style="border:none !important; margin:0px !important;" />
 
 Clean Code
 ----------
