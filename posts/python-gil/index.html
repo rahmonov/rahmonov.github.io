@@ -1,143 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head prefix="og: http://ogp.me/ns#">
-          <title> Python GIL </title>
-
-        <link rel="stylesheet" href="/static/css/main.css" />
-        <link rel="stylesheet" href="/static/css/pygment.css" />
-        <link rel="stylesheet" href="/static/css/font-awesome.min.css" />
-        <link href="//fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet" type="text/css">
-        <link rel="stylesheet" href="/static/vendor/lightbox2/css/lightbox.min.css">
-        <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
-        <link rel="shortcut icon" type="image/png" href="/static/images/favicon.png"/>
-
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="<p>What is the Global Interpreter Lock in Python?</p>" />
-        <meta name="author" content="Jahongir Rahmonov" />
-        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-
-<meta property="og:title" content="Python GIL">
-<meta property="og:type" content="website">
-<meta property="og:image" content="/static/images/programming.jpg">
-<meta property="og:url" content="http://rahmonov.me/posts/python-gil/">
-<meta property="og:description" content="<p>What is the Global Interpreter Lock in Python?</p>">
-
-        <link href="http://rahmonov.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Full Atom Feed" />
-        <link href="http://rahmonov.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="Jahongir Rahmonov Full RSS Feed" />
-        <link href="http://rahmonov.me/feeds/programming.atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Categories Atom Feed" />
-
-
-        <meta name="description" content="<p>What is the Global Interpreter Lock in Python?</p>" />
-
-    <meta name="tags" content="python" />
-
-  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-  <script>
+<!DOCTYPE html><html lang="en"><head prefix="og: http://ogp.me/ns#"><title>Python GIL</title><link rel="stylesheet" href="/static/css/main.css"><link rel="stylesheet" href="/static/css/pygment.css"><link rel="stylesheet" href="/static/css/font-awesome.min.css"><link href="//fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet" type="text/css"><link rel="stylesheet" href="/static/vendor/lightbox2/css/lightbox.min.css"><link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet"><link rel="shortcut icon" type="image/png" href="/static/images/favicon.png"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="<p>What is the Global Interpreter Lock in Python?</p>"><meta name="author" content="Jahongir Rahmonov"><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"><meta property="og:title" content="Python GIL"><meta property="og:type" content="website"><meta property="og:image" content="/static/images/programming.jpg"><meta property="og:url" content="http://rahmonov.me/posts/python-gil/"><meta property="og:description" content="<p>What is the Global Interpreter Lock in Python?</p>"><link href="http://rahmonov.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Full Atom Feed"><link href="http://rahmonov.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="Jahongir Rahmonov Full RSS Feed"><link href="http://rahmonov.me/feeds/programming.atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Categories Atom Feed"><meta name="description" content="<p>What is the Global Interpreter Lock in Python?</p>"><meta name="tags" content="python"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><script>
        (adsbygoogle = window.adsbygoogle || []).push({
             google_ad_client: "ca-pub-7110437178205620",
             enable_page_level_ads: true
        });
-  </script>
-
-  <link href="https://unpkg.com/ilyabirman-likely@2/release/likely.css" rel="stylesheet">
-  <script src="https://unpkg.com/ilyabirman-likely@2/release/likely.js" type="text/javascript"></script>
-
-</head>
-
-<body id="index" class="home">
-    <div class="container">
-
-        <button class="nav js-mobile">
-            <i class="fa fa-bars"></i>
-        </button>
-
-        <div class="side">
-            <div class="logo">
-                <a href="/"><img src="/static/images/me.jpg" width="150px" height="150px" class="jahon" alt="Jahongir Rahmonov"/></a>
-            </div>
-
-            <h2>Jahongir Rahmonov</h2>
-
-            <div class="paragraphs">
-<p>
-    I'm a Software Developer at <a href="http://mysuperdispatch.com/">Super Dispatch (TechStars '16)</a>.
-    Avid reader.
-    <a href="http://wiut.uz/">WIUT</a> graduate.
-    Blogger and an amateur speaker
-</p>
-<p>
-    I write about Python, Django, AngularJS and sometimes something non-technical.
-</p>
-<p>
-    Welcome to my corner <i class="em em-snake"></i>
-</p>            </div>
-
-            <form method="get" action="https://www.google.com/search">
-                <input name="sitesearch" value="rahmonov.me" type="hidden">
-                <input type="text" id="search-query" class="field field-text" required="required" name="q" placeholder="Search..." autocomplete="off">
-                <input type="image" src="/static/images/search-icon.png" width="20" height="20" class="search-icon" title="Search via Google" alt="Search via Google">
-            </form>
-
-            <ul class="menu">
-                <li><a href="/">Home</a></li>
-                <li><a href="/pages/about.html">About</a></li>
-                <li><a href="/pages/about.html#subscribe">Subscribe</a></li>
-                <li><a href="/pages/about.html#contact">Contact</a></li>
-                <li><a href="/feeds/atom.xml">RSS <i class="fa fa-rss"></i></a></li>
-            </ul>
-
-            <p class="profiles">
-                <a title="GitHub" href="https://github.com/rahmonov"><i class="fa fa-github-square"></i></a>
-                <a title="StackOverflow" href="https://stackoverflow.com/users/4137194/jahongir-rahmonov?tab=profile"><i class="fa fa-stack-overflow"></i></a>
-                <a title="Twitter" href="https://twitter.com/the_rahmonov"><i class="fa fa-twitter-square"></i></a>
-                <a title="Facebook" href="https://www.facebook.com/rahmonovj"><i class="fa fa-facebook-official"></i></a>
-                <a title="Instagram" href="https://www.instagram.com/rahmonov.me/"><i class="fa fa-instagram"></i></a>
-                <a title="LinkedIn" href="https://www.linkedin.com/in/jahongirrahmonov"><i class="fa fa-linkedin-square"></i></a>
-            </p>
-
-              <br>
-              <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-              <!-- sidebar-ad -->
-              <ins class="adsbygoogle"
-                   style="display:block"
-                   data-ad-client="ca-pub-7110437178205620"
-                   data-ad-slot="4214071905"
-                   data-ad-format="auto"></ins>
-              <script>
+  </script><link href="https://unpkg.com/ilyabirman-likely@2/release/likely.css" rel="stylesheet"><script src="https://unpkg.com/ilyabirman-likely@2/release/likely.js" type="text/javascript"></script></head><body id="index" class="home"><div class="container"><button class="nav js-mobile"><i class="fa fa-bars"></i></button><div class="side"><div class="logo"><a href="/"><img src="/static/images/me.jpg" width="150px" height="150px" class="jahon" alt="Jahongir Rahmonov"></a></div><h2>Jahongir Rahmonov</h2><div class="paragraphs"><p> I'm a Software Developer at <a href="http://mysuperdispatch.com/">Super Dispatch (TechStars '16)</a>. Avid reader. <a href="http://wiut.uz/">WIUT</a> graduate. Blogger and an amateur speaker </p><p> I write about Python, Django, AngularJS and sometimes something non-technical. </p><p> Welcome to my corner <i class="em em-snake"></i></p> </div><form method="get" action="https://www.google.com/search"><input name="sitesearch" value="rahmonov.me" type="hidden"><input type="text" id="search-query" class="field field-text" required name="q" placeholder="Search..." autocomplete="off"><input type="image" src="/static/images/search-icon.png" width="20" height="20" class="search-icon" title="Search via Google" alt="Search via Google"></form><ul class="menu"><li><a href="/">Home</a></li><li><a href="/pages/about.html">About</a></li><li><a href="/pages/about.html#subscribe">Subscribe</a></li><li><a href="/pages/about.html#contact">Contact</a></li><li><a href="/feeds/atom.xml">RSS <i class="fa fa-rss"></i></a></li></ul><p class="profiles"><a title="GitHub" href="https://github.com/rahmonov"><i class="fa fa-github-square"></i></a><a title="StackOverflow" href="https://stackoverflow.com/users/4137194/jahongir-rahmonov?tab=profile"><i class="fa fa-stack-overflow"></i></a><a title="Twitter" href="https://twitter.com/the_rahmonov"><i class="fa fa-twitter-square"></i></a><a title="Facebook" href="https://www.facebook.com/rahmonovj"><i class="fa fa-facebook-official"></i></a><a title="Instagram" href="https://www.instagram.com/rahmonov.me/"><i class="fa fa-instagram"></i></a><a title="LinkedIn" href="https://www.linkedin.com/in/jahongirrahmonov"><i class="fa fa-linkedin-square"></i></a></p><br><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7110437178205620" data-ad-slot="4214071905" data-ad-format="auto"></ins><script>
               (adsbygoogle = window.adsbygoogle || []).push({});
-              </script>
-        </div>
-
-        <div class="wrap">
-            <div class="content">
-
-  <h4>Fri 08 December 2017</h4>
-
-  <h1>Python GIL</h1>
-
-  <div class="entry-content">
-    <p>In this blog post, we will look at Python GIL, Threads, Processes and AsyncIO.</p>
-<p>Let's say that we want to write a function that takes a number as an argument and simply counts down. Pretty easy:</p>
-<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">count_down</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+              </script></div><div class="wrap"><div class="content"><h4>Fri 08 December 2017</h4><h1>Python GIL</h1><div class="entry-content"><p>In this blog post, we will look at Python GIL, Threads, Processes and AsyncIO.</p><p>Let's say that we want to write a function that takes a number as an argument and simply counts down. Pretty easy:</p><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">count_down</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="k">while</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">n</span> <span class="o">-=</span> <span class="mi">1</span>
-</pre></div>
-
-
-<p>Let's call this function with a big number and measure how much it takes:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+</pre></div><p>Let's call this function with a big number and measure how much it takes:</p><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
 
 <span class="n">before</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
 <span class="n">count_down</span><span class="p">(</span><span class="mi">100000000</span><span class="p">)</span>
 <span class="n">after</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
 
 <span class="k">print</span><span class="p">(</span><span class="n">after</span><span class="o">-</span><span class="n">before</span><span class="p">)</span>
-</pre></div>
-
-
-<p>On my machine, it takes 8.54 seconds. Now, let's call it twice and measure that:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+</pre></div><p>On my machine, it takes 8.54 seconds. Now, let's call it twice and measure that:</p><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
 
 <span class="n">before</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
 <span class="n">count_down</span><span class="p">(</span><span class="mi">100000000</span><span class="p">)</span>
@@ -145,14 +23,7 @@
 <span class="n">after</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
 
 <span class="k">print</span><span class="p">(</span><span class="n">after</span><span class="o">-</span><span class="n">before</span><span class="p">)</span>
-</pre></div>
-
-
-<p>On my machine, it takes 17.38 seconds. </p>
-<p>It is working fine but our boss is not happy. He wants us to make it faster. How do we make it faster? We use threads so
-that these two function calls run in parallel, right? In theory, running a function twice in parallel should take as much as running 
-it once. Because, well, those two function calls run in parallel. Let's try this out by calling the function twice but in different threads:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Thread</span>
+</pre></div><p>On my machine, it takes 17.38 seconds. </p><p>It is working fine but our boss is not happy. He wants us to make it faster. How do we make it faster? We use threads so that these two function calls run in parallel, right? In theory, running a function twice in parallel should take as much as running it once. Because, well, those two function calls run in parallel. Let's try this out by calling the function twice but in different threads:</p><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Thread</span>
 <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
 
 <span class="n">before</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
@@ -168,56 +39,12 @@ it once. Because, well, those two function calls run in parallel. Let's try this
 
 <span class="n">after</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
 <span class="k">print</span><span class="p">(</span><span class="n">after</span><span class="o">-</span><span class="n">before</span><span class="p">)</span>
-</pre></div>
-
-
-<p>It takes around 18.4 seconds on my machine. Wait, WHAT? <i class="em em-astonished"></i> It not only did not take as much as calling the function once
-but in fact it was even slower than calling the function twice without Threads. Try that with Python2.7 and you will get even worse results. 
-A prominent software developer, David Beazly reported that it even took almost 2x time in his talk <a href="http://www.dabeaz.com/python/GIL.pdf">Inside the Python GIL</a>.</p>
-<h2>But, WHY?</h2>
-<p>Please, welcome the notorious GIL - Global Interpreter Lock. This guy is to blame for all the problems in the world. GIL allows only 
-one thread to run at a time. In the above example, when we thought we were using two threads, we were only using just one, because the big boss 
-GIL did not allow us to. That's why, it did not run faster. But, why was it even slower? That's because every now and then Python 
-tries to switch Threads as we asked him to use two. GIL does not allow him to do so. However, when he tries to switch to no avail, there is 
-some overhead associated with it. Thus, the end result is even slower.</p>
-<h2>But, WHY?</h2>
-<p>We all know that Threads can be a good thing and help us make our programs run much faster. Why does the GIL exist, then? Damn you, GIL! 
-You are like Negan from the Walking Dead. </p>
-<div class="gallery large">
-    <a href="https://s3.amazonaws.com/rahmonov.me/post-images/python-gil/negan.jpg" rel="lightbox" title="Negan - GIL">
-        <img src="https://s3.amazonaws.com/rahmonov.me/post-images/python-gil/negan.jpg" alt="Negan - GIL">
-        <span>Negan - GIL</span>
-    </a>
-</div>
-
-<p>Well, it turns out GIL is not the villain after all. Actually, GIL is the good guy. It turns out that Python's memory management is not 
-thread-safe! That is, if you run multiple threads, your program may behave in weird and even catastrophic ways. GIL is there to help us from such 
-scenarios.</p>
-<div class="gallery large">
-    <a href="https://s3.amazonaws.com/rahmonov.me/post-images/python-gil/superman.jpg" rel="lightbox" title="Superman - GIL">
-        <img src="https://s3.amazonaws.com/rahmonov.me/post-images/python-gil/superman.jpg" alt="Superman - GIL">
-        <span>Superman - GIL</span>
-    </a>
-</div>
-
-<h2>But, wouldn't it be easier to remove the Thread class instead?</h2>
-<p>Excellent question! Instead of writing an additional tool that would prevent Threads from doing bad things to our programs, why not just 
-delete the <code>Thread</code> classes so that programmers simply won't be able to use them? We are not allowed to use them anyways.</p>
-<p>Turns out, there are some cases when <code>Thread</code> can be of use. All above examples were CPU bound, meaning that they need only CPU to run, they wait on CPU. 
-However, if your code is IO bound or image processing or NumPy number crunching, GIL won't be in your way as these operations happen outside 
-the GIL. That's where you can use the <code>Thread</code> class safely and effectively.</p>
-<p>Let's write some IO bound function. A function that requests a web url and returns its content as a text:</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
+</pre></div><p>It takes around 18.4 seconds on my machine. Wait, WHAT? <i class="em em-astonished"></i> It not only did not take as much as calling the function once but in fact it was even slower than calling the function twice without Threads. Try that with Python2.7 and you will get even worse results. A prominent software developer, David Beazly reported that it even took almost 2x time in his talk <a href="http://www.dabeaz.com/python/GIL.pdf">Inside the Python GIL</a>.</p><h2>But, WHY?</h2><p>Please, welcome the notorious GIL - Global Interpreter Lock. This guy is to blame for all the problems in the world. GIL allows only one thread to run at a time. In the above example, when we thought we were using two threads, we were only using just one, because the big boss GIL did not allow us to. That's why, it did not run faster. But, why was it even slower? That's because every now and then Python tries to switch Threads as we asked him to use two. GIL does not allow him to do so. However, when he tries to switch to no avail, there is some overhead associated with it. Thus, the end result is even slower.</p><h2>But, WHY?</h2><p>We all know that Threads can be a good thing and help us make our programs run much faster. Why does the GIL exist, then? Damn you, GIL! You are like Negan from the Walking Dead. </p><div class="gallery large"><a href="https://s3.amazonaws.com/rahmonov.me/post-images/python-gil/negan.jpg" rel="lightbox" title="Negan - GIL"><img src="https://s3.amazonaws.com/rahmonov.me/post-images/python-gil/negan.jpg" alt="Negan - GIL"><span>Negan - GIL</span></a></div><p>Well, it turns out GIL is not the villain after all. Actually, GIL is the good guy. It turns out that Python's memory management is not thread-safe! That is, if you run multiple threads, your program may behave in weird and even catastrophic ways. GIL is there to help us from such scenarios.</p><div class="gallery large"><a href="https://s3.amazonaws.com/rahmonov.me/post-images/python-gil/superman.jpg" rel="lightbox" title="Superman - GIL"><img src="https://s3.amazonaws.com/rahmonov.me/post-images/python-gil/superman.jpg" alt="Superman - GIL"><span>Superman - GIL</span></a></div><h2>But, wouldn't it be easier to remove the Thread class instead?</h2><p>Excellent question! Instead of writing an additional tool that would prevent Threads from doing bad things to our programs, why not just delete the <code>Thread</code> classes so that programmers simply won't be able to use them? We are not allowed to use them anyways.</p><p>Turns out, there are some cases when <code>Thread</code> can be of use. All above examples were CPU bound, meaning that they need only CPU to run, they wait on CPU. However, if your code is IO bound or image processing or NumPy number crunching, GIL won't be in your way as these operations happen outside the GIL. That's where you can use the <code>Thread</code> class safely and effectively.</p><p>Let's write some IO bound function. A function that requests a web url and returns its content as a text:</p><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
 
 <span class="k">def</span> <span class="nf">get_content</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
-</pre></div>
-
-
-<p>Calling this function once with the argument <code>https://google.com</code> takes 0.88 seconds on my machine. Calling it twice - 1.72 seconds, of course.
-Now, let's call it twice in different threads and see the <code>Thread</code>'s effect:</p>
-<div class="highlight"><pre><span></span><span class="n">before</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+</pre></div><p>Calling this function once with the argument <code>https://google.com</code> takes 0.88 seconds on my machine. Calling it twice - 1.72 seconds, of course. Now, let's call it twice in different threads and see the <code>Thread</code>'s effect:</p><div class="highlight"><pre><span></span><span class="n">before</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
 
 <span class="n">thread1</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">get_content</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;https://google.com&#39;</span><span class="p">,))</span>
 <span class="n">thread2</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">get_content</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;https://google.com&#39;</span><span class="p">,))</span>
@@ -231,19 +58,7 @@ Now, let's call it twice in different threads and see the <code>Thread</code>'s 
 <span class="n">after</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
 
 <span class="k">print</span><span class="p">(</span><span class="n">after</span> <span class="o">-</span> <span class="n">before</span><span class="p">)</span>
-</pre></div>
-
-
-<p>It takes 0.89 seconds. Hooray! Calling the function twice in different threads took as much as calling it just once. Once again, it worked 
-because our function was IO bound. The same thing did not work above when the function was CPU bound.</p>
-<h2>There is a catch</h2>
-<p>Each thread takes some additional memory and thread switching takes some time. Although it is not a lot, it adds up when you have thousands 
-of threads running. Think gigabytes of extra RAM and at least 5% of CPU time spent only for context switching.</p>
-<p>In order to solve this, Python developers came up with the <a href="https://docs.python.org/3/library/asyncio.html"><code>asyncio</code></a> library. Basically, 
-it has its own event loop to control the execution of functions in an asynchronous way inside a single thread. If <code>Thread</code>s were controlled by the underlying OS, 
-<code>asyncio</code> knows when to switch tasks with the help of some keywords written by developers themselves. That's right! You get to decide when to switch. 
-Let's convert the above example to use <code>asyncio</code>:</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+</pre></div><p>It takes 0.89 seconds. Hooray! Calling the function twice in different threads took as much as calling it just once. Once again, it worked because our function was IO bound. The same thing did not work above when the function was CPU bound.</p><h2>There is a catch</h2><p>Each thread takes some additional memory and thread switching takes some time. Although it is not a lot, it adds up when you have thousands of threads running. Think gigabytes of extra RAM and at least 5% of CPU time spent only for context switching.</p><p>In order to solve this, Python developers came up with the <a href="https://docs.python.org/3/library/asyncio.html"><code>asyncio</code></a> library. Basically, it has its own event loop to control the execution of functions in an asynchronous way inside a single thread. If <code>Thread</code>s were controlled by the underlying OS, <code>asyncio</code> knows when to switch tasks with the help of some keywords written by developers themselves. That's right! You get to decide when to switch. Let's convert the above example to use <code>asyncio</code>:</p><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">aiohttp</span>
 
 <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
@@ -262,28 +77,12 @@ Let's convert the above example to use <code>asyncio</code>:</p>
 <span class="n">loop</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">get_content</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;http://asyncio.readthedocs.io/&#39;</span><span class="p">))</span>
 
 <span class="n">loop</span><span class="o">.</span><span class="n">run_forever</span><span class="p">()</span>
-</pre></div>
-
-
-<p>Note that we are using <code>aiohttp</code> instead of <code>requests</code> because it is an asynchronous http library. Without going into the details, what this code does 
-is define an async function (aka coroutine) and call it 5 times with some id (just to illustrate asynchronicity). Output would be something like this:</p>
-<div class="highlight"><pre><span></span><span class="mi">3</span> <span class="n">b</span><span class="s1">&#39;&lt;!DOCTYPE html PUBLIC...</span>
+</pre></div><p>Note that we are using <code>aiohttp</code> instead of <code>requests</code> because it is an asynchronous http library. Without going into the details, what this code does is define an async function (aka coroutine) and call it 5 times with some id (just to illustrate asynchronicity). Output would be something like this:</p><div class="highlight"><pre><span></span><span class="mi">3</span> <span class="n">b</span><span class="s1">&#39;&lt;!DOCTYPE html PUBLIC...</span>
 <span class="mi">4</span> <span class="n">b</span><span class="s1">&#39;&lt;!DOCTYPE html PUBLIC...</span>
 <span class="mi">2</span> <span class="n">b</span><span class="s1">&#39;&lt;!DOCTYPE html PUBLIC...</span>
 <span class="mi">1</span> <span class="n">b</span><span class="s1">&#39;&lt;!DOCTYPE html PUBLIC...</span>
 <span class="mi">5</span> <span class="n">b</span><span class="s1">&#39;&lt;!DOCTYPE html PUBLIC...</span>
-</pre></div>
-
-
-<p>Note that ids are not in the order they were called, meaning that the tasks were switched when they encountered the keyword <code>await</code>. 
-We get the same results as using <code>Thread</code>s but <code>asyncio</code> uses less overhead and you control the switching process.</p>
-<p>Although this does not explain the details of <code>asyncio</code>, I hope it at least explains why it is useful.</p>
-<p>Okay, now that we dealt with IO bound tasks, let's go back to our first CPU bound problem.  </p>
-<h2>There is still hope for CPU bound tasks!</h2>
-<p>Turns out there is <code>multiprocessing.Process</code> class in Python which offers similar functionality and interface to the <code>Thread</code> class. The difference is 
-that it uses sub-processes instead of threads. That's why, it won't be blocked by the GIL. Awesome! Let's try that out with the above examples. 
-As I said, it offers a similar interface to the <code>Thread</code> class and thus we will just have to replace <code>Thread</code> with <code>Process</code> and we are done:</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Process</span>
+</pre></div><p>Note that ids are not in the order they were called, meaning that the tasks were switched when they encountered the keyword <code>await</code>. We get the same results as using <code>Thread</code>s but <code>asyncio</code> uses less overhead and you control the switching process.</p><p>Although this does not explain the details of <code>asyncio</code>, I hope it at least explains why it is useful.</p><p>Okay, now that we dealt with IO bound tasks, let's go back to our first CPU bound problem. </p><h2>There is still hope for CPU bound tasks!</h2><p>Turns out there is <code>multiprocessing.Process</code> class in Python which offers similar functionality and interface to the <code>Thread</code> class. The difference is that it uses sub-processes instead of threads. That's why, it won't be blocked by the GIL. Awesome! Let's try that out with the above examples. As I said, it offers a similar interface to the <code>Thread</code> class and thus we will just have to replace <code>Thread</code> with <code>Process</code> and we are done:</p><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Process</span>
 <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
 
 <span class="n">before</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
@@ -299,86 +98,13 @@ As I said, it offers a similar interface to the <code>Thread</code> class and th
 
 <span class="n">after</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
 <span class="k">print</span><span class="p">(</span><span class="n">after</span><span class="o">-</span><span class="n">before</span><span class="p">)</span>
-</pre></div>
-
-
-<p>It took ~8 seconds on my machine. That is as much as it took when we called the function just once. Cool! Try adding one more process and it will still take 
-the same time. That is awesome! However, do keep in mind that processes run in a separate memory space thus can't share data with each other, whereas, 
-threads can.</p>
-<p>Also keep in mind that we are talking about the CPython here. Other implementations such Jython and IronPython don't have GIL so they can use <code>Thread</code>s.
-If you don't know what Jython or IronPython are, refer to this <a href="/posts/what-is-python/">post of mine</a>.</p>
-<p>Thanks for reading and make sure to leave a comment if you have any questions.</p>
-<p>Fight on!</p>
-  </div>
-
-  <div class="pagination clearfix">
-         <a class="prev" href="/posts/nginx-ingress-controller/">« Previous</a>
-         <a class="next" href="/posts/introduction-to-kubernetes/">Next »</a>
-    </ul>
-  </div>
-
-<p>
-  <div class="likely likely-big">
-    <div class="facebook">Share</div>
-    <div class="twitter" data-via="rahmon0v">Tweet</div>
-    <div class="telegram">Send</div>
-    <div class="linkedin">Share</div>
-  </div>
-</p>
-
-<div class="end">
-    <span>
-        If you liked what you read, subscribe below. Once in a while, I will send you a list of my new posts.
-    </span>
-
-    <div id="popup">
-        <p>
-            <!-- Begin MailChimp Signup Form -->
-            <link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css">
-            <style type="text/css">
+</pre></div><p>It took ~8 seconds on my machine. That is as much as it took when we called the function just once. Cool! Try adding one more process and it will still take the same time. That is awesome! However, do keep in mind that processes run in a separate memory space thus can't share data with each other, whereas, threads can.</p><p>Also keep in mind that we are talking about the CPython here. Other implementations such Jython and IronPython don't have GIL so they can use <code>Thread</code>s. If you don't know what Jython or IronPython are, refer to this <a href="/posts/what-is-python/">post of mine</a>.</p><p>Thanks for reading and make sure to leave a comment if you have any questions.</p><p>Fight on!</p></div><div class="pagination clearfix"><a class="prev" href="/posts/nginx-ingress-controller/">« Previous</a><a class="next" href="/posts/introduction-to-kubernetes/">Next »</a></ul></div><p><div class="likely likely-big"><div class="facebook">Share</div><div class="twitter" data-via="rahmon0v">Tweet</div><div class="telegram">Send</div><div class="linkedin">Share</div></div></p><div class="end"><span> If you liked what you read, subscribe below. Once in a while, I will send you a list of my new posts. </span><div id="popup"><p><link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css"><style type="text/css">
                 #mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; }
                 /* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
                    We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
-            </style>
-            <div id="mc_embed_signup">
-            <form action="//rahmonov.us16.list-manage.com/subscribe/post?u=9e30bdfdfe0a7bd7cf7e0d50a&amp;id=af3f3c5f76" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
-                <div id="mc_embed_signup_scroll">
-            <div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
-            <div class="mc-field-group">
-                <label for="mce-MMERGE1">Name </label>
-                <input type="text" value="" name="MMERGE1" class="" id="mce-MMERGE1">
-            </div>
-            <div class="mc-field-group">
-                <label for="mce-EMAIL">Email Address  <span class="asterisk">*</span>
-            </label>
-                <input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
-            </div>
-                <div id="mce-responses" class="clear">
-                    <div class="response" id="mce-error-response" style="display:none"></div>
-                    <div class="response" id="mce-success-response" style="display:none"></div>
-                </div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-                <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_9e30bdfdfe0a7bd7cf7e0d50a_af3f3c5f76" tabindex="-1" value=""></div>
-                <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
-                </div>
-            </form>
-            </div>
-            <!--End mc_embed_signup-->
-        </p>
-    </div>
-</div>    <div style="text-align: center">
-        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-        <!-- above-comments -->
-        <ins class="adsbygoogle"
-             style="display:inline-block;width:728px;height:90px"
-             data-ad-client="ca-pub-7110437178205620"
-             data-ad-slot="6262754395"></ins>
-        <script>
+            </style><div id="mc_embed_signup"><form action="//rahmonov.us16.list-manage.com/subscribe/post?u=9e30bdfdfe0a7bd7cf7e0d50a&id=af3f3c5f76" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate><div id="mc_embed_signup_scroll"><div class="indicates-required"><span class="asterisk">*</span> indicates required</div><div class="mc-field-group"><label for="mce-MMERGE1">Name </label><input type="text" value name="MMERGE1" class id="mce-MMERGE1"></div><div class="mc-field-group"><label for="mce-EMAIL">Email Address <span class="asterisk">*</span></label><input type="email" value name="EMAIL" class="required email" id="mce-EMAIL"></div><div id="mce-responses" class="clear"><div class="response" id="mce-error-response" style="display:none"></div><div class="response" id="mce-success-response" style="display:none"></div></div> <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_9e30bdfdfe0a7bd7cf7e0d50a_af3f3c5f76" tabindex="-1" value></div><div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div></div></form></div></p></div></div> <div style="text-align: center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px" data-ad-client="ca-pub-7110437178205620" data-ad-slot="6262754395"></ins><script>
         (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-    </div>
-
-    <div id="disqus_thread"></div>
-    <script type="text/javascript">
+        </script></div><div id="disqus_thread"></div><script type="text/javascript">
         /* * * CONFIGURATION VARIABLES * * */
         var disqus_shortname = 'jrahmonov';
 
@@ -388,13 +114,7 @@ If you don't know what Jython or IronPython are, refer to this <a href="/posts/w
             dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
         })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
-            </div>
-        </div>
-    </div>
-
-    <script>
+    </script><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript></div></div></div><script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -402,10 +122,4 @@ If you don't know what Jython or IronPython are, refer to this <a href="/posts/w
 
       ga('create', 'UA-67392250-1', 'auto');
       ga('send', 'pageview');
-    </script>
-
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="/static/js/mobile.js"></script>
-    <script src="/static/vendor/lightbox2/js/lightbox.min.js"></script>
-</body>
-</html>
+    </script><script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/static/js/mobile.js"></script><script src="/static/vendor/lightbox2/js/lightbox.min.js"></script></body></html>
