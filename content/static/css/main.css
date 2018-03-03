@@ -171,6 +171,7 @@ button.nav {
 .side .profiles a {
     font-size: 1.6em;
     border-bottom: none;
+    margin-right: 4px;
 }
 
 .wrap {
@@ -540,6 +541,7 @@ code {
 .search-icon{
     position: relative;
     top: 4px;
+    margin-left: 2px;
 }
 
 #search-query{

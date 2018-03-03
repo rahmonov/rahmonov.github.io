@@ -77,4 +77,7 @@ FEED_ALL_RSS = 'feeds/rss.xml'
 FEED_DOMAIN = SITEURL
 
 PLUGIN_PATHS = ['../pelican-plugins']
-PLUGINS = ['neighbors']
+PLUGINS = [
+    'neighbors',
+    'minification',
+]

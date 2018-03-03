@@ -1,147 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head prefix="og: http://ogp.me/ns#">
-          <title> Zero Downtime Deployment with Kubernetes </title>
-
-        <link rel="stylesheet" href="/static/css/main.css" />
-        <link rel="stylesheet" href="/static/css/pygment.css" />
-        <link rel="stylesheet" href="/static/css/font-awesome.min.css" />
-        <link href="//fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet" type="text/css">
-        <link rel="stylesheet" href="/static/vendor/lightbox2/css/lightbox.min.css">
-        <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
-        <link rel="shortcut icon" type="image/png" href="/static/images/favicon.png"/>
-
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="<p>How to achieve a zero downtime deployment with Kubernetes</p>" />
-        <meta name="author" content="Jahongir Rahmonov" />
-        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-
-<meta property="og:title" content="Zero Downtime Deployment with Kubernetes">
-<meta property="og:type" content="website">
-<meta property="og:image" content="/static/images/programming.jpg">
-<meta property="og:url" content="http://rahmonov.me/posts/zero-downtime-deployment-with-kubernetes/">
-<meta property="og:description" content="<p>How to achieve a zero downtime deployment with Kubernetes</p>">
-
-        <link href="http://rahmonov.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Full Atom Feed" />
-        <link href="http://rahmonov.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="Jahongir Rahmonov Full RSS Feed" />
-        <link href="http://rahmonov.me/feeds/programming.atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Categories Atom Feed" />
-
-
-        <meta name="description" content="<p>How to achieve a zero downtime deployment with Kubernetes</p>" />
-
-    <meta name="tags" content="kubernetes" />
-
-  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-  <script>
+<!DOCTYPE html><html lang="en"><head prefix="og: http://ogp.me/ns#"><title>Zero Downtime Deployment with Kubernetes</title><link rel="stylesheet" href="/static/css/main.css"><link rel="stylesheet" href="/static/css/pygment.css"><link rel="stylesheet" href="/static/css/font-awesome.min.css"><link href="//fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet" type="text/css"><link rel="stylesheet" href="/static/vendor/lightbox2/css/lightbox.min.css"><link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet"><link rel="shortcut icon" type="image/png" href="/static/images/favicon.png"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="<p>How to achieve a zero downtime deployment with Kubernetes</p>"><meta name="author" content="Jahongir Rahmonov"><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"><meta property="og:title" content="Zero Downtime Deployment with Kubernetes"><meta property="og:type" content="website"><meta property="og:image" content="/static/images/programming.jpg"><meta property="og:url" content="http://rahmonov.me/posts/zero-downtime-deployment-with-kubernetes/"><meta property="og:description" content="<p>How to achieve a zero downtime deployment with Kubernetes</p>"><link href="http://rahmonov.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Full Atom Feed"><link href="http://rahmonov.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="Jahongir Rahmonov Full RSS Feed"><link href="http://rahmonov.me/feeds/programming.atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Categories Atom Feed"><meta name="description" content="<p>How to achieve a zero downtime deployment with Kubernetes</p>"><meta name="tags" content="kubernetes"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><script>
        (adsbygoogle = window.adsbygoogle || []).push({
             google_ad_client: "ca-pub-7110437178205620",
             enable_page_level_ads: true
        });
-  </script>
-
-  <link href="https://unpkg.com/ilyabirman-likely@2/release/likely.css" rel="stylesheet">
-  <script src="https://unpkg.com/ilyabirman-likely@2/release/likely.js" type="text/javascript"></script>
-
-</head>
-
-<body id="index" class="home">
-    <div class="container">
-
-        <button class="nav js-mobile">
-            <i class="fa fa-bars"></i>
-        </button>
-
-        <div class="side">
-            <div class="logo">
-                <a href="/"><img src="/static/images/me.jpg" width="150px" height="150px" class="jahon" alt="Jahongir Rahmonov"/></a>
-            </div>
-
-            <h2>Jahongir Rahmonov</h2>
-
-            <div class="paragraphs">
-<p>
-    I'm a Software Developer at <a href="http://mysuperdispatch.com/">Super Dispatch (TechStars '16)</a>.
-    Avid reader.
-    <a href="http://wiut.uz/">WIUT</a> graduate.
-    Blogger and an amateur speaker
-</p>
-<p>
-    I write about Python, Django, AngularJS and sometimes something non-technical.
-</p>
-<p>
-    Welcome to my corner <i class="em em-snake"></i>
-</p>            </div>
-
-            <form method="get" action="https://www.google.com/search">
-                <input name="sitesearch" value="rahmonov.me" type="hidden">
-                <input type="text" id="search-query" class="field field-text" required="required" name="q" placeholder="Search..." autocomplete="off">
-                <input type="image" src="/static/images/search-icon.png" width="20" height="20" class="search-icon" title="Search via Google" alt="Search via Google">
-            </form>
-
-            <ul class="menu">
-                <li><a href="/">Home</a></li>
-                <li><a href="/pages/about.html">About</a></li>
-                <li><a href="/pages/about.html#subscribe">Subscribe</a></li>
-                <li><a href="/pages/about.html#contact">Contact</a></li>
-                <li><a href="/feeds/atom.xml">RSS <i class="fa fa-rss"></i></a></li>
-            </ul>
-
-            <p class="profiles">
-                <a title="GitHub" href="https://github.com/rahmonov"><i class="fa fa-github-square"></i></a>
-                <a title="StackOverflow" href="https://stackoverflow.com/users/4137194/jahongir-rahmonov?tab=profile"><i class="fa fa-stack-overflow"></i></a>
-                <a title="Twitter" href="https://twitter.com/the_rahmonov"><i class="fa fa-twitter-square"></i></a>
-                <a title="Facebook" href="https://www.facebook.com/rahmonovj"><i class="fa fa-facebook-official"></i></a>
-                <a title="Instagram" href="https://www.instagram.com/rahmonov.me/"><i class="fa fa-instagram"></i></a>
-                <a title="LinkedIn" href="https://www.linkedin.com/in/jahongirrahmonov"><i class="fa fa-linkedin-square"></i></a>
-            </p>
-
-              <br>
-              <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-              <!-- sidebar-ad -->
-              <ins class="adsbygoogle"
-                   style="display:block"
-                   data-ad-client="ca-pub-7110437178205620"
-                   data-ad-slot="4214071905"
-                   data-ad-format="auto"></ins>
-              <script>
+  </script><link href="https://unpkg.com/ilyabirman-likely@2/release/likely.css" rel="stylesheet"><script src="https://unpkg.com/ilyabirman-likely@2/release/likely.js" type="text/javascript"></script></head><body id="index" class="home"><div class="container"><button class="nav js-mobile"><i class="fa fa-bars"></i></button><div class="side"><div class="logo"><a href="/"><img src="/static/images/me.jpg" width="150px" height="150px" class="jahon" alt="Jahongir Rahmonov"></a></div><h2>Jahongir Rahmonov</h2><div class="paragraphs"><p> I'm a Software Developer at <a href="http://mysuperdispatch.com/">Super Dispatch (TechStars '16)</a>. Avid reader. <a href="http://wiut.uz/">WIUT</a> graduate. Blogger and an amateur speaker </p><p> I write about Python, Django, AngularJS and sometimes something non-technical. </p><p> Welcome to my corner <i class="em em-snake"></i></p> </div><form method="get" action="https://www.google.com/search"><input name="sitesearch" value="rahmonov.me" type="hidden"><input type="text" id="search-query" class="field field-text" required name="q" placeholder="Search..." autocomplete="off"><input type="image" src="/static/images/search-icon.png" width="20" height="20" class="search-icon" title="Search via Google" alt="Search via Google"></form><ul class="menu"><li><a href="/">Home</a></li><li><a href="/pages/about.html">About</a></li><li><a href="/pages/about.html#subscribe">Subscribe</a></li><li><a href="/pages/about.html#contact">Contact</a></li><li><a href="/feeds/atom.xml">RSS <i class="fa fa-rss"></i></a></li></ul><p class="profiles"><a title="GitHub" href="https://github.com/rahmonov"><i class="fa fa-github-square"></i></a><a title="StackOverflow" href="https://stackoverflow.com/users/4137194/jahongir-rahmonov?tab=profile"><i class="fa fa-stack-overflow"></i></a><a title="Twitter" href="https://twitter.com/the_rahmonov"><i class="fa fa-twitter-square"></i></a><a title="Facebook" href="https://www.facebook.com/rahmonovj"><i class="fa fa-facebook-official"></i></a><a title="Instagram" href="https://www.instagram.com/rahmonov.me/"><i class="fa fa-instagram"></i></a><a title="LinkedIn" href="https://www.linkedin.com/in/jahongirrahmonov"><i class="fa fa-linkedin-square"></i></a></p><br><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7110437178205620" data-ad-slot="4214071905" data-ad-format="auto"></ins><script>
               (adsbygoogle = window.adsbygoogle || []).push({});
-              </script>
-        </div>
-
-        <div class="wrap">
-            <div class="content">
-
-  <h4>Sat 10 February 2018</h4>
-
-  <h1>Zero Downtime Deployment with Kubernetes</h1>
-
-  <div class="entry-content">
-    <p>It is 2018 and your users will not, I repeat, WILL NOT tolerate any downtime or outage with your application. Especially if 
-your app is in the B2B sector and other people's money depends on your app. That's why, as a responsible developer you come 
-to the office on Sundays and deploy the new version of your application hoping that people are not using your application on 
-weekends and that everything will go smoothly and there will be only 10 minutes of downtime as usual. You go to Intercom (
-or whatever you use for customer support) and see that there are already a few people complaining about the outage. You tell them
-everything is fine now and go home with a bad mood. You don't want to do anything now but drink/smoke/(insert your bad habit here).</p>
-<p>Instead of all that BS, you could have used your Sunday for something more useful. Only if there was no downtime while deploying a new version. 
-But that's just an unachievable dream. Even Kelsey Hightower himself admitted that it is a tough thing to do in his <a href="https://youtu.be/u_iAXzy3xBA?t=1915">PyCon Keynote in 2017</a>.</p>
-<p>Well, I am happy to tell you that with Kubernetes it is extremely easy, I repeat, EXTREMELY EASY to do a zero-downtime deployment <i class="em em-sunglasses"></i>.
-Are you feeling excited? Let's see a practical example then, shall we?</p>
-<blockquote>
-<p><strong>Note</strong> that this post assumes that you know the basics of Kubernetes. If not, see <a href="/posts/introduction-to-kubernetes/">this post</a></p>
-</blockquote>
-<h2>Deploy your app</h2>
-<p>I have prepared Docker images for an app that simply states this in the first version:</p>
-<blockquote>
-<p>Version 1 of my awesome app! Money is pouring in!</p>
-</blockquote>
-<p>and the second version of this app says this:</p>
-<blockquote>
-<p>Version 2 of my awesome app! More Money is pouring in!</p>
-</blockquote>
-<p>But before it starts running it will wait for 20 seconds. This is needed in order to illustrate downtime between deployments.</p>
-<p>Now let's write a deployment for the app (<code>deployment.yaml</code>):</p>
-<div class="highlight"><pre><span></span>apiVersion: extensions/v1beta1
+              </script></div><div class="wrap"><div class="content"><h4>Sat 10 February 2018</h4><h1>Zero Downtime Deployment with Kubernetes</h1><div class="entry-content"><p>It is 2018 and your users will not, I repeat, WILL NOT tolerate any downtime or outage with your application. Especially if your app is in the B2B sector and other people's money depends on your app. That's why, as a responsible developer you come to the office on Sundays and deploy the new version of your application hoping that people are not using your application on weekends and that everything will go smoothly and there will be only 10 minutes of downtime as usual. You go to Intercom ( or whatever you use for customer support) and see that there are already a few people complaining about the outage. You tell them everything is fine now and go home with a bad mood. You don't want to do anything now but drink/smoke/(insert your bad habit here).</p><p>Instead of all that BS, you could have used your Sunday for something more useful. Only if there was no downtime while deploying a new version. But that's just an unachievable dream. Even Kelsey Hightower himself admitted that it is a tough thing to do in his <a href="https://youtu.be/u_iAXzy3xBA?t=1915">PyCon Keynote in 2017</a>.</p><p>Well, I am happy to tell you that with Kubernetes it is extremely easy, I repeat, EXTREMELY EASY to do a zero-downtime deployment <i class="em em-sunglasses"></i>. Are you feeling excited? Let's see a practical example then, shall we?</p><blockquote><p><strong>Note</strong> that this post assumes that you know the basics of Kubernetes. If not, see <a href="/posts/introduction-to-kubernetes/">this post</a></p></blockquote><h2>Deploy your app</h2><p>I have prepared Docker images for an app that simply states this in the first version:</p><blockquote><p>Version 1 of my awesome app! Money is pouring in!</p></blockquote><p>and the second version of this app says this:</p><blockquote><p>Version 2 of my awesome app! More Money is pouring in!</p></blockquote><p>But before it starts running it will wait for 20 seconds. This is needed in order to illustrate downtime between deployments.</p><p>Now let's write a deployment for the app (<code>deployment.yaml</code>):</p><div class="highlight"><pre><span></span>apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: myapp-deployment
@@ -158,41 +22,12 @@ spec:
         ports:
           - containerPort: 80
             protocol: TCP
-</pre></div>
-
-
-<p>Everything is simple here. We are running our app on the port 80. Time to create the deployment:</p>
-<div class="highlight"><pre><span></span>kubectl create -f deployment.yaml
-</pre></div>
-
-
-<p>Verify that the app is running by doing <code>kubectl get pods</code>. If you see something like the following, you should be good:</p>
-<div class="highlight"><pre><span></span>myapp-deployment-5c66bd8856-t6rrt                                 1/1       Running   <span class="m">0</span>          6m
-</pre></div>
-
-
-<p>Now, let's expose our deployment so that it has an external IP through which it can receive traffic to the app:</p>
-<div class="highlight"><pre><span></span>kubectl expose deployment/myapp-deployment --type<span class="o">=</span><span class="s2">&quot;LoadBalancer&quot;</span> --port 80
-</pre></div>
-
-
-<p><strong>Note</strong> that exposing a deployment like this is not good. For how this should be done in a real project, see <a href="/posts/introduction-to-kubernetes/">this post</a>.</p>
-<p>After some time, do <code>kubectl get services</code> in order to find out the external IP of our app. You should see something like this:</p>
-<div class="highlight"><pre><span></span>NAME                        TYPE           CLUSTER-IP     EXTERNAL-IP      PORT<span class="o">(</span>S<span class="o">)</span>             AGE
+</pre></div><p>Everything is simple here. We are running our app on the port 80. Time to create the deployment:</p><div class="highlight"><pre><span></span>kubectl create -f deployment.yaml
+</pre></div><p>Verify that the app is running by doing <code>kubectl get pods</code>. If you see something like the following, you should be good:</p><div class="highlight"><pre><span></span>myapp-deployment-5c66bd8856-t6rrt                                 1/1       Running   <span class="m">0</span>          6m
+</pre></div><p>Now, let's expose our deployment so that it has an external IP through which it can receive traffic to the app:</p><div class="highlight"><pre><span></span>kubectl expose deployment/myapp-deployment --type<span class="o">=</span><span class="s2">&quot;LoadBalancer&quot;</span> --port 80
+</pre></div><p><strong>Note</strong> that exposing a deployment like this is not good. For how this should be done in a real project, see <a href="/posts/introduction-to-kubernetes/">this post</a>.</p><p>After some time, do <code>kubectl get services</code> in order to find out the external IP of our app. You should see something like this:</p><div class="highlight"><pre><span></span>NAME                        TYPE           CLUSTER-IP     EXTERNAL-IP      PORT<span class="o">(</span>S<span class="o">)</span>             AGE
 myapp-deployment            LoadBalancer   10.3.248.68    100.193.114.176   80:31483/TCP        10m
-</pre></div>
-
-
-<p>Type that EXTERNAL-IP in your browser and you should see this:</p>
-<div class="gallery large">
-    <a href="https://s3.amazonaws.com/rahmonov.me/post-images/zero-downtime-with-k8s/v1.png" rel="lightbox" title="First version">
-        <img src="https://s3.amazonaws.com/rahmonov.me/post-images/zero-downtime-with-k8s/v1.png" alt="First version">
-        <span>First version</span>
-    </a>
-</div>
-
-<p>Now, let's deploy the second version of our app. To do that, change the version of the container in your <code>deployment.yaml</code>:</p>
-<div class="highlight"><pre><span></span>apiVersion: extensions/v1beta1
+</pre></div><p>Type that EXTERNAL-IP in your browser and you should see this:</p><div class="gallery large"><a href="https://s3.amazonaws.com/rahmonov.me/post-images/zero-downtime-with-k8s/v1.png" rel="lightbox" title="First version"><img src="https://s3.amazonaws.com/rahmonov.me/post-images/zero-downtime-with-k8s/v1.png" alt="First version"><span>First version</span></a></div><p>Now, let's deploy the second version of our app. To do that, change the version of the container in your <code>deployment.yaml</code>:</p><div class="highlight"><pre><span></span>apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: myapp-deployment
@@ -209,20 +44,12 @@ spec:
         ports:
           - containerPort: 80
             protocol: TCP
-</pre></div>
-
-
-<p>Before we apply the change, open your terminal and do this:</p>
-<div class="highlight"><pre><span></span><span class="k">while</span> True
+</pre></div><p>Before we apply the change, open your terminal and do this:</p><div class="highlight"><pre><span></span><span class="k">while</span> True
     <span class="k">do</span>
         curl 100.193.114.176
         sleep 1s
     <span class="k">done</span>
-</pre></div>
-
-
-<p>Make sure you use your own external IP here. This will send a request to our app every second. Run it and you will see this every second:</p>
-<div class="highlight"><pre><span></span>&lt;!doctype html&gt;
+</pre></div><p>Make sure you use your own external IP here. This will send a request to our app every second. Run it and you will see this every second:</p><div class="highlight"><pre><span></span>&lt;!doctype html&gt;
 &lt;html <span class="nv">lang</span><span class="o">=</span><span class="s2">&quot;en&quot;</span>&gt;
 &lt;head&gt;
   &lt;meta <span class="nv">charset</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span>&gt;
@@ -234,22 +61,10 @@ spec:
 
 &lt;/body&gt;
 &lt;/html&gt;
-</pre></div>
-
-
-<p>Cool. We know that our app is working. Now, in another terminal, let's apply our change:</p>
-<div class="highlight"><pre><span></span>kubectl apply -f deployment.yaml
-</pre></div>
-
-
-<p>Go back to the previous terminal window and watch. You will see that some of the requests did not go through and said this:</p>
-<div class="highlight"><pre><span></span>curl: <span class="o">(</span>7<span class="o">)</span> Failed to connect to 100.193.114.176 port 80: Connection refused
+</pre></div><p>Cool. We know that our app is working. Now, in another terminal, let's apply our change:</p><div class="highlight"><pre><span></span>kubectl apply -f deployment.yaml
+</pre></div><p>Go back to the previous terminal window and watch. You will see that some of the requests did not go through and said this:</p><div class="highlight"><pre><span></span>curl: <span class="o">(</span>7<span class="o">)</span> Failed to connect to 100.193.114.176 port 80: Connection refused
 curl: <span class="o">(</span>7<span class="o">)</span> Failed to connect to 100.193.114.176 port 80: Connection refused
-</pre></div>
-
-
-<p>Only after some time we see that our app started working again with the version 2:</p>
-<div class="highlight"><pre><span></span>curl: <span class="o">(</span>7<span class="o">)</span> Failed to connect to 35.193.114.176 port 80: Connection refused
+</pre></div><p>Only after some time we see that our app started working again with the version 2:</p><div class="highlight"><pre><span></span>curl: <span class="o">(</span>7<span class="o">)</span> Failed to connect to 35.193.114.176 port 80: Connection refused
 curl: <span class="o">(</span>7<span class="o">)</span> Failed to connect to 35.193.114.176 port 80: Connection refused
 curl: <span class="o">(</span>7<span class="o">)</span> Failed to connect to 35.193.114.176 port 80: Connection refused
 curl: <span class="o">(</span>7<span class="o">)</span> Failed to connect to 35.193.114.176 port 80: Connection refused
@@ -278,38 +93,19 @@ curl: <span class="o">(</span>7<span class="o">)</span> Failed to connect to 35.
 
 &lt;/body&gt;
 &lt;/html&gt;
-</pre></div>
-
-
-<p>This is the downtime we have been afraid of. Now, the time has come to awaken our inner ninja and remove this downtime so that 
-users don't feel let down by us.</p>
-<p>To do that, we use something called <code>readiness probe</code>. Basically, this is a check that Kubernetes does in order to make sure that
-your pod is ready to send traffic to it. Until it is not ready, Kubernetes will not use your pod. Easy! In our case, it looks like this:</p>
-<div class="highlight"><pre><span></span>readinessProbe:
+</pre></div><p>This is the downtime we have been afraid of. Now, the time has come to awaken our inner ninja and remove this downtime so that users don't feel let down by us.</p><p>To do that, we use something called <code>readiness probe</code>. Basically, this is a check that Kubernetes does in order to make sure that your pod is ready to send traffic to it. Until it is not ready, Kubernetes will not use your pod. Easy! In our case, it looks like this:</p><div class="highlight"><pre><span></span>readinessProbe:
   httpGet:
     path: /
     port: 80
   initialDelaySeconds: 5
   periodSeconds: 5
   successThreshold: 1
-</pre></div>
-
-
-<p>We are basically telling Kubernetes to send an http get request to the path <code>/</code> every five seconds and if it is successful, mark the 
-pod ready and start sending traffic to it.</p>
-<p>Another thing that we should know is something called <code>RollingUpdate strategy</code>. It looks like this:</p>
-<div class="highlight"><pre><span></span>  strategy:
+</pre></div><p>We are basically telling Kubernetes to send an http get request to the path <code>/</code> every five seconds and if it is successful, mark the pod ready and start sending traffic to it.</p><p>Another thing that we should know is something called <code>RollingUpdate strategy</code>. It looks like this:</p><div class="highlight"><pre><span></span>  strategy:
     type: RollingUpdate
     rollingUpdate:
       maxUnavailable: 0
       maxSurge: 1
-</pre></div>
-
-
-<p>It basically tells Kubernetes that there should be zero unavailable pods while deploying (<code>maxUnavailable: 0</code>) and there should be 
-one new pod at a time (<code>maxSurge: 1</code>).</p>
-<p>Combine these two things and our <code>deployment.yaml</code> will look like this:</p>
-<div class="highlight"><pre><span></span>apiVersion: extensions/v1beta1
+</pre></div><p>It basically tells Kubernetes that there should be zero unavailable pods while deploying (<code>maxUnavailable: 0</code>) and there should be one new pod at a time (<code>maxSurge: 1</code>).</p><p>Combine these two things and our <code>deployment.yaml</code> will look like this:</p><div class="highlight"><pre><span></span>apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: myapp-deployment
@@ -338,16 +134,8 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 5
           successThreshold: 1
-</pre></div>
-
-
-<p>Make sure that our <code>while loop</code> check is running and saying that the v2 of our app is working. Let's apply our changes now and watch the while loop:</p>
-<div class="highlight"><pre><span></span>kubectl apply -f deployment.yaml
-</pre></div>
-
-
-<p>After some time you will see that <code>v1</code> start to run right after <code>v2</code> without any delay:</p>
-<div class="highlight"><pre><span></span>&lt;!doctype html&gt;
+</pre></div><p>Make sure that our <code>while loop</code> check is running and saying that the v2 of our app is working. Let's apply our changes now and watch the while loop:</p><div class="highlight"><pre><span></span>kubectl apply -f deployment.yaml
+</pre></div><p>After some time you will see that <code>v1</code> start to run right after <code>v2</code> without any delay:</p><div class="highlight"><pre><span></span>&lt;!doctype html&gt;
 &lt;html <span class="nv">lang</span><span class="o">=</span><span class="s2">&quot;en&quot;</span>&gt;
 &lt;head&gt;
   &lt;meta <span class="nv">charset</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span>&gt;
@@ -372,91 +160,13 @@ spec:
 
 &lt;/body&gt;
 &lt;/html&gt;
-</pre></div>
-
-
-<p>God, this feels great, doesn't it. No more <code>Connection refused</code> errors between deployments.</p>
-<p>Congratulations!!! We have done it. Pat yourself in the back. You know what the implications of this are? You don't have 
-to deploy on Sundays now and use it for something better. You can deploy any day you want. No more customer complaints about downtime/outage. 
-You are free!</p>
-<h2>Conclusion</h2>
-<p>As you can see with 10 more lines of code we have achieved that mythical zero-downtime deployment. With Kubernetes it is not 
-mythical and dark anymore. </p>
-<p>Let me know in the comments if you have any questions regarding this. Thanks for reading.</p>
-<p>Fight on!</p>
-<hr>
-
-<p>You may also find these <strong>related</strong> posts interesting: <a href="/posts/introduction-to-kubernetes/">Introduction to Kubernetes</a>, <a href="/posts/nginx-ingress-controller/">Nginx Ingress Controller</a>  </p>
-  </div>
-
-  <div class="pagination clearfix">
-         <a class="prev" href="/posts/introduction-to-kubernetes/">« Previous</a>
-         <a class="next" href="/posts/how-to-become-senior-software-developer/">Next »</a>
-    </ul>
-  </div>
-
-<p>
-  <div class="likely likely-big">
-    <div class="facebook">Share</div>
-    <div class="twitter" data-via="rahmon0v">Tweet</div>
-    <div class="telegram">Send</div>
-    <div class="linkedin">Share</div>
-  </div>
-</p>
-
-<div class="end">
-    <span>
-        If you liked what you read, subscribe below. Once in a while, I will send you a list of my new posts.
-    </span>
-
-    <div id="popup">
-        <p>
-            <!-- Begin MailChimp Signup Form -->
-            <link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css">
-            <style type="text/css">
+</pre></div><p>God, this feels great, doesn't it. No more <code>Connection refused</code> errors between deployments.</p><p>Congratulations!!! We have done it. Pat yourself in the back. You know what the implications of this are? You don't have to deploy on Sundays now and use it for something better. You can deploy any day you want. No more customer complaints about downtime/outage. You are free!</p><h2>Conclusion</h2><p>As you can see with 10 more lines of code we have achieved that mythical zero-downtime deployment. With Kubernetes it is not mythical and dark anymore. </p><p>Let me know in the comments if you have any questions regarding this. Thanks for reading.</p><p>Fight on!</p><hr><p>You may also find these <strong>related</strong> posts interesting: <a href="/posts/introduction-to-kubernetes/">Introduction to Kubernetes</a>, <a href="/posts/nginx-ingress-controller/">Nginx Ingress Controller</a> </p></div><div class="pagination clearfix"><a class="prev" href="/posts/introduction-to-kubernetes/">« Previous</a><a class="next" href="/posts/how-to-become-senior-software-developer/">Next »</a></ul></div><p><div class="likely likely-big"><div class="facebook">Share</div><div class="twitter" data-via="rahmon0v">Tweet</div><div class="telegram">Send</div><div class="linkedin">Share</div></div></p><div class="end"><span> If you liked what you read, subscribe below. Once in a while, I will send you a list of my new posts. </span><div id="popup"><p><link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css"><style type="text/css">
                 #mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; }
                 /* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
                    We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
-            </style>
-            <div id="mc_embed_signup">
-            <form action="//rahmonov.us16.list-manage.com/subscribe/post?u=9e30bdfdfe0a7bd7cf7e0d50a&amp;id=af3f3c5f76" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
-                <div id="mc_embed_signup_scroll">
-            <div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
-            <div class="mc-field-group">
-                <label for="mce-MMERGE1">Name </label>
-                <input type="text" value="" name="MMERGE1" class="" id="mce-MMERGE1">
-            </div>
-            <div class="mc-field-group">
-                <label for="mce-EMAIL">Email Address  <span class="asterisk">*</span>
-            </label>
-                <input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
-            </div>
-                <div id="mce-responses" class="clear">
-                    <div class="response" id="mce-error-response" style="display:none"></div>
-                    <div class="response" id="mce-success-response" style="display:none"></div>
-                </div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-                <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_9e30bdfdfe0a7bd7cf7e0d50a_af3f3c5f76" tabindex="-1" value=""></div>
-                <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
-                </div>
-            </form>
-            </div>
-            <!--End mc_embed_signup-->
-        </p>
-    </div>
-</div>    <div style="text-align: center">
-        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-        <!-- above-comments -->
-        <ins class="adsbygoogle"
-             style="display:inline-block;width:728px;height:90px"
-             data-ad-client="ca-pub-7110437178205620"
-             data-ad-slot="6262754395"></ins>
-        <script>
+            </style><div id="mc_embed_signup"><form action="//rahmonov.us16.list-manage.com/subscribe/post?u=9e30bdfdfe0a7bd7cf7e0d50a&id=af3f3c5f76" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate><div id="mc_embed_signup_scroll"><div class="indicates-required"><span class="asterisk">*</span> indicates required</div><div class="mc-field-group"><label for="mce-MMERGE1">Name </label><input type="text" value name="MMERGE1" class id="mce-MMERGE1"></div><div class="mc-field-group"><label for="mce-EMAIL">Email Address <span class="asterisk">*</span></label><input type="email" value name="EMAIL" class="required email" id="mce-EMAIL"></div><div id="mce-responses" class="clear"><div class="response" id="mce-error-response" style="display:none"></div><div class="response" id="mce-success-response" style="display:none"></div></div> <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_9e30bdfdfe0a7bd7cf7e0d50a_af3f3c5f76" tabindex="-1" value></div><div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div></div></form></div></p></div></div> <div style="text-align: center"><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px" data-ad-client="ca-pub-7110437178205620" data-ad-slot="6262754395"></ins><script>
         (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-    </div>
-
-    <div id="disqus_thread"></div>
-    <script type="text/javascript">
+        </script></div><div id="disqus_thread"></div><script type="text/javascript">
         /* * * CONFIGURATION VARIABLES * * */
         var disqus_shortname = 'jrahmonov';
 
@@ -466,13 +176,7 @@ mythical and dark anymore. </p>
             dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
             (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
         })();
-    </script>
-    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
-            </div>
-        </div>
-    </div>
-
-    <script>
+    </script><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript></div></div></div><script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -480,10 +184,4 @@ mythical and dark anymore. </p>
 
       ga('create', 'UA-67392250-1', 'auto');
       ga('send', 'pageview');
-    </script>
-
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="/static/js/mobile.js"></script>
-    <script src="/static/vendor/lightbox2/js/lightbox.min.js"></script>
-</body>
-</html>
+    </script><script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/static/js/mobile.js"></script><script src="/static/vendor/lightbox2/js/lightbox.min.js"></script></body></html>
