@@ -80,4 +80,15 @@ PLUGIN_PATHS = ['../pelican-plugins']
 PLUGINS = [
     'neighbors',
     'minification',
+    'sitemap'
 ]
+
+SITEMAP = {
+    'format': 'xml',
+    'exclude': ['tag/', 'category/', 'tags/', 'authors/', 'author/'],
+    'changefreqs': {
+        'articles': 'weekly',
+        'indexes': 'daily',
+        'pages': 'weekly'
+    }
+}
