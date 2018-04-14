@@ -5,28 +5,28 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://rahmonov.me/</loc>
-<lastmod>2018-04-08T16:23:34-00:00</lastmod>
+<lastmod>2018-04-14T15:10:48-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://rahmonov.me/archives.html</loc>
-<lastmod>2018-04-08T16:23:34-00:00</lastmod>
+<lastmod>2018-04-14T15:10:48-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://rahmonov.me/tags.html</loc>
-<lastmod>2018-04-08T16:23:34-00:00</lastmod>
+<lastmod>2018-04-14T15:10:48-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://rahmonov.me/categories.html</loc>
-<lastmod>2018-04-08T16:23:34-00:00</lastmod>
+<lastmod>2018-04-14T15:10:48-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
