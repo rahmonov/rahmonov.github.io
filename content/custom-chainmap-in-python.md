@@ -1,7 +1,7 @@
 Title: Custom ChainMap in Python
 Date: 2017-10-21 20:10
 Modified: 2017-10-21 20:10
-Category: programming
+Category: python
 Tags: python, collections, chainmap
 Slug: custom-chainmap-in-python
 Authors: Jahongir Rahmonov

@@ -1,7 +1,7 @@
 Title: Python Generators
 Date: 2017-09-02 20:10
 Modified: 2017-09-02 20:10
-Category: programming
+Category: python
 Tags: python, generators, function
 Slug: python-generators
 Authors: Jahongir Rahmonov

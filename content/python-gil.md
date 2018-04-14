@@ -1,7 +1,7 @@
 Title: Python GIL
 Date: 2017-12-08 20:10
 Modified: 2017-12-08 20:10
-Category: programming
+Category: python
 Tags: python
 Slug: python-gil
 Authors: Jahongir Rahmonov

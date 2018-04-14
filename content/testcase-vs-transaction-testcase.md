@@ -1,7 +1,7 @@
 Title: TestCase vs TransactionTestCase in Django
 Date: 2017-06-11 20:10
 Modified: 2017-06-11 20:10
-Category: programming
+Category: python
 Tags: python, django, unittesting, testing
 Slug: testcase-vs-transactiontestcase-in-django
 Authors: Jahongir Rahmonov

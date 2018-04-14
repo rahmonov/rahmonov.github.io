@@ -1,7 +1,7 @@
 Title: Customize django admin templates
 Date: 2015-10-18 21:14
 Modified: 2015-10-18 21:14
-Category: programming
+Category: python
 Tags: python, django, admin
 Slug: customize-django-admin-templates
 Authors: Jahongir Rahmonov

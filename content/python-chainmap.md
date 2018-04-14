@@ -1,7 +1,7 @@
 Title: Python ChainMap
 Date: 2017-10-17 20:10
 Modified: 2017-10-17 20:10
-Category: programming
+Category: python
 Tags: python, collections, chainmap
 Slug: python-chainmap
 Authors: Jahongir Rahmonov

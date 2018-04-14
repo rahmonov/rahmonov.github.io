@@ -1,7 +1,7 @@
 Title: Set up Continuous Integration and Continuous Deployment for a Django app with Jenkins
 Date: 2017-04-02 20:10
 Modified: 2017-04-02 20:10
-Category: programming
+Category: python
 Tags: python, django, digitalocean, ci, cd, jenkins
 Slug: continuous-integration-and-continous-deployment-for-django-app-with-jenkins
 Authors: Jahongir Rahmonov

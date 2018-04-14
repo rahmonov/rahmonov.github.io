@@ -1,7 +1,7 @@
 Title: What the hell is WSGI anyway and what do you eat it with?
 Date: 2017-07-25 20:10
 Modified: 2017-07-25 20:10
-Category: programming
+Category: python
 Tags: python, wsgi, server, application
 Slug: what-the-hell-is-wsgi-anyway-and-what-do-you-eat-it-with
 Authors: Jahongir Rahmonov

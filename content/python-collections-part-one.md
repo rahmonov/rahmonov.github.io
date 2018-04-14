@@ -1,7 +1,7 @@
 Title: Python Collections - Counter
 Date: 2017-07-21 20:10
 Modified: 2017-07-21 20:10
-Category: programming
+Category: python
 Tags: python, collections, counter
 Slug: python-collections-counter
 Authors: Jahongir Rahmonov

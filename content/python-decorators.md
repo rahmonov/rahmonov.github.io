@@ -1,7 +1,7 @@
 Title: Python Decorators
 Date: 2017-08-30 20:10
 Modified: 2017-08-30 20:10
-Category: programming
+Category: python
 Tags: python, decorators, function
 Slug: python-decorators
 Authors: Jahongir Rahmonov

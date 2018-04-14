@@ -1,7 +1,7 @@
 Title: Introduction to Python Social Auth
 Date: 2015-09-12 21:14
 Modified: 2015-09-12 21:14
-Category: programming
+Category: python
 Tags: python, authentication
 Slug: introduction-to-python-social-auth
 Authors: Jahongir Rahmonov

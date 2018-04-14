@@ -1,7 +1,7 @@
 Title: What is Python?
 Date: 2017-10-23 20:10
 Modified: 2017-10-23 20:10
-Category: programming
+Category: python
 Tags: python, programming, language
 Slug: what-is-python
 Authors: Jahongir Rahmonov

@@ -254,7 +254,8 @@ turn it back on.&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;That's it! Add small commits and unit tests to this mix and you will have the famous Trunk Based Development implemented, which is a theme for another post.&lt;/p&gt;
+&lt;p&gt;That's it! You have successfully worked on a big improvement without using branches, i.e. directly on the master branch.
+Add small commits and unit tests to this mix and you will have the famous Trunk Based Development implemented, which is a theme for another post.&lt;/p&gt;
 &lt;p&gt;Let me know in the comments if you have any questions.&lt;/p&gt;
 &lt;p&gt;Fight on!&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jahongir Rahmonov</dc:creator><pubDate>Sun, 08 Apr 2018 20:10:00 +0500</pubDate><guid isPermaLink="false">tag:rahmonov.me,2018-04-08:posts/branch-by-abstraction/</guid><category>programming</category><category>python</category></item><item><title>Static Site Generator in Python</title><link>http://rahmonov.me/posts/static-site-generator/</link><description>&lt;p&gt;Static site generators are all the rage lately. This very website that you are reading is also powered by a static site generator and I love it.
 But why have they become so popular? What advantages do they have in comparison to some content management system such as Wordpress?&lt;/p&gt;
