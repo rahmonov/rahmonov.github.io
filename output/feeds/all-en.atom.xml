@@ -1,5 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.me/" rel="alternate"></link><link href="http://rahmonov.me/feeds/all-en.atom.xml" rel="self"></link><id>http://rahmonov.me/</id><updated>2018-04-08T20:10:00+05:00</updated><entry><title>Branch by Abstraction</title><link href="http://rahmonov.me/posts/branch-by-abstraction/" rel="alternate"></link><published>2018-04-08T20:10:00+05:00</published><updated>2018-04-08T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2018-04-08:posts/branch-by-abstraction/</id><summary type="html">&lt;p&gt;Agile, devops, continuous integration, continuous delivery, scrum, kanban, automation...
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.me/" rel="alternate"></link><link href="http://rahmonov.me/feeds/all-en.atom.xml" rel="self"></link><id>http://rahmonov.me/</id><updated>2018-06-07T20:10:00+05:00</updated><entry><title>Django Static Files</title><link href="http://rahmonov.me/posts/django-static-files/" rel="alternate"></link><published>2018-06-07T20:10:00+05:00</published><updated>2018-06-07T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2018-06-07:posts/django-static-files/</id><summary type="html">&lt;p&gt;Have you ever been frustrated when your Django application did not find the static files you were using?
+Then, you read the documentation and played around with all those settings variables and after a couple of hours it was finally fixed.
+However, you had no idea what you just did. I have been in this situation so many times that I decided to write
+this post where I explain everything you need to configure your static files in a Django application.&lt;/p&gt;
+&lt;p&gt;The &lt;strong&gt;first&lt;/strong&gt; thing you need to know is that static files are stored at &lt;code&gt;$APP/static/&lt;/code&gt; where &lt;code&gt;$APP&lt;/code&gt; is an application name:&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="https://s3.amazonaws.com/rahmonov.me/post-images/django-static-files/django-static-files.jpg" rel="lightbox" title="first"&gt;
+        &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/django-static-files/django-static-files.jpg" alt="first"&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;p&gt;These are usually static files such as css and javascript files that are related to that &lt;code&gt;$APP&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;You can &lt;strong&gt;also&lt;/strong&gt; tell Django to look for static files in some arbitrary locations of your choice. You use &lt;code&gt;STATICFILES_DIRS&lt;/code&gt; for that:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;STATICFILES_DIRS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+    &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;BASE_DIR&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;unrelatedstatic&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;These are usually static files that are not related to any app that you have in your Django application.&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="https://s3.amazonaws.com/rahmonov.me/post-images/django-static-files/static-files-dirs.jpg" rel="lightbox" title="Staticfiles dirs"&gt;
+        &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/django-static-files/static-files-dirs.jpg" alt="Staticfiles dirs"&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now, keep in mind that these different folders are where you store your static assets &lt;strong&gt;DURING DEVELOPMENT&lt;/strong&gt;. When you deploy your app to the production,
+you want to configure your web server (e.g. &lt;a href="/posts/run-a-django-app-with-nginx-gunicorn-and-supervisor/"&gt;NGINX&lt;/a&gt;) to look for static files in one
+single location rather than multiple paths. How do you collect all your static files from different apps to a single folder? As simple as this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;python&lt;/span&gt; &lt;span class="n"&gt;manage&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="n"&gt;collectstatic&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;However, this will throw an exception because it does not know where to collect the files yet. You need to tell it by setting the &lt;code&gt;STATIC_ROOT&lt;/code&gt; setting:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;STATIC_ROOT&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;BASE_DIR&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;allstaticfiles&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now run that command and all you static files will be collected to &lt;code&gt;allstaticfiles&lt;/code&gt; folder in your project root:&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="https://s3.amazonaws.com/rahmonov.me/post-images/django-static-files/collectstatic.png" rel="lightbox" title="Collectstatic"&gt;
+        &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/django-static-files/collectstatic.png" alt="Collectstatic"&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Again, you &lt;strong&gt;DON'T PUT&lt;/strong&gt; any static file in &lt;code&gt;STATIC_ROOT&lt;/code&gt;. That's where files get collected automatically after you run &lt;code&gt;collectstatic&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Now, in production, you can configure your web server to serve static files from that location. In NGINX, it would look like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;location /static/ &lt;span class="o"&gt;{&lt;/span&gt;
+    root   /my/project/allstaticfiles/&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And the last piece is to set &lt;code&gt;STATIC_URL&lt;/code&gt; to your &lt;code&gt;STATIC_ROOT&lt;/code&gt; so that when you do &lt;code&gt;{% static 'main.css' %}&lt;/code&gt; in a django template, it uses the &lt;code&gt;allstaticfiles&lt;/code&gt; folder in production.&lt;/p&gt;
+&lt;p&gt;Again, &lt;code&gt;STATIC_URL&lt;/code&gt; is set to &lt;code&gt;static&lt;/code&gt; during development and to &lt;code&gt;STATIC_ROOT&lt;/code&gt; in production:&lt;/p&gt;
+&lt;div class="gallery large"&gt;
+    &lt;a href="https://s3.amazonaws.com/rahmonov.me/post-images/django-static-files/production.png" rel="lightbox" title="result"&gt;
+        &lt;img src="https://s3.amazonaws.com/rahmonov.me/post-images/django-static-files/production.png" alt="result"&gt;
+    &lt;/a&gt;
+&lt;/div&gt;
+
+&lt;p&gt;I learned this while attending &lt;a href="https://2018.djangocon.eu/"&gt;DjangoCon Europe 2018&lt;/a&gt; and thus all credits go to &lt;a href="https://github.com/funkybob"&gt;Curtis Maloney&lt;/a&gt; who
+presented this in a lighting talk. It made my life easier and I hope it does the same for everybody else.&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="programming"></category><category term="python"></category></entry><entry><title>Branch by Abstraction</title><link href="http://rahmonov.me/posts/branch-by-abstraction/" rel="alternate"></link><published>2018-04-08T20:10:00+05:00</published><updated>2018-04-08T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2018-04-08:posts/branch-by-abstraction/</id><summary type="html">&lt;p&gt;Agile, devops, continuous integration, continuous delivery, scrum, kanban, automation...
 How many times a day do you hear one of these words? I come across these words every single day whether it be in a book
 or during a conversation with a co-worker.
 There is a reason for it though. Everybody is trying to improve their team's performance so that
