@@ -1,5 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.me/" rel="alternate"></link><link href="http://rahmonov.me/feeds/atom.xml" rel="self"></link><id>http://rahmonov.me/</id><updated>2018-06-07T20:10:00+05:00</updated><entry><title>Django Static Files</title><link href="http://rahmonov.me/posts/django-static-files/" rel="alternate"></link><published>2018-06-07T20:10:00+05:00</published><updated>2018-06-07T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2018-06-07:posts/django-static-files/</id><summary type="html">&lt;p&gt;Have you ever been frustrated when your Django application did not find the static files you were using?
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Jahongir Rahmonov</title><link href="http://rahmonov.me/" rel="alternate"></link><link href="http://rahmonov.me/feeds/atom.xml" rel="self"></link><id>http://rahmonov.me/</id><updated>2019-02-03T20:10:00+05:00</updated><entry><title>You are a programmer, automate your life already!</title><link href="http://rahmonov.me/posts/automate-your-life/" rel="alternate"></link><published>2019-02-03T20:10:00+05:00</published><updated>2019-02-03T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2019-02-03:posts/automate-your-life/</id><summary type="html">&lt;p&gt;Hello, how are you? I have missed you. I haven't blogged for a long time now. But I have prepared something good for you to compensate.&lt;/p&gt;
+&lt;p&gt;Today, we will automate a boring task that I have been doing manually for a very long time now.&lt;/p&gt;
+&lt;p&gt;An inspiration for this blog post came from &lt;a href="https://twitter.com/nnja"&gt;Nina Zakharenko&lt;/a&gt;, Senior Cloud Developer Advocate at Microsoft, who recently tweeted the following:&lt;/p&gt;
+&lt;blockquote class="twitter-tweet" data-lang="en"&gt;&lt;p lang="en" dir="ltr"&gt;My personal &lt;a href="https://twitter.com/AppleSupport?ref_src=twsrc%5Etfw"&gt;@AppleSupport&lt;/a&gt; laptop has been in and out of the shop most of Nov / Dec and part of January.&lt;br&gt;&lt;br&gt;On the bright side... I made a handy script to set up a new computer &amp;amp; configure from scratch since I&amp;#39;ve had to do it over and over&lt;br&gt;&lt;br&gt;Check it out here:&lt;a href="https://t.co/qTgp7UOwYi"&gt;https://t.co/qTgp7UOwYi&lt;/a&gt;&lt;/p&gt;&amp;mdash; 𝙽𝚒𝚗𝚊 𝚉𝚊𝚔𝚑𝚊𝚛𝚎𝚗𝚔𝚘 💖🐍 (@nnja) &lt;a href="https://twitter.com/nnja/status/1087464173016047616?ref_src=twsrc%5Etfw"&gt;January 21, 2019&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;script async src="https://platform.twitter.com/widgets.js" charset="utf-8"&gt;&lt;/script&gt;&lt;/p&gt;
+&lt;p&gt;I was like "Wow! People do that? I am a developer as well. I have got to automate something too". Then, I asked myself "what is something that I do every single day over and over again?".
+The answer was pretty simple. When I come to work, I do these things every day with no exception:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Open PyCharm with our main project.&lt;/li&gt;
+&lt;li&gt;Start Docker&lt;/li&gt;
+&lt;li&gt;Open iTerm&lt;/li&gt;
+&lt;li&gt;Start Docker-Compose for our main project so that I have the project running on my browser.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;So I decided to write a script that does these things for me automatically. Disclaimer: you don't have to know any of these things. You can use them as a general reference and customize it for your needs.
+Also, I am on a macOS, so if you have a different OS, the script will probably need to be changed a little.&lt;/p&gt;
+&lt;p&gt;With everything out of the way, let's get this done.&lt;/p&gt;
+&lt;p&gt;Of course, the easiest way to automate such a thing is writing a shell script. So, create a file "shockingly" called &lt;code&gt;start_day.sh&lt;/code&gt; and put a shebang line on the top:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env bash&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The first thing that we want to do is to start PyCharm with our project open. In order to start PyCharm from the command line, you need to enable the so called &lt;code&gt;Command-Line Launcher&lt;/code&gt;:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Open Pycharm&lt;/li&gt;
+&lt;li&gt;Find tools in the menu bar&lt;/li&gt;
+&lt;li&gt;Click Create Command-line Launcher&lt;/li&gt;
+&lt;li&gt;Leave the default which is &lt;code&gt;/usr/local/bin/charm&lt;/code&gt; and click &lt;code&gt;OK&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Now you can open PyCharm with the help of the &lt;code&gt;charm&lt;/code&gt; command. Try it in your terminal and see if it works. Now let's use this knowledge and write the first command in your &lt;code&gt;start_day.sh&lt;/code&gt; script:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env bash&lt;/span&gt;
+
+charm /path/to/your/project/
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Make sure to change the path correctly.&lt;/p&gt;
+&lt;p&gt;Let's run this script now. In order to do that, we need to make it executable. In your terminal, do the following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;chmod +x start_day.sh
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now that it is executable, we can run it like so:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./start_day.sh
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;It should open PyCharm with your project ready. Yay! First step is done! On to the next.&lt;/p&gt;
+&lt;p&gt;The next step is pretty easy. We need to start &lt;code&gt;Docker&lt;/code&gt;. On macOS, you can easily open any application in terminal with the following command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;open -a ApplicationName
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Let's include that in our script to have this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env bash&lt;/span&gt;
+
+charm /path/to/your/project/
+open -a Docker
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Run the script again and you will see that after PyCharm opens, Docker starts as well. Cool!&lt;/p&gt;
+&lt;p&gt;The next step is the most interesting one. We need to go to our project folder and do &lt;code&gt;docker-compose up&lt;/code&gt;. However, there is a catch.
+Our script will execute very fast but &lt;code&gt;Docker&lt;/code&gt; that we started above takes around 20 seconds to start. Thus, if we immediately do &lt;code&gt;docker-compose up&lt;/code&gt;, it will fail saying that
+&lt;code&gt;Docker&lt;/code&gt; hasn't started yet. Here is the script, run it and see for yourself:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env bash&lt;/span&gt;
+
+charm /path/to/your/project/
+open -a Docker
+&lt;span class="nb"&gt;cd&lt;/span&gt; /path/to/your/project/
+docker-compose up
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;We could tell it to &lt;code&gt;sleep()&lt;/code&gt; for some hard-coded amount of time so that &lt;code&gt;Docker&lt;/code&gt; has enough time to start:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env bash&lt;/span&gt;
+
+charm /path/to/your/project/
+open -a Docker
+&lt;span class="nb"&gt;cd&lt;/span&gt; /path/to/your/project/
+sleep 25
+docker-compose up
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Obviously this is not a good solution and the sleep time will vary from machine to machine. Thus, we need to know when Docker fully starts and then run &lt;code&gt;docker-compose&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Here is what we will do. We will run any &lt;code&gt;Docker&lt;/code&gt; command and see if it ran successfully meaning that &lt;code&gt;Docker&lt;/code&gt; has started. If it is not successful, it means that &lt;code&gt;Docker&lt;/code&gt; hasn't started yet and thus
+we will tell it to try again after 1 second. We will try this in a loop until it is successful. When it finally runs successfully, we can call our &lt;code&gt;docker-compose up&lt;/code&gt; command.&lt;/p&gt;
+&lt;p&gt;Here is the part that waits for &lt;code&gt;Docker&lt;/code&gt; to start:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;! docker stats --no-stream&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Waiting for Docker to launch...&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    sleep 1&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;done&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In a while loop, it tries to get docker stats. It continues running as long as that command returns a falsy result. Only after it returns a truthy result, the while loop ends and the script can continue.&lt;/p&gt;
+&lt;p&gt;We have all the pieces of the puzzle now and we can put it together:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env bash&lt;/span&gt;
+
+charm /path/to/your/project/
+open -a Docker
+&lt;span class="nb"&gt;cd&lt;/span&gt; /path/to/your/project/
+
+&lt;span class="k"&gt;while&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;! docker stats --no-stream&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;Waiting for Docker to launch...&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    sleep 1&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="k"&gt;done&lt;/span&gt;
+
+docker-compose up
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;That's it! Now try running it and you will see this "robot" will do everything for you.&lt;/p&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;In this blog post, we wrote a small bash script to automate my start of the day. This is how I start my day at work now. I come to work, open iTerm, run this script and go have some coffee until everything is ready for me.
+This is not a difficult script and task. However, it still feels good. I was inspired by Nina Zakharenko and now I hope that this will serve as an inspiration to somebody as well.
+I am extremely interested in what you automated in your workflow. Let me know in the comments.&lt;/p&gt;
+&lt;p&gt;Fight on!&lt;/p&gt;</summary><category term="programming"></category></entry><entry><title>Django Static Files</title><link href="http://rahmonov.me/posts/django-static-files/" rel="alternate"></link><published>2018-06-07T20:10:00+05:00</published><updated>2018-06-07T20:10:00+05:00</updated><author><name>Jahongir Rahmonov</name></author><id>tag:rahmonov.me,2018-06-07:posts/django-static-files/</id><summary type="html">&lt;p&gt;Have you ever been frustrated when your Django application did not find the static files you were using?
 Then, you read the documentation and played around with all those settings variables and after a couple of hours it was finally fixed.
 However, you had no idea what you just did. I have been in this situation so many times that I decided to write
 this post where I explain everything you need to configure your static files in a Django application.&lt;/p&gt;

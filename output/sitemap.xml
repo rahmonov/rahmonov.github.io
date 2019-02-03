@@ -5,28 +5,28 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://rahmonov.me/</loc>
-<lastmod>2018-06-07T16:47:27-00:00</lastmod>
+<lastmod>2019-02-03T13:56:39-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://rahmonov.me/archives.html</loc>
-<lastmod>2018-06-07T16:47:27-00:00</lastmod>
+<lastmod>2019-02-03T13:56:39-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://rahmonov.me/tags.html</loc>
-<lastmod>2018-06-07T16:47:27-00:00</lastmod>
+<lastmod>2019-02-03T13:56:39-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://rahmonov.me/categories.html</loc>
-<lastmod>2018-06-07T16:47:27-00:00</lastmod>
+<lastmod>2019-02-03T13:56:39-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -34,6 +34,13 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>http://rahmonov.me/pages/about.html</loc>
 <lastmod>2015-09-08T00:25:00+05:00</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>http://rahmonov.me/posts/automate-your-life/</loc>
+<lastmod>2019-02-03T20:10:00+05:00</lastmod>
 <changefreq>weekly</changefreq>
 <priority>0.5</priority>
 </url>
