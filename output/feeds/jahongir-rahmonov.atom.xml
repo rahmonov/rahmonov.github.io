@@ -5,7 +5,7 @@ we will write our own Python web framework to see how all that magic is done in 
 &lt;p&gt;In this first part of the series, we will build the most important parts of the framework. At the end of it, we will have request handlers (think Django views) and
 routing: both simple (like &lt;code&gt;/books/&lt;/code&gt;) and parameterized (like &lt;code&gt;/greet/{name}&lt;/code&gt;). If you like it after reading, please let me know in the comments what other features we
 should implement next.&lt;/p&gt;
-&lt;p&gt;Before I start doing something new, I like to think about the end result. In this case, at the end of the day, we want to be able to be use this framework
+&lt;p&gt;Before I start doing something new, I like to think about the end result. In this case, at the end of the day, we want to be able to use this framework
 in production and thus we want our framework to be served by a fast, lightweight, production-level application server. I have been using &lt;a href="https://gunicorn.org"&gt;gunicorn&lt;/a&gt;
 in all of my projects in the last few years and I am very satisfied with the results. So, let's go with &lt;code&gt;gunicorn&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;Gunicorn&lt;/code&gt; is a &lt;a href="/posts/what-the-hell-is-wsgi-anyway-and-what-do-you-eat-it-with/"&gt;WSGI&lt;/a&gt; HTTP Server, so it expects a specific entrypoint to our application. If you don't know
@@ -15,6 +15,13 @@ what &lt;code&gt;WSGI&lt;/code&gt; is &lt;a href="/posts/what-the-hell-is-wsgi-a
 Don't worry if it doesn't make sense yet. Hopefully it will "click" for you while writing the actual code. So, let's get started with the code.&lt;/p&gt;
 &lt;p&gt;Think of a name for your framework and create a folder with that name. I named it &lt;code&gt;bumbo&lt;/code&gt;:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;mkdir bumbo
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Go into this folder, create a virtual env and activate it:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; bumbo
+python3.6 -m venv venv
+&lt;span class="nb"&gt;source&lt;/span&gt; venv/bin/activate
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -69,7 +76,7 @@ gunicorn app:app
 
 &lt;p&gt;Now, delete everything inside &lt;code&gt;app.py&lt;/code&gt; and write the following:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# app.py&lt;/span&gt;
-&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;api.py&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;API&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;api&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;API&lt;/span&gt;
 
 &lt;span class="n"&gt;app&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;API&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
@@ -87,7 +94,12 @@ Thankfully, there is a cool package called &lt;a href="https://docs.pylonsprojec
 wrapping the &lt;code&gt;WSGI&lt;/code&gt; request environment and response status, headers and body. By using this package, we can pass the &lt;code&gt;environ&lt;/code&gt; and &lt;code&gt;start_response&lt;/code&gt; to the classes provided by this package
 and not have to deal with them ourselves. Before we continue, I suggest you take a look at the &lt;a href="https://docs.pylonsproject.org/projects/webob/en/stable/index.html"&gt;documentation of WebOb&lt;/a&gt; to
 understand what I am talking about and the API of &lt;code&gt;WebOb&lt;/code&gt; more.&lt;/p&gt;
-&lt;p&gt;Here is how we will go about refactoring this code. First, import the &lt;code&gt;Request&lt;/code&gt; and &lt;code&gt;Response&lt;/code&gt; classes at the beginning of the &lt;code&gt;api.py&lt;/code&gt; file:&lt;/p&gt;
+&lt;p&gt;Here is how we will go about refactoring this code. First, install &lt;code&gt;WebOb&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pip install webob
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Import the &lt;code&gt;Request&lt;/code&gt; and &lt;code&gt;Response&lt;/code&gt; classes at the beginning of the &lt;code&gt;api.py&lt;/code&gt; file:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# api.py&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;webob&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Request&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Response&lt;/span&gt;
 
@@ -302,7 +314,7 @@ Now, we can use it in our &lt;code&gt;handle_request&lt;/code&gt; method:&lt;/p&
 
 &lt;p&gt;I think it looks much better and is pretty self explanatory. Restart your &lt;code&gt;gunicorn&lt;/code&gt; to see that everything is working just like before.&lt;/p&gt;
 &lt;p&gt;At this point, we have routes and handlers. It is pretty awesome but our routes are simple. They don't support keyword parameters in the url path.
-What if we want to have this route of &lt;code&gt;@api.route("/hello/{person_name}")&lt;/code&gt; and be able to use this &lt;code&gt;person_name&lt;/code&gt; inside our handlers like this:&lt;/p&gt;
+What if we want to have this route of &lt;code&gt;@app.route("/hello/{person_name}")&lt;/code&gt; and be able to use this &lt;code&gt;person_name&lt;/code&gt; inside our handlers like this:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;say_hello&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;person_name&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="n"&gt;resp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Hello, {person_name}&amp;quot;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
@@ -373,8 +385,8 @@ Now, we can use this inside &lt;code&gt;handle_request&lt;/code&gt; to send thos
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# app.py&lt;/span&gt;
 &lt;span class="o"&gt;...&lt;/span&gt;
 
-&lt;span class="nd"&gt;@api.route&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/hello/{name}&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;greeting&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;req&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;resp&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;span class="nd"&gt;@app.route&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/hello/{name}&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;greeting&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;request&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
     &lt;span class="n"&gt;resp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Hello, {name}&amp;quot;&lt;/span&gt;
 
 &lt;span class="o"&gt;...&lt;/span&gt;
@@ -382,7 +394,7 @@ Now, we can use this inside &lt;code&gt;handle_request&lt;/code&gt; to send thos
 
 
 &lt;p&gt;Restart your &lt;code&gt;gunicorn&lt;/code&gt; and go to &lt;code&gt;http://localhost:8000/hello/Matthew/&lt;/code&gt;. You should the wonderful message of &lt;code&gt;Hello, Matthew&lt;/code&gt;. Awesome, right?
-Add a couple more such handlers of yours. You can also indicate the type of the given params. For example you can do &lt;code&gt;@api.route("/tell/{age:d}")&lt;/code&gt; so that you have the param
+Add a couple more such handlers of yours. You can also indicate the type of the given params. For example you can do &lt;code&gt;@app.route("/tell/{age:d}")&lt;/code&gt; so that you have the param
 &lt;code&gt;age&lt;/code&gt; inside the handler as a digit.&lt;/p&gt;
 &lt;h2&gt;Conclusion&lt;/h2&gt;
 &lt;p&gt;This was a long ride but I think it was great. I personally learned a lot while writing this. If you liked this blog post, please let me know in the comments what other

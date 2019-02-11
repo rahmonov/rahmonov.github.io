@@ -15,7 +15,7 @@ In this first part of the series, we will build the most important parts of the 
 routing: both simple (like `/books/`) and parameterized (like `/greet/{name}`). If you like it after reading, please let me know in the comments what other features we
 should implement next.
 
-Before I start doing something new, I like to think about the end result. In this case, at the end of the day, we want to be able to be use this framework
+Before I start doing something new, I like to think about the end result. In this case, at the end of the day, we want to be able to use this framework
 in production and thus we want our framework to be served by a fast, lightweight, production-level application server. I have been using [gunicorn](https://gunicorn.org)
 in all of my projects in the last few years and I am very satisfied with the results. So, let's go with `gunicorn`.
 
@@ -31,6 +31,14 @@ Think of a name for your framework and create a folder with that name. I named i
 
 ```shell
 mkdir bumbo
+```
+
+Go into this folder, create a virtual env and activate it:
+
+```shell
+cd bumbo
+python3.6 -m venv venv
+source venv/bin/activate
 ```
 
 Now, create the file named `app.py` where we will store our entrypoint for `gunicorn`:
@@ -93,7 +101,7 @@ Now, delete everything inside `app.py` and write the following:
 
 ```python
 # app.py
-from api.py import API
+from api import API
 
 app = API()
 ```
@@ -112,7 +120,13 @@ wrapping the `WSGI` request environment and response status, headers and body. B
 and not have to deal with them ourselves. Before we continue, I suggest you take a look at the [documentation of WebOb](https://docs.pylonsproject.org/projects/webob/en/stable/index.html) to
 understand what I am talking about and the API of `WebOb` more.
 
-Here is how we will go about refactoring this code. First, import the `Request` and `Response` classes at the beginning of the `api.py` file:
+Here is how we will go about refactoring this code. First, install `WebOb`:
+
+```shell
+pip install webob
+```
+
+Import the `Request` and `Response` classes at the beginning of the `api.py` file:
 
 ```python
 # api.py
@@ -346,7 +360,7 @@ class API:
 I think it looks much better and is pretty self explanatory. Restart your `gunicorn` to see that everything is working just like before.
 
 At this point, we have routes and handlers. It is pretty awesome but our routes are simple. They don't support keyword parameters in the url path.
-What if we want to have this route of `@api.route("/hello/{person_name}")` and be able to use this `person_name` inside our handlers like this:
+What if we want to have this route of `@app.route("/hello/{person_name}")` and be able to use this `person_name` inside our handlers like this:
 
 ```python
 def say_hello(request, response, person_name):
@@ -426,15 +440,15 @@ Let's write a handler with this type of route and try it out:
 # app.py
 ...
 
-@api.route("/hello/{name}")
-def greeting(req, resp, name):
+@app.route("/hello/{name}")
+def greeting(request, response, name):
     resp.text = f"Hello, {name}"
 
 ...
 ```
 
 Restart your `gunicorn` and go to `http://localhost:8000/hello/Matthew/`. You should the wonderful message of `Hello, Matthew`. Awesome, right?
-Add a couple more such handlers of yours. You can also indicate the type of the given params. For example you can do `@api.route("/tell/{age:d}")` so that you have the param
+Add a couple more such handlers of yours. You can also indicate the type of the given params. For example you can do `@app.route("/tell/{age:d}")` so that you have the param
 `age` inside the handler as a digit.
 
 
