@@ -1,0 +1,258 @@
+<!DOCTYPE html><html lang="en"><head prefix="og: http://ogp.me/ns#"><title>How to write a Python web framework. Part I.</title><link rel="stylesheet" href="/static/css/main.css"><link rel="stylesheet" href="/static/css/pygment.css"><link rel="stylesheet" href="/static/css/font-awesome.min.css"><link href="//fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet" type="text/css"><link rel="stylesheet" href="/static/vendor/lightbox2/css/lightbox.min.css"><link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet"><link rel="shortcut icon" type="image/png" href="/static/images/favicon.png"><meta name="google-site-verification" content="RhKly6bfyZ4vo03CPdY9f-Bg8CuZA0GhTPvCEPsNa2c"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="<p>This is the first of the series where we will be writing our own Python framework just like Flask and Django.</p>"><meta name="author" content="Jahongir Rahmonov"><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta property="og:title" content="How to write a Python web framework. Part I."><meta property="og:type" content="website"><meta property="og:image" content="/static/images/programming.jpg"><meta property="og:url" content="http://rahmonov.me/posts/write-python-framework-part-one/"><meta property="og:description" content="<p>This is the first of the series where we will be writing our own Python framework just like Flask and Django.</p>"><link href="http://rahmonov.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Full Atom Feed"><link href="http://rahmonov.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="Jahongir Rahmonov Full RSS Feed"><link href="http://rahmonov.me/feeds/python.atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Categories Atom Feed"><meta name="description" content="<p>This is the first of the series where we will be writing our own Python framework just like Flask and Django.</p>"><meta name="tags" content="programming"><meta name="tags" content="python"><link href="https://unpkg.com/ilyabirman-likely@2/release/likely.css" rel="stylesheet"><script src="https://unpkg.com/ilyabirman-likely@2/release/likely.js" type="text/javascript"></script></head><body id="index" class="home"><div class="container"><button class="nav js-mobile"><i class="fa fa-bars"></i></button><div class="side"><div class="logo"><a href="/"><img src="/static/images/me.jpg" width="150" height="150" class="jahon" alt="Jahongir Rahmonov"></a></div><h2>Jahongir Rahmonov</h2><div class="paragraphs"><p> I'm a Software Developer at <a href="http://mysuperdispatch.com/">Super Dispatch (TechStars '16)</a>. Avid reader. <a href="http://wiut.uz/">WIUT</a> graduate. Blogger and an amateur speaker </p><p> I write about Python, Django, AngularJS and sometimes something non-technical. </p><p> Welcome to my corner <i class="em em-snake"></i></p> </div><form method="get" action="https://www.google.com/search"><input name="sitesearch" value="rahmonov.me" type="hidden"><input type="text" id="search-query" class="field field-text" required name="q" placeholder="Search..." autocomplete="off"><input type="image" src="/static/images/search-icon.png" width="20" height="20" class="search-icon" title="Search via Google" alt="Search via Google"></form><ul class="menu"><li><a href="/">Home</a></li><li><a href="/pages/about.html">About</a></li><li><a href="/pages/about.html#subscribe">Subscribe</a></li><li><a href="/pages/about.html#contact">Contact</a></li><li><a href="/feeds/atom.xml">RSS <i class="fa fa-rss"></i></a></li></ul><p class="profiles"><a title="GitHub" href="https://github.com/rahmonov"><i class="fa fa-github-square"></i></a><a title="StackOverflow" href="https://stackoverflow.com/users/4137194/jahongir-rahmonov?tab=profile"><i class="fa fa-stack-overflow"></i></a><a title="Twitter" href="https://twitter.com/rahmon0v"><i class="fa fa-twitter-square"></i></a><a title="Facebook" href="https://www.facebook.com/rahmonovj"><i class="fa fa-facebook-official"></i></a><a title="Instagram" href="https://www.instagram.com/rahmonov.me/"><i class="fa fa-instagram"></i></a><a title="LinkedIn" href="https://www.linkedin.com/in/jahongirrahmonov"><i class="fa fa-linkedin-square"></i></a></p></div><div class="wrap"><div class="content"><h4>Sat 09 February 2019</h4><h1>How to write a Python web framework. Part I.</h1><div class="entry-content"><p>"Don't reinvent the wheel" is one of the most frequent mantras we hear every day. But what if I want to learn more about the wheel? What if I want to learn how to make this damn wheel? I think it is a great idea to reinvent it for the purpose of learning. Thus, in these series, we will write our own Python web framework to see how all that magic is done in Flask, Django and other frameworks.</p><p>In this first part of the series, we will build the most important parts of the framework. At the end of it, we will have request handlers (think Django views) and routing: both simple (like <code>/books/</code>) and parameterized (like <code>/greet/{name}</code>). If you like it after reading, please let me know in the comments what other features we should implement next.</p><p>Before I start doing something new, I like to think about the end result. In this case, at the end of the day, we want to be able to be use this framework in production and thus we want our framework to be served by a fast, lightweight, production-level application server. I have been using <a href="https://gunicorn.org">gunicorn</a> in all of my projects in the last few years and I am very satisfied with the results. So, let's go with <code>gunicorn</code>.</p><p><code>Gunicorn</code> is a <a href="/posts/what-the-hell-is-wsgi-anyway-and-what-do-you-eat-it-with/">WSGI</a> HTTP Server, so it expects a specific entrypoint to our application. If you don't know what <code>WSGI</code> is <a href="/posts/what-the-hell-is-wsgi-anyway-and-what-do-you-eat-it-with/">go find out</a>, I will wait. Otherwise, you will not understand a huge chunk of this blog post.</p><p>Have you learnt what WSGI is? Good. Let's continue.</p><p>To be WSGI-compatible, we need a callable object (a function or a class) that expects two parameters (<code>environ</code> and <code>start_response</code>) and returns a WSGI-compatible response. Don't worry if it doesn't make sense yet. Hopefully it will "click" for you while writing the actual code. So, let's get started with the code.</p><p>Think of a name for your framework and create a folder with that name. I named it <code>bumbo</code>:</p><div class="highlight"><pre><span></span>mkdir bumbo
+</pre></div><p>Now, create the file named <code>app.py</code> where we will store our entrypoint for <code>gunicorn</code>:</p><div class="highlight"><pre><span></span>touch app.py
+</pre></div><p>Inside this <code>app.py</code>, let's write a simple function to see if it works with <code>gunicorn</code>:</p><div class="highlight"><pre><span></span><span class="c1"># app.py</span>
+
+<span class="k">def</span> <span class="nf">app</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="n">start_response</span><span class="p">):</span>
+    <span class="n">response_body</span> <span class="o">=</span> <span class="n">b</span><span class="s2">&quot;Hello, World!&quot;</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="s2">&quot;200 OK&quot;</span>
+    <span class="n">start_response</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">[])</span>
+    <span class="k">return</span> <span class="nb">iter</span><span class="p">([</span><span class="n">response_body</span><span class="p">])</span>
+</pre></div><p>As mentioned above, this entrypoint callable receives two params. One of them is <code>environ</code> where all kinds of info about request is stored such as a request method, url, query params and the like. The second is <code>start_response</code> which starts the response as the name suggests. Now, let's try to run this code with <code>gunicorn</code>. For that install <code>gunicorn</code> and run it like so:</p><div class="highlight"><pre><span></span>pip install gunicorn
+gunicorn app:app
+</pre></div><p>The first <code>app</code> is the file which we created and the second app is the name of the function we just wrote. If all is good, you will see something like the following in the output:</p><div class="highlight"><pre><span></span><span class="o">[</span>2019-02-09 17:58:56 +0500<span class="o">]</span> <span class="o">[</span>30962<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span> Starting gunicorn 19.9.0
+<span class="o">[</span>2019-02-09 17:58:56 +0500<span class="o">]</span> <span class="o">[</span>30962<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span> Listening at: http://127.0.0.1:8000 <span class="o">(</span>30962<span class="o">)</span>
+<span class="o">[</span>2019-02-09 17:58:56 +0500<span class="o">]</span> <span class="o">[</span>30962<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span> Using worker: sync
+<span class="o">[</span>2019-02-09 17:58:56 +0500<span class="o">]</span> <span class="o">[</span>30966<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span> Booting worker with pid: 30966
+</pre></div><p>If you see this, open your browser and go to <code>http://localhost:8000</code>. You should see our good old friend: the <code>Hello, World!</code> message. Awesome! We will build off of this.</p><p>Now, let's turn this function into a class because we will need quite a few helper methods and they are much easier to write inside a class. Create an <code>api.py</code> file:</p><div class="highlight"><pre><span></span>touch api.py
+</pre></div><p>Inside this file, create the following <code>API</code> class. I will explain what it does in a bit:</p><div class="highlight"><pre><span></span><span class="c1"># api.py</span>
+
+<span class="k">class</span> <span class="nc">API</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environ</span><span class="p">,</span> <span class="n">start_response</span><span class="p">):</span>
+        <span class="n">response_body</span> <span class="o">=</span> <span class="n">b</span><span class="s2">&quot;Hello, World!&quot;</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="s2">&quot;200 OK&quot;</span>
+        <span class="n">start_response</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">[])</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">([</span><span class="n">response_body</span><span class="p">])</span>
+</pre></div><p>Now, delete everything inside <code>app.py</code> and write the following:</p><div class="highlight"><pre><span></span><span class="c1"># app.py</span>
+<span class="kn">from</span> <span class="nn">api.py</span> <span class="kn">import</span> <span class="n">API</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">API</span><span class="p">()</span>
+</pre></div><p>Restart your <code>gunicorn</code> and check the result in the browser. It should be the same as before because we simply converted our function named <code>app</code> to a class called <code>API</code> and overrode its <code>__call__</code> method which is called when you call the instances of this class:</p><div class="highlight"><pre><span></span><span class="n">app</span> <span class="o">=</span> <span class="n">API</span><span class="p">()</span>
+<span class="n">app</span><span class="p">()</span>   <span class="c1">#  this is where __call__ is called</span>
+</pre></div><p>Now that we created our class, I want to make the code more elegant because all those bytes (<code>b"Hello World"</code>) and <code>start_response</code> seem confusing to me. Thankfully, there is a cool package called <a href="https://docs.pylonsproject.org/projects/webob/en/stable/index.html">WebOb</a> that provides objects for HTTP requests and responses by wrapping the <code>WSGI</code> request environment and response status, headers and body. By using this package, we can pass the <code>environ</code> and <code>start_response</code> to the classes provided by this package and not have to deal with them ourselves. Before we continue, I suggest you take a look at the <a href="https://docs.pylonsproject.org/projects/webob/en/stable/index.html">documentation of WebOb</a> to understand what I am talking about and the API of <code>WebOb</code> more.</p><p>Here is how we will go about refactoring this code. First, import the <code>Request</code> and <code>Response</code> classes at the beginning of the <code>api.py</code> file:</p><div class="highlight"><pre><span></span><span class="c1"># api.py</span>
+<span class="kn">from</span> <span class="nn">webob</span> <span class="kn">import</span> <span class="n">Request</span><span class="p">,</span> <span class="n">Response</span>
+
+<span class="o">...</span>
+</pre></div><p>and now we can use them inside the <code>__call__</code> method:</p><div class="highlight"><pre><span></span><span class="c1"># api.py</span>
+<span class="kn">from</span> <span class="nn">webob</span> <span class="kn">import</span> <span class="n">Request</span><span class="p">,</span> <span class="n">Response</span>
+
+<span class="k">class</span> <span class="nc">API</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environ</span><span class="p">,</span> <span class="n">start_response</span><span class="p">):</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">environ</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Hello, World!&quot;</span>
+
+        <span class="k">return</span> <span class="n">response</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="n">start_response</span><span class="p">)</span>
+</pre></div><p>Looks much better! Restart the <code>gunicorn</code> and you should see the same result as before. And the best part is I don't have to explain what is being done here. It is all self-explanatory. We are creating a request, a response and then returning that response. Awesome! I do have to note that <code>request</code> is not being used here yet because we are not doing anything with it. So, let's use this chance and use the request object as well. Also, let's refactor the <code>response</code> creation into its own method. We will see why it is better later:</p><div class="highlight"><pre><span></span><span class="c1"># api.py</span>
+<span class="kn">from</span> <span class="nn">webob</span> <span class="kn">import</span> <span class="n">Request</span><span class="p">,</span> <span class="n">Response</span>
+
+<span class="k">class</span> <span class="nc">API</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environ</span><span class="p">,</span> <span class="n">start_response</span><span class="p">):</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">environ</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_request</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">response</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="n">start_response</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">handle_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">user_agent</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;HTTP_USER_AGENT&quot;</span><span class="p">,</span> <span class="s2">&quot;No User Agent Found&quot;</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;Hello, my friend with this user agent: {user_agent}&quot;</span>
+
+        <span class="k">return</span> <span class="n">response</span>
+</pre></div><p>Restart your <code>gunicorn</code> and you should see this new message in the browser. Did you see it? Cool. Let's go on.</p><p>At this point, we handle all the requests in the same way. Whatever request we receive, we simply return the same response which is created in the <code>handle_request</code> method. Ultimately, we want it to be dynamic. That is, we want to serve the request coming from <code>/home/</code> differently than the one coming from <code>/about/</code>.</p><p>To that end, inside <code>app.py</code>, let's create two methods that will handle those two requests:</p><div class="highlight"><pre><span></span><span class="c1"># app.py</span>
+<span class="kn">from</span> <span class="nn">api.py</span> <span class="kn">import</span> <span class="n">API</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">API</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">home</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Hello from the HOME page&quot;</span>
+
+
+<span class="k">def</span> <span class="nf">about</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Hello from the ABOUT page&quot;</span>
+</pre></div><p>Now, we need to somehow associate these two methods with the above mentioned paths: <code>/home/</code> and <code>/about/</code>. I like the Flask way of doing it that would look like this:</p><div class="highlight"><pre><span></span><span class="c1"># app.py</span>
+<span class="kn">from</span> <span class="nn">api.py</span> <span class="kn">import</span> <span class="n">API</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">API</span><span class="p">()</span>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/home&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">home</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Hello from the HOME page&quot;</span>
+
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/about&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">about</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Hello from the ABOUT page&quot;</span>
+</pre></div><p>What do you think? Looks good? Then let's implement this bad boy!</p><p>As you can see, the <code>route</code> method is a decorator, accepts a path and wraps the methods. It shouldn't be too difficult to implement:</p><div class="highlight"><pre><span></span><span class="c1"># api.py</span>
+
+<span class="k">class</span> <span class="nc">API</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">routes</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">route</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">routes</span><span class="p">[</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="n">handler</span>
+            <span class="k">return</span> <span class="n">handler</span>
+
+        <span class="k">return</span> <span class="n">wrapper</span>
+
+    <span class="o">...</span>
+</pre></div><p>Here is what we did here. In the <code>__init__</code> method, we simply defined a <code>dict</code> called <code>self.routes</code> where we will be storing paths as keys and handlers as values. It can look like this:</p><div class="highlight"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">routes</span><span class="p">)</span>
+
+<span class="p">{</span>
+    <span class="s2">&quot;/home&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="n">home</span> <span class="n">at</span> <span class="mh">0x1100a70c8</span><span class="o">&gt;</span><span class="p">,</span>
+    <span class="s2">&quot;/about&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="n">about</span> <span class="n">at</span> <span class="mh">0x1101a80c3</span><span class="o">&gt;</span>
+<span class="p">}</span>
+</pre></div><p>In the <code>route</code> method, we took path as an argument and in the wrapper method simply put this path in the <code>self.routes</code> dictionary as a key and the handler as a value.</p><p>At this point, we have all the pieces of the puzzle. We have the handlers and the paths associated with them. Now, when a request comes in, we need to check its <code>path</code>, find an appropriate handler, call that handler and return an appropriate response. Let's do that:</p><div class="highlight"><pre><span></span><span class="c1"># api.py</span>
+<span class="kn">from</span> <span class="nn">webob</span> <span class="kn">import</span> <span class="n">Request</span><span class="p">,</span> <span class="n">Response</span>
+
+<span class="k">class</span> <span class="nc">API</span><span class="p">:</span>
+    <span class="o">...</span>
+
+    <span class="k">def</span> <span class="nf">handle_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">path</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+                <span class="n">handler</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">response</span>
+
+    <span class="o">...</span>
+</pre></div><p>Wasn't too difficult, was it? We simply iterated over <code>self.routes</code>, compared paths with the path of the request, if there is a match, called the handler associated with that path.</p><p>Restart the <code>gunicorn</code> and try those paths in the browser. First, go to <code>http://localhost:8000/home/</code> and then go to <code>http://localhost:8000/about/</code>. You should see the corresponding messages. Pretty cool, right?</p><p>As the next step, we can answer the question of "What happens if the path is not found?". Let's create a method that returns a simple HTTP response of "Not found." with the status code of 404:</p><div class="highlight"><pre><span></span><span class="c1"># api.py</span>
+<span class="kn">from</span> <span class="nn">webob</span> <span class="kn">import</span> <span class="n">Request</span><span class="p">,</span> <span class="n">Response</span>
+
+<span class="k">class</span> <span class="nc">API</span><span class="p">:</span>
+    <span class="o">...</span>
+
+    <span class="k">def</span> <span class="nf">default_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">404</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Not found.&quot;</span>
+
+    <span class="o">...</span>
+</pre></div><p>Now, let's use it in our <code>handle_request</code> method:</p><div class="highlight"><pre><span></span><span class="c1"># api.py</span>
+<span class="kn">from</span> <span class="nn">webob</span> <span class="kn">import</span> <span class="n">Request</span><span class="p">,</span> <span class="n">Response</span>
+
+<span class="k">class</span> <span class="nc">API</span><span class="p">:</span>
+    <span class="o">...</span>
+
+    <span class="k">def</span> <span class="nf">handle_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">path</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+                <span class="n">handler</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">response</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span>
+
+    <span class="o">...</span>
+</pre></div><p>Restart the <code>gunicorn</code> and try some nonexistent routes. You should see this lovely "Not found." page. Now, let's refactor out finding a handler to its own method for the sake of readability:</p><div class="highlight"><pre><span></span><span class="c1"># api.py</span>
+<span class="kn">from</span> <span class="nn">webob</span> <span class="kn">import</span> <span class="n">Request</span><span class="p">,</span> <span class="n">Response</span>
+
+<span class="k">class</span> <span class="nc">API</span><span class="p">:</span>
+    <span class="o">...</span>
+
+    <span class="k">def</span> <span class="nf">find_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_path</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">path</span> <span class="o">==</span> <span class="n">request_path</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">handler</span>
+
+    <span class="o">...</span>
+</pre></div><p>Just like before, it is simply iterating over <code>self.route</code>, comparing paths with the request path and returning the handler if paths are the same. It returns <code>None</code> if no handler was found. Now, we can use it in our <code>handle_request</code> method:</p><div class="highlight"><pre><span></span><span class="c1"># api.py</span>
+<span class="kn">from</span> <span class="nn">webob</span> <span class="kn">import</span> <span class="n">Request</span><span class="p">,</span> <span class="n">Response</span>
+
+<span class="k">class</span> <span class="nc">API</span><span class="p">:</span>
+    <span class="o">...</span>
+
+    <span class="k">def</span> <span class="nf">handle_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+
+        <span class="n">handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_handler</span><span class="p">(</span><span class="n">request_path</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">handler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">handler</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">response</span>
+
+    <span class="o">...</span>
+</pre></div><p>I think it looks much better and is pretty self explanatory. Restart your <code>gunicorn</code> to see that everything is working just like before.</p><p>At this point, we have routes and handlers. It is pretty awesome but our routes are simple. They don't support keyword parameters in the url path. What if we want to have this route of <code>@api.route("/hello/{person_name}")</code> and be able to use this <code>person_name</code> inside our handlers like this:</p><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">say_hello</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">person_name</span><span class="p">):</span>
+    <span class="n">resp</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;Hello, {person_name}&quot;</span>
+</pre></div><p>For that, if someone goes to the <code>/hello/Matthew/</code>, we need to be able to match this path with the registered <code>/hello/{person_name}/</code> and find the appropriate handler. Thankfully, there is already a package called <code>parse</code> that does exactly that for us. Let's go ahead and install it:</p><div class="highlight"><pre><span></span>pip install parse
+</pre></div><p>Let's test it out:</p><div class="highlight"><pre><span></span>&gt;&gt;&gt; from parse import parse
+&gt;&gt;&gt; <span class="nv">result</span> <span class="o">=</span> parse<span class="o">(</span><span class="s2">&quot;Hello, {name}&quot;</span>, <span class="s2">&quot;Hello, Matthew&quot;</span><span class="o">)</span>
+&gt;&gt;&gt; print<span class="o">(</span>result.named<span class="o">)</span>
+<span class="o">{</span><span class="s1">&#39;name&#39;</span>: <span class="s1">&#39;Matthew&#39;</span><span class="o">}</span>
+</pre></div><p>As you can see, it parsed the string <code>Hello, Matthew</code> and was able to identify that <code>Matthew</code> corresponds to the <code>{name}</code> that we provided.</p><p>Let's use it in our <code>find_handler</code> method to find not only the method that corresponds to the path but also the keyword params that were provided:</p><div class="highlight"><pre><span></span><span class="c1"># api.py</span>
+<span class="kn">from</span> <span class="nn">webob</span> <span class="kn">import</span> <span class="n">Request</span><span class="p">,</span> <span class="n">Response</span>
+<span class="kn">from</span> <span class="nn">parse</span> <span class="kn">import</span> <span class="n">parse</span>
+
+<span class="k">class</span> <span class="nc">API</span><span class="p">:</span>
+    <span class="o">...</span>
+
+    <span class="k">def</span> <span class="nf">find_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_path</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">routes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">parse_result</span> <span class="o">=</span> <span class="n">parse</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">request_path</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">parse_result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">handler</span><span class="p">,</span> <span class="n">parse_result</span><span class="o">.</span><span class="n">named</span>
+
+        <span class="k">return</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span>
+
+    <span class="o">...</span>
+</pre></div><p>We are still iterating over <code>self.routes</code> and now instead of comparing the path to the request path, we are trying to parse it and if there is a result, we are returning both the handler and keyword params as a dictionary. Now, we can use this inside <code>handle_request</code> to send those params to the handlers like this:</p><div class="highlight"><pre><span></span><span class="c1"># api.py</span>
+<span class="kn">from</span> <span class="nn">webob</span> <span class="kn">import</span> <span class="n">Request</span><span class="p">,</span> <span class="n">Response</span>
+<span class="kn">from</span> <span class="nn">parse</span> <span class="kn">import</span> <span class="n">parse</span>
+
+<span class="k">class</span> <span class="nc">API</span><span class="p">:</span>
+    <span class="o">...</span>
+
+    <span class="k">def</span> <span class="nf">handle_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+
+        <span class="n">handler</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_handler</span><span class="p">(</span><span class="n">request_path</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">handler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">handler</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">response</span>
+
+    <span class="o">...</span>
+</pre></div><p>The only changes are, we are getting both <code>handler</code> and <code>kwargs</code> from <code>self.find_handler</code>, and passing that <code>kwargs</code> to the handler like this <code>**kwargs</code>.</p><p>Let's write a handler with this type of route and try it out:</p><div class="highlight"><pre><span></span><span class="c1"># app.py</span>
+<span class="o">...</span>
+
+<span class="nd">@api.route</span><span class="p">(</span><span class="s2">&quot;/hello/{name}&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">greeting</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">resp</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="n">resp</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;Hello, {name}&quot;</span>
+
+<span class="o">...</span>
+</pre></div><p>Restart your <code>gunicorn</code> and go to <code>http://localhost:8000/hello/Matthew/</code>. You should the wonderful message of <code>Hello, Matthew</code>. Awesome, right? Add a couple more such handlers of yours. You can also indicate the type of the given params. For example you can do <code>@api.route("/tell/{age:d}")</code> so that you have the param <code>age</code> inside the handler as a digit.</p><h2>Conclusion</h2><p>This was a long ride but I think it was great. I personally learned a lot while writing this. If you liked this blog post, please let me know in the comments what other features we should implement in our framework. I am thinking of class based handlers, support for templates and static files.</p><p>Fight on!</p></div><div class="pagination clearfix"><a class="prev" href="/posts/automate-your-life/">« Previous</a></ul></div><p><div class="likely likely-big"><div class="facebook">Share</div><div class="twitter" data-via="rahmon0v">Tweet</div><div class="telegram">Send</div><div class="linkedin">Share</div></div></p><div class="end"><span> If you liked what you read, subscribe below. Once in a while, I will send you a list of my new posts. </span><div id="popup"><p><link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css"><style type="text/css">
+                #mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; }
+                /* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
+                   We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
+            </style><div id="mc_embed_signup"><form action="//rahmonov.us16.list-manage.com/subscribe/post?u=9e30bdfdfe0a7bd7cf7e0d50a&id=af3f3c5f76" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate><div id="mc_embed_signup_scroll"><div class="indicates-required"><span class="asterisk">*</span> indicates required</div><div class="mc-field-group"><label for="mce-MMERGE1">Name </label><input type="text" value name="MMERGE1" class id="mce-MMERGE1"></div><div class="mc-field-group"><label for="mce-EMAIL">Email Address <span class="asterisk">*</span></label><input type="email" value name="EMAIL" class="required email" id="mce-EMAIL"></div><div id="mce-responses" class="clear"><div class="response" id="mce-error-response" style="display:none"></div><div class="response" id="mce-success-response" style="display:none"></div></div> <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_9e30bdfdfe0a7bd7cf7e0d50a_af3f3c5f76" tabindex="-1" value></div><div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div></div></form></div></p></div></div><div id="disqus_thread"></div><script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES * * */
+        var disqus_shortname = 'jrahmonov';
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript></div></div></div><script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-67392250-1', 'auto');
+      ga('send', 'pageview');
+    </script><script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/static/js/mobile.js"></script><script src="/static/vendor/lightbox2/js/lightbox.min.js"></script><script src="/static/"></script></body></html>
