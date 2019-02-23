@@ -7,6 +7,8 @@ Slug: write-python-framework-part-one
 Authors: Jahongir Rahmonov
 Summary: This is the first of the series where we will be writing our own Python framework just like Flask and Django.
 
+*Check out Part II [here](/posts/write-python-framework-part-two/)*
+
 "Don't reinvent the wheel" is one of the most frequent mantras we hear every day. But what if I want to learn more about the wheel?
 What if I want to learn how to make this damn wheel? I think it is a great idea to reinvent it for the purpose of learning. Thus, in these series,
 we will write our own Python web framework to see how all that magic is done in Flask, Django and other frameworks.
@@ -458,3 +460,5 @@ This was a long ride but I think it was great. I personally learned a lot while 
 features we should implement in our framework. I am thinking of class based handlers, support for templates and static files.
 
 Fight on!
+
+*Check out Part II [here](/posts/write-python-framework-part-two/)*
