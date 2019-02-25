@@ -370,6 +370,8 @@ We can add a lot more tests such as the default response, parameterized routing,
 we send an HTTP request to our handlers. For that we need to have a test client. But I think this post will become too big if we do it here.
 We will do it in the next post in these series. We will also add support for templates and a couple of other interesting stuff. So, stay tuned.
 
+As usual, if you want to see some feature implemented please let me know in the comments section.
+
 P.S. These blog posts are based on the [Python web framework](https://github.com/rahmonov/alcazar) that I am building. So, [check it out](https://github.com/rahmonov/alcazar) to see
 what is yet to come in the blog and make sure to show some love by starring the repo.
 
