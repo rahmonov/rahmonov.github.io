@@ -53,14 +53,14 @@
 
 <span class="k">def</span> <span class="nf">route</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">routes</span><span class="p">:</span>
-        <span class="n">throw</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;Such route already exists.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;Such route already exists.&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">routes</span><span class="p">[</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="n">handler</span>
         <span class="k">return</span> <span class="n">handler</span>
 
     <span class="k">return</span> <span class="n">wrapper</span>
-</pre></div><p>Now, trying adding the same route twice and restart your gunicorn. You should see the following exception thrown:</p><div class="highlight"><pre><span></span>Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
+</pre></div><p>Now, try adding the same route twice and restart your gunicorn. You should see the following exception thrown:</p><div class="highlight"><pre><span></span>Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
 ...
 AssertionError: Such route already exists.
 </pre></div><p>We can refactor it to decrease it to one line:</p><div class="highlight"><pre><span></span><span class="c1"># api.py</span>
@@ -115,7 +115,7 @@ AssertionError: Such route already exists.
     <span class="k">return</span> <span class="n">response</span>
 
 <span class="o">...</span>
-</pre></div><p>Now, if a class based handler is being used, we need to find the appropriate method of the class depending on the request method. For that we can use the <code>getattr</code> built-in function:</p><div class="highlight"><pre><span></span><span class="c1"># api.py</span>
+</pre></div><p>Now, if a class based handler is being used, we need to find the appropriate method of the class depending on the request method. For that we can use the built-in <code>getattr</code> function:</p><div class="highlight"><pre><span></span><span class="c1"># api.py</span>
 
 <span class="k">def</span> <span class="nf">handle_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
@@ -132,7 +132,7 @@ AssertionError: Such route already exists.
         <span class="bp">self</span><span class="o">.</span><span class="n">default_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">response</span>
-</pre></div><p><code>getattr</code> accepts an object instance as the first param and the attribute name to get as the second. The third argument is the value to return if nothing is found. So, <code>GET</code> will return <code>get</code>, <code>POST</code> will return <code>post</code> and <code>some_other_attribute</code> will return <code>None</code>. If the <code>handler_function</code> is <code>None</code>, it means that such function was not method in the class and that this request method is not allowed:</p><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
+</pre></div><p><code>getattr</code> accepts an object instance as the first param and the attribute name to get as the second. The third argument is the value to return if nothing is found. So, <code>GET</code> will return <code>get</code>, <code>POST</code> will return <code>post</code> and <code>some_other_attribute</code> will return <code>None</code>. If the <code>handler_function</code> is <code>None</code>, it means that such function was not implemented in the class and that this request method is not allowed:</p><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
     <span class="n">handler_function</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">handler</span><span class="p">(),</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="bp">None</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">handler_function</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Method now allowed&quot;</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="p">)</span>
