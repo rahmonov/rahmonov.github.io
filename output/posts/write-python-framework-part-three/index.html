@@ -1,0 +1,191 @@
+<!DOCTYPE html><html lang="en"><head prefix="og: http://ogp.me/ns#"><title>How to write a Python web framework. Part III.</title><link rel="stylesheet" href="/static/css/main.css"><link rel="stylesheet" href="/static/css/pygment.css"><link rel="stylesheet" href="/static/css/font-awesome.min.css"><link href="//fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet" type="text/css"><link rel="stylesheet" href="/static/vendor/lightbox2/css/lightbox.min.css"><link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet"><link rel="shortcut icon" type="image/png" href="/static/images/favicon.png"><meta name="google-site-verification" content="RhKly6bfyZ4vo03CPdY9f-Bg8CuZA0GhTPvCEPsNa2c"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="<p>The third post of the series where we will be writing our own Python framework just like Flask and Django.</p>"><meta name="author" content="Jahongir Rahmonov"><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta property="og:title" content="How to write a Python web framework. Part III."><meta property="og:type" content="website"><meta property="og:image" content="/static/images/programming.jpg"><meta property="og:url" content="http://rahmonov.me/posts/write-python-framework-part-three/"><meta property="og:description" content="<p>The third post of the series where we will be writing our own Python framework just like Flask and Django.</p>"><link href="http://rahmonov.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Full Atom Feed"><link href="http://rahmonov.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="Jahongir Rahmonov Full RSS Feed"><link href="http://rahmonov.me/feeds/python.atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Categories Atom Feed"><meta name="description" content="<p>The third post of the series where we will be writing our own Python framework just like Flask and Django.</p>"><meta name="tags" content="programming"><meta name="tags" content="python"><link href="https://unpkg.com/ilyabirman-likely@2/release/likely.css" rel="stylesheet"><script src="https://unpkg.com/ilyabirman-likely@2/release/likely.js" type="text/javascript"></script></head><body id="index" class="home"><div class="container"><button class="nav js-mobile"><i class="fa fa-bars"></i></button><div class="side"><div class="logo"><a href="/"><img src="/static/images/me.jpg" width="150" height="150" class="jahon" alt="Jahongir Rahmonov"></a></div><h2>Jahongir Rahmonov</h2><div class="paragraphs"><p> I'm a Software Developer at <a href="http://mysuperdispatch.com/">Super Dispatch (TechStars '16)</a>. Avid reader. <a href="http://wiut.uz/">WIUT</a> graduate. Blogger and an amateur speaker </p><p> I write about Python, Django, AngularJS and sometimes something non-technical. </p><p> Welcome to my corner <i class="em em-snake"></i></p> </div><form method="get" action="https://www.google.com/search"><input name="sitesearch" value="rahmonov.me" type="hidden"><input type="text" id="search-query" class="field field-text" required name="q" placeholder="Search..." autocomplete="off"><input type="image" src="/static/images/search-icon.png" width="20" height="20" class="search-icon" title="Search via Google" alt="Search via Google"></form><ul class="menu"><li><a href="/">Home</a></li><li><a href="/pages/about.html">About</a></li><li><a href="/pages/about.html#subscribe">Subscribe</a></li><li><a href="/pages/about.html#contact">Contact</a></li><li><a href="/feeds/atom.xml">RSS <i class="fa fa-rss"></i></a></li></ul><p class="profiles"><a title="GitHub" href="https://github.com/rahmonov"><i class="fa fa-github-square"></i></a><a title="StackOverflow" href="https://stackoverflow.com/users/4137194/jahongir-rahmonov?tab=profile"><i class="fa fa-stack-overflow"></i></a><a title="Twitter" href="https://twitter.com/rahmon0v"><i class="fa fa-twitter-square"></i></a><a title="LinkedIn" href="https://www.linkedin.com/in/jahongirrahmonov"><i class="fa fa-linkedin-square"></i></a></p></div><div class="wrap"><div class="content"><h4>Sun 03 March 2019</h4><h1>How to write a Python web framework. Part III.</h1><div class="entry-content"><p><em>Check out Part I <a href="/posts/write-python-framework-part-one/">here</a></em><br><em>Check out Part II <a href="/posts/write-python-framework-part-two/">here</a></em></p><blockquote><p>A little reminder that this series is based on the <a href="https://github.com/rahmonov/alcazar">Alcazar framework</a> that I am writing for learning purposes. If you liked this series, show some love by starring the <a href="https://github.com/rahmonov/alcazar">repo</a>.</p></blockquote><p>In the previous blog posts in the series, we started writing our own Python framework and implemented the following features:</p><ul><li>WSGI compatible</li><li>Request Handlers</li><li>Routing: simple and parameterized</li><li>Check for duplicate routes</li><li>Class Based Handlers</li><li>Unit tests</li></ul><p>In this part, we will add a few awesome features to the list:</p><ul><li>Test Client</li><li>Alternative way to add routes (like Django)</li><li>Support for templates</li></ul><h2>Test Client</h2><p>In the <a href="/posts/write-python-framework-part-two/">part 2</a>, we wrote a couple of unit tests. However, we stopped when we needed to send HTTP requests to our handlers because we didn't have a test client that could do that. Let's add one then.</p><p>By far the most popular way of sending HTTP requests in Python is the <a href="https://github.com/kennethreitz/requests"><code>Requests</code></a> library by <a href="https://twitter.com/kennethreitz">Kenneth Reitz</a>. However, for us to be able to use it in the unit tests, we should always have our app up and running (i.e. start gunicorn before running tests). The reason is that <a href="http://docs.python-requests.org/en/master/user/advanced/#transport-adapters">Requests only ships with a single Transport Adapter, the HTTPAdapter</a>. That defeats the purpose of unit tests. Unit tests should be self sustained. Fortunately for us, <a href="https://github.com/seanbrant">Sean Brant</a> wrote a <a href="https://github.com/seanbrant/requests-wsgi-adapter">WSGI Transport Adapter for Requests</a> that we can use to create a test client. Let's write the code first and then discuss.</p><p>Add the following method to the main <code>API</code> class in <code>api.py</code>:</p><div class="highlight"><pre><span></span><span class="c1"># api.py</span>
+<span class="o">...</span>
+<span class="kn">from</span> <span class="nn">requests</span> <span class="kn">import</span> <span class="n">Session</span> <span class="k">as</span> <span class="n">RequestsSession</span>
+<span class="kn">from</span> <span class="nn">wsgiadapter</span> <span class="kn">import</span> <span class="n">WSGIAdapter</span> <span class="k">as</span> <span class="n">RequestsWSGIAdapter</span>
+
+
+<span class="k">class</span> <span class="nc">API</span><span class="p">:</span>
+    <span class="o">...</span>
+
+    <span class="k">def</span> <span class="nf">test_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;http://testserver&quot;</span><span class="p">):</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="n">RequestsSession</span><span class="p">()</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="n">base_url</span><span class="p">,</span> <span class="n">adapter</span><span class="o">=</span><span class="n">RequestsWSGIAdapter</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">session</span>
+
+    <span class="o">...</span>
+</pre></div><p>As written <a href="http://docs.python-requests.org/en/master/user/advanced/#transport-adapters">here</a>, to use the Requests WSGI Adapter, we need to mount it to a Session object. This way, any request made using this <code>test_session</code> whose URL starts with the given prefix will use the given RequestsWSGIAdapter. Great, now we can use this <code>test_session</code> to create a test client. Create a <code>conftest.py</code> file and move the <code>api</code> fixture to this file so that it looks like this:</p><div class="highlight"><pre><span></span><span class="c1"># conftest.py</span>
+<span class="kn">import</span> <span class="nn">pytest</span>
+
+<span class="kn">from</span> <span class="nn">api</span> <span class="kn">import</span> <span class="n">API</span>
+
+
+<span class="nd">@pytest.fixture</span>
+<span class="k">def</span> <span class="nf">api</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">API</span><span class="p">()</span>
+</pre></div><p>In case you didn't know, this file is where <code>pytest</code> looks for fixtures by default. Now, let's create the test client fixture here:</p><div class="highlight"><pre><span></span><span class="c1"># conftest.py</span>
+<span class="o">...</span>
+
+<span class="nd">@pytest.fixture</span>
+<span class="k">def</span> <span class="nf">client</span><span class="p">(</span><span class="n">api</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">api</span><span class="o">.</span><span class="n">test_session</span><span class="p">()</span>
+</pre></div><p>Our <code>client</code> needs the <code>api</code> fixture and returns the <code>test_session</code> that we wrote earlier. Now we can use this <code>client</code> fixture in our unit tests. Let's go right ahead to the <code>test_bumbo.py</code> file and write a unit test that tests if the <code>client</code> can send a request:</p><div class="highlight"><pre><span></span><span class="c1"># test_bumbo.py</span>
+<span class="o">...</span>
+
+<span class="k">def</span> <span class="nf">test_bumbo_test_client_can_send_requests</span><span class="p">(</span><span class="n">api</span><span class="p">,</span> <span class="n">client</span><span class="p">):</span>
+    <span class="n">RESPONSE_TEXT</span> <span class="o">=</span> <span class="s2">&quot;THIS IS COOL&quot;</span>
+
+    <span class="nd">@api.route</span><span class="p">(</span><span class="s2">&quot;/hey&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">cool</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">resp</span><span class="p">):</span>
+        <span class="n">resp</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">RESPONSE_TEXT</span>
+
+    <span class="k">assert</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://testserver/hey&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="n">RESPONSE_TEXT</span>
+</pre></div><p>Run the unit tests by <code>pytest test_bumbo.py</code> and voila. We see that all the tests pass. Let's add a couple more unit tests for the most important parts:</p><div class="highlight"><pre><span></span><span class="c1"># test_bumbo.py</span>
+<span class="o">...</span>
+
+<span class="k">def</span> <span class="nf">test_parameterized_route</span><span class="p">(</span><span class="n">api</span><span class="p">,</span> <span class="n">client</span><span class="p">):</span>
+    <span class="nd">@api.route</span><span class="p">(</span><span class="s2">&quot;/{name}&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">hello</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">resp</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="n">resp</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;hey {name}&quot;</span>
+
+    <span class="k">assert</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">(</span><span class="s2">&quot;/matthew&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="s2">&quot;hey matthew&quot;</span>
+    <span class="k">assert</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">(</span><span class="s2">&quot;/ashley&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="s2">&quot;hey ashley&quot;</span>
+</pre></div><p>This tests that the parameters that we send in the url are working.</p><div class="highlight"><pre><span></span><span class="c1"># test_bumbo.py</span>
+<span class="o">...</span>
+
+<span class="k">def</span> <span class="nf">test_default_404_response</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">(</span><span class="s2">&quot;/doesnotexist&quot;</span><span class="p">))</span>
+
+    <span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">404</span>
+    <span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="s2">&quot;Not found.&quot;</span>
+</pre></div><p>This one tests that if a request is sent to a non existent route, 404(Not Found) response is returned.</p><p>The rest I will leave to you. Try to write a couple more tasks and let me know in the comments if you need any help. Here are some ideas for unit tests:</p><ul><li>test that class based handlers are working with a GET request</li><li>test that class based handlers are working with a POST request</li><li>test that class based handlers are returning <code>Method Not Allowed.</code> response if an invalid request method is used</li><li>test that status code is being returned properly</li></ul><h2>Alternative way to add routes</h2><p>Right now, here is how routes are added:</p><div class="highlight"><pre><span></span><span class="nd">@api.route</span><span class="p">(</span><span class="s2">&quot;/home&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">resp</span><span class="p">):</span>
+    <span class="n">resp</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;YOLO&quot;</span>
+</pre></div><p>That is, routes are added as decorators, like in Flask. Some people may like the Django way of registering urls. So, let's give them a choice to add routes like this:</p><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">resp</span><span class="p">):</span>
+    <span class="n">resp</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;YOLO&quot;</span>
+
+
+<span class="k">def</span> <span class="nf">handler2</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">resp</span><span class="p">):</span>
+    <span class="n">resp</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;YOLO2&quot;</span>
+
+<span class="n">api</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s2">&quot;/home&quot;</span><span class="p">,</span> <span class="n">handler</span><span class="p">)</span>
+<span class="n">api</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s2">&quot;/about&quot;</span><span class="p">,</span> <span class="n">handler2</span><span class="p">)</span>
+</pre></div><p>This <code>add_route</code> method should do two things. Check if the route is already registered or not and if not, register it:</p><div class="highlight"><pre><span></span><span class="c1"># api.py</span>
+
+<span class="k">class</span> <span class="nc">API</span><span class="p">:</span>
+    <span class="o">...</span>
+
+    <span class="k">def</span> <span class="nf">add_route</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">handler</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">routes</span><span class="p">,</span> <span class="s2">&quot;Such route already exists.&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">routes</span><span class="p">[</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="n">handler</span>
+</pre></div><p>Pretty simple. Does this code look familiar to you? It is because we already wrote such code in the <code>route</code> decorator. We can now follow the DRY principle and use this <code>add_route</code> method inside the <code>route</code> decorator:</p><div class="highlight"><pre><span></span><span class="c1"># api.py</span>
+
+
+<span class="k">class</span> <span class="nc">API</span><span class="p">:</span>
+    <span class="o">...</span>
+
+    <span class="k">def</span> <span class="nf">add_route</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">handler</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">routes</span><span class="p">,</span> <span class="s2">&quot;Such route already exists.&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">routes</span><span class="p">[</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="n">handler</span>
+
+    <span class="k">def</span> <span class="nf">route</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">handler</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">handler</span>
+
+    <span class="k">return</span> <span class="n">wrapper</span>
+</pre></div><p>And let's add a unit test to check if it is working:</p><div class="highlight"><pre><span></span><span class="c1"># test_bumbo.py</span>
+
+<span class="k">def</span> <span class="nf">test_alternative_route</span><span class="p">(</span><span class="n">api</span><span class="p">,</span> <span class="n">client</span><span class="p">):</span>
+    <span class="n">response_text</span> <span class="o">=</span> <span class="s2">&quot;Alternative way to add a route&quot;</span>
+
+    <span class="k">def</span> <span class="nf">home</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">resp</span><span class="p">):</span>
+        <span class="n">resp</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">response_text</span>
+
+    <span class="n">api</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s2">&quot;/alternative&quot;</span><span class="p">,</span> <span class="n">home</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://testserver/alternative&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="n">response_text</span>
+</pre></div><p>Run your tests and you will see that all of them pass.</p><h2>Templates support</h2><p>When I am implementing something new, I like to do something called README driven development. It is a technique where you write down how you want your API to look like before implementing. Let's do just that for this feature. Say we have this template that we want to use in our handler:</p><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">header</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>{{ title }}<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">header</span><span class="p">&gt;</span>
+
+    <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+        The name of the framework is {{ name }}
+    <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div><p><code>{{ title }}</code> and <code>{{ name }}</code> are variables that are sent from a handler and here is how a handler looks like:</p><div class="highlight"><pre><span></span><span class="n">api</span> <span class="o">=</span> <span class="n">API</span><span class="p">(</span><span class="n">templates_dir</span><span class="o">=</span><span class="s2">&quot;templates&quot;</span><span class="p">)</span>
+
+<span class="nd">@api.route</span><span class="p">(</span><span class="s2">&quot;/home&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">resp</span><span class="p">):</span>
+    <span class="n">resp</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">template</span><span class="p">(</span><span class="s2">&quot;home.html&quot;</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Alcazar&quot;</span><span class="p">})</span>
+</pre></div><p>I want it to be as simple as possible so I just need one method that takes template name and context as params and renders that template with the given params. Also, we want templates directory to be configurable just like above.</p><p>With the API designed, we can now implement it.</p><p>For templates support, I think that <a href="http://jinja.pocoo.org/docs/2.10/">Jinja2</a> is the best choice. It is a modern and designer-friendly templating language for Python, modelled after Django’s templates. So, if you know Django it should feel right at home.</p><p><code>Jinja2</code> uses a central object called the template <code>Environment</code>. We will configure this environment upon application initialization and load templates with the help of this environment. Here is how to create and configure one:</p><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">jinja2</span> <span class="kn">import</span> <span class="n">Environment</span><span class="p">,</span> <span class="n">FileSystemLoader</span>
+
+<span class="n">templates_env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">(</span><span class="n">loader</span><span class="o">=</span><span class="n">FileSystemLoader</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;templates&quot;</span><span class="p">)))</span>
+</pre></div><p><code>FileSystemLoader</code> loads templates from the file system. This loader can find templates in folders on the file system and is the preferred way to load them. It takes the path to the templates directory as a parameter. Now we can use this <code>templates_env</code> like so:</p><div class="highlight"><pre><span></span><span class="n">templates_env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s2">&quot;index.html&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">render</span><span class="p">({</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Awesome Framework&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Alcazar&quot;</span><span class="p">})</span>
+</pre></div><p>Now that we understand how everything works in <code>Jinja2</code>, let's add it to our own framework. First, let's install <code>Jinja2</code>:</p><div class="highlight"><pre><span></span>pip install Jinja2
+</pre></div><p>Then, create the <code>Environment</code> object in the <code>__init__</code> method of our <code>API</code> class:</p><div class="highlight"><pre><span></span><span class="c1"># api.py</span>
+<span class="kn">from</span> <span class="nn">jinja2</span> <span class="kn">import</span> <span class="n">Environment</span><span class="p">,</span> <span class="n">FileSystemLoader</span>
+
+
+<span class="k">class</span> <span class="nc">API</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">templates_dir</span><span class="o">=</span><span class="s2">&quot;templates&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">routes</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">templates_env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">(</span><span class="n">loader</span><span class="o">=</span><span class="n">FileSystemLoader</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">templates_dir</span><span class="p">)))</span>
+
+    <span class="o">...</span>
+</pre></div><p>We did almost the same thing as above except that we gave <code>templates_dir</code> a default value of <code>templates</code> so that users don't have to write it if they don't want to. Now we have everything to implement the <code>template</code> method we designed earlier:</p><div class="highlight"><pre><span></span><span class="c1"># api.py</span>
+
+<span class="k">class</span> <span class="nc">API</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">template</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template_name</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">templates_env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="n">template_name</span><span class="p">)</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">context</span><span class="p">)</span>
+</pre></div><p>I don't think there is a need to explain anything here. The only thing you may wonder about is why I gave <code>context</code> a default value of <code>None</code>, checked if it is <code>None</code> and then set the value to an empty dictionary <code>{}</code>. You may say I could have given it the default value of <code>{}</code> in the declaration. But <code>dict</code> is a mutable object and it is a bad practice to set a mutable object as a default value in Python. Read more about this <a href="https://docs.python-guide.org/writing/gotchas/#mutable-default-arguments">here</a>.</p><p>With everything ready, we can create templates and handlers. First, create the <code>templates</code> folder:</p><div class="highlight"><pre><span></span>mkdir templates
+</pre></div><p>Create the <code>index.html</code> file by doing <code>touch templates/index.html</code> and put the following inside:</p><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">header</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>{{ title }}<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">header</span><span class="p">&gt;</span>
+
+    <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>The name of the framework is {{ name }}<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div><p>Now we can create a handler in our <code>app.py</code>:</p><div class="highlight"><pre><span></span><span class="c1"># app.py</span>
+
+<span class="nd">@api.route</span><span class="p">(</span><span class="s2">&quot;/template&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">template_handler</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">resp</span><span class="p">):</span>
+    <span class="n">resp</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">template</span><span class="p">(</span><span class="s2">&quot;index.html&quot;</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Alcazar&quot;</span><span class="p">,</span> <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Best Framework&quot;</span><span class="p">})</span>
+</pre></div><p>That's it (well, almost). Start <code>gunicorn</code> and go to <code>http://localhost:8000/template</code>. You will see a big bold <code>Internal Server Error</code>. That's because <code>resp.body</code> expects bytes and our <code>template</code> method returns a unicode string. Thus, we will need to encode it:</p><div class="highlight"><pre><span></span><span class="c1"># app.py</span>
+
+<span class="nd">@api.route</span><span class="p">(</span><span class="s2">&quot;/template&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">template_handler</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">resp</span><span class="p">):</span>
+    <span class="n">resp</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">template</span><span class="p">(</span><span class="s2">&quot;index.html&quot;</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Alcazar&quot;</span><span class="p">,</span> <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Best Framework&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+</pre></div><p>Restart gunicorn and you will see our template in all its glory. In the future posts, we will remove the need to <code>encode</code> and make our API prettier.</p><h2>Conclusion</h2><p>We have implemented three new features in this post:</p><ul><li>Test Client</li><li>Alternative way to add routes (like Django)</li><li>Support for templates</li></ul><p>Make sure to let me know in the comments what other features we should implement in this series. For the next part, we will definitely add support for static files but I am not sure what other features we should add.</p><p><em>Check out Part I <a href="/posts/write-python-framework-part-one/">here</a></em><br><em>Check out Part II <a href="/posts/write-python-framework-part-two/">here</a></em></p><blockquote><p>A little reminder that this series is based on the <a href="https://github.com/rahmonov/alcazar">Alcazar framework</a> that I am writing for learning purposes. If you liked this series, show some love by starring the <a href="https://github.com/rahmonov/alcazar">repo</a>.</p></blockquote><p>That's it for today!</p><p>Fight on!</p></div><div class="pagination clearfix"><a class="prev" href="/posts/write-python-framework-part-two/">« Previous</a></ul></div><p><div class="likely likely-big"><div class="facebook">Share</div><div class="twitter" data-via="rahmon0v">Tweet</div><div class="telegram">Send</div><div class="linkedin">Share</div></div></p><div class="end"><span> If you liked what you read, subscribe below. Once in a while, I will send you a list of my new posts. </span><div id="popup"><p><link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css"><style type="text/css">
+                #mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; }
+                /* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
+                   We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
+            </style><div id="mc_embed_signup"><form action="//rahmonov.us16.list-manage.com/subscribe/post?u=9e30bdfdfe0a7bd7cf7e0d50a&id=af3f3c5f76" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate><div id="mc_embed_signup_scroll"><div class="indicates-required"><span class="asterisk">*</span> indicates required</div><div class="mc-field-group"><label for="mce-MMERGE1">Name </label><input type="text" value name="MMERGE1" class id="mce-MMERGE1"></div><div class="mc-field-group"><label for="mce-EMAIL">Email Address <span class="asterisk">*</span></label><input type="email" value name="EMAIL" class="required email" id="mce-EMAIL"></div><div id="mce-responses" class="clear"><div class="response" id="mce-error-response" style="display:none"></div><div class="response" id="mce-success-response" style="display:none"></div></div> <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_9e30bdfdfe0a7bd7cf7e0d50a_af3f3c5f76" tabindex="-1" value></div><div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div></div></form></div></p></div></div><div id="disqus_thread"></div><script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES * * */
+        var disqus_shortname = 'jrahmonov';
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript></div></div></div><script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-67392250-1', 'auto');
+      ga('send', 'pageview');
+    </script><script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="/static/js/mobile.js"></script><script src="/static/vendor/lightbox2/js/lightbox.min.js"></script><script src="/static/"></script></body></html>
