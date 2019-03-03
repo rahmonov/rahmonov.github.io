@@ -98,7 +98,7 @@ We need to change the `route` function so that it throws an exception if an exis
 
 def route(self, path):
     if path in self.routes:
-        throw AssertionError("Such route already exists.")
+        raise AssertionError("Such route already exists.")
 
     def wrapper(handler):
         self.routes[path] = handler
@@ -107,7 +107,7 @@ def route(self, path):
     return wrapper
 ```
 
-Now, trying adding the same route twice and restart your gunicorn. You should see the following exception thrown:
+Now, try adding the same route twice and restart your gunicorn. You should see the following exception thrown:
 
 ```shell
 Traceback (most recent call last):
@@ -196,7 +196,7 @@ def handle_request(self, request):
 ```
 
 Now, if a class based handler is being used, we need to find the appropriate method of the class depending on the request method.
-For that we can use the `getattr` built-in function:
+For that we can use the built-in `getattr` function:
 
 ```python
 # api.py
@@ -220,7 +220,7 @@ def handle_request(self, request):
 
 `getattr` accepts an object instance as the first param and the attribute name to get as the second. The third argument is the value to return if nothing is found.
 So, `GET` will return `get`, `POST` will return `post` and `some_other_attribute` will return `None`. If the `handler_function` is `None`, it means
-that such function was not method in the class and that this request method is not allowed:
+that such function was not implemented in the class and that this request method is not allowed:
 
 ```python
 if inspect.isclass(handler):
