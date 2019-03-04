@@ -56,7 +56,7 @@ Do you get it? The web server could have behaved in a number of different ways a
 languages to understand what it is saying and behaving accordingly.
 
 What this means is that, in the past you had to adapt your software to fit the requirements of a web server. Moreover, you had to
-write different kinds of wrappers in order to make it suitable across different web servers. What developers wants to deal with such things instead of writing code?
+write different kinds of wrappers in order to make it suitable across different web servers. What developer wants to deal with such things instead of writing code?
  
 ### WSGI to the rescue
 Here is where the WSGI comes in! Understand it as a SET OF RULES for a web server and a web application. The rules for a web server look like this:
@@ -110,7 +110,7 @@ def application(environ, start_response):
     ]
     response_body = '\n'.join(response_body)
     
-    status = '200'
+    status = '200 OK'
 
     response_headers = [
         ('Content-type', 'text/plain'),
@@ -128,17 +128,19 @@ def application(environ, start_response):
    ]
    response_body = '\n'.join(response_body)
     
-   status = '200'
+   status = '200 OK'
 
    response_headers = [
        ('Content-type', 'text/plain'),
    ]
+
+   start_response(status, response_headers)
     
    return [response_body.encode('utf-8')]
 ```      
         
 That's it. Our genius web framework is ready. Of course, we need a web server to serve our application and here we will be using
-Python's bundled WSGI server. But if you want to learn the WSGI server interface, take a look at [here](https://www.python.org/dev/peps/pep-0333/#the-server-gateway-side)
+Python's bundled WSGI server. But if you want to learn the WSGI server interface, take a look at [here](https://www.python.org/dev/peps/pep-0333/#the-server-gateway-side).
 
 Now, let's serve our application:
 
@@ -151,11 +153,13 @@ def application(environ, start_response):
     ]
     response_body = '\n'.join(response_body)
    
-    status = '200'
+    status = '200 OK'
 
     response_headers = [
         ('Content-type', 'text/plain'),
     ]
+
+    start_response(status, response_headers)
     
     return [response_body.encode('utf-8')]
     
@@ -218,7 +222,7 @@ def application(environ, start_response):
     ]
     response_body = '\n'.join(response_body)
    
-    status = '200'
+    status = '200 OK'
 
     response_headers = [
         ('Content-type', 'text/plain'),
