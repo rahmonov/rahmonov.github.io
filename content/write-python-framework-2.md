@@ -376,3 +376,6 @@ P.S. These blog posts are based on the [Python web framework](https://github.com
 what is yet to come in the blog and make sure to show some love by starring the repo.
 
 Fight on!
+
+*Check out Part I [here](/posts/write-python-framework-part-two/)*
+*Check out Part III [here](/posts/write-python-framework-part-three/)*<br>
