@@ -2,7 +2,7 @@
 </pre></div><p>it could have been like this:</p><div class="highlight"><pre><span></span>Эй, чувак, проснись! Вот запрос от очень важного клиента. Пожалуйста, сделай что нибудь
 </pre></div><p>or it could have been like this:</p><div class="highlight"><pre><span></span>Ehi amico, svegliati! Ecco una richiesta da un cliente molto importante. Si prega, fare qualcosa al riguardo
 </pre></div><p>or even like this:</p><div class="highlight"><pre><span></span>嘿，伙计，醒醒吧！这里是一个非常重要的客户端的请求。请做点什么
-</pre></div><p>Do you get it? The web server could have behaved in a number of different ways and the PythonApp guy had to learn all these languages to understand what it is saying and behaving accordingly.</p><p>What this means is that, in the past you had to adapt your software to fit the requirements of a web server. Moreover, you had to write different kinds of wrappers in order to make it suitable across different web servers. What developers wants to deal with such things instead of writing code?</p><h3>WSGI to the rescue</h3><p>Here is where the WSGI comes in! Understand it as a SET OF RULES for a web server and a web application. The rules for a web server look like this:</p><blockquote><p>Okay, if you want to talk to that PythonApp guy, speak these words and sentences. Also, learn these words as well which he will speak to you. Furthermore, if something goes wrong, here are the curse words that the PythonApp guy will be saying and here is how you should react to them</p></blockquote><p>And the rules for a web application look like this:</p><blockquote><p>Okay, if you want to talk to a web server, learn these words because a web server will be using them when addressing you. Also, you use the following words and be sure that a web server understands them. Furthermore, if something goes wrong, use these curse words and behave in this way</p></blockquote><h3>Enough talk, let's fight</h3><p>Let's take a look at the WSGI application interface to see how it should behave. According to <a href="https://www.python.org/dev/peps/pep-0333/#the-application-framework-side">PEP 333</a>, the document which specifies the details of the WSGI, the application interface is implemented as a callable object such as a function, a method, a class or an instance with a <code>__call__</code> method. This object should accept two positional arguments and return the response body as strings in an iterable.</p><p>The two arguments are:</p><ul><li>a dictionary with environment variables</li><li>a callback function that will be used to send HTTP status and HTTP headers to the server</li></ul><p>Now that we know the basics why don't we create a web framework which will definitely take away some market share from Django itself :) Our web framework will do something that no one is doing right now: IT WILL PRINT ALL ENVIRONMENT VARIABLES IT RECEIVES. Genius!</p><p>(have been watching to much Pewdiepie. Goddammit) </p><p>Okay, let's create that callable object which receives to arguments:</p><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">application</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="n">start_response</span><span class="p">):</span>
+</pre></div><p>Do you get it? The web server could have behaved in a number of different ways and the PythonApp guy had to learn all these languages to understand what it is saying and behaving accordingly.</p><p>What this means is that, in the past you had to adapt your software to fit the requirements of a web server. Moreover, you had to write different kinds of wrappers in order to make it suitable across different web servers. What developer wants to deal with such things instead of writing code?</p><h3>WSGI to the rescue</h3><p>Here is where the WSGI comes in! Understand it as a SET OF RULES for a web server and a web application. The rules for a web server look like this:</p><blockquote><p>Okay, if you want to talk to that PythonApp guy, speak these words and sentences. Also, learn these words as well which he will speak to you. Furthermore, if something goes wrong, here are the curse words that the PythonApp guy will be saying and here is how you should react to them</p></blockquote><p>And the rules for a web application look like this:</p><blockquote><p>Okay, if you want to talk to a web server, learn these words because a web server will be using them when addressing you. Also, you use the following words and be sure that a web server understands them. Furthermore, if something goes wrong, use these curse words and behave in this way</p></blockquote><h3>Enough talk, let's fight</h3><p>Let's take a look at the WSGI application interface to see how it should behave. According to <a href="https://www.python.org/dev/peps/pep-0333/#the-application-framework-side">PEP 333</a>, the document which specifies the details of the WSGI, the application interface is implemented as a callable object such as a function, a method, a class or an instance with a <code>__call__</code> method. This object should accept two positional arguments and return the response body as strings in an iterable.</p><p>The two arguments are:</p><ul><li>a dictionary with environment variables</li><li>a callback function that will be used to send HTTP status and HTTP headers to the server</li></ul><p>Now that we know the basics why don't we create a web framework which will definitely take away some market share from Django itself :) Our web framework will do something that no one is doing right now: IT WILL PRINT ALL ENVIRONMENT VARIABLES IT RECEIVES. Genius!</p><p>(have been watching to much Pewdiepie. Goddammit) </p><p>Okay, let's create that callable object which receives to arguments:</p><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">application</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="n">start_response</span><span class="p">):</span>
         <span class="k">pass</span>
 </pre></div><p>Easy enough. Now, let's prepare the response body that we want to return to the server:</p><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">application</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="n">start_response</span><span class="p">):</span>
     <span class="n">response_body</span> <span class="o">=</span> <span class="p">[</span>
@@ -15,7 +15,7 @@
     <span class="p">]</span>
     <span class="n">response_body</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">response_body</span><span class="p">)</span>
 
-    <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;200&#39;</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;200 OK&#39;</span>
 
     <span class="n">response_headers</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">(</span><span class="s1">&#39;Content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">),</span>
@@ -28,14 +28,16 @@
    <span class="p">]</span>
    <span class="n">response_body</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">response_body</span><span class="p">)</span>
 
-   <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;200&#39;</span>
+   <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;200 OK&#39;</span>
 
    <span class="n">response_headers</span> <span class="o">=</span> <span class="p">[</span>
        <span class="p">(</span><span class="s1">&#39;Content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">),</span>
    <span class="p">]</span>
 
+   <span class="n">start_response</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="n">response_headers</span><span class="p">)</span>
+
    <span class="k">return</span> <span class="p">[</span><span class="n">response_body</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)]</span>
-</pre></div><p>That's it. Our genius web framework is ready. Of course, we need a web server to serve our application and here we will be using Python's bundled WSGI server. But if you want to learn the WSGI server interface, take a look at <a href="https://www.python.org/dev/peps/pep-0333/#the-server-gateway-side">here</a></p><p>Now, let's serve our application:</p><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">wsgiref.simple_server</span> <span class="kn">import</span> <span class="n">make_server</span>
+</pre></div><p>That's it. Our genius web framework is ready. Of course, we need a web server to serve our application and here we will be using Python's bundled WSGI server. But if you want to learn the WSGI server interface, take a look at <a href="https://www.python.org/dev/peps/pep-0333/#the-server-gateway-side">here</a>.</p><p>Now, let's serve our application:</p><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">wsgiref.simple_server</span> <span class="kn">import</span> <span class="n">make_server</span>
 
 <span class="k">def</span> <span class="nf">application</span><span class="p">(</span><span class="n">environ</span><span class="p">,</span> <span class="n">start_response</span><span class="p">):</span>
     <span class="n">response_body</span> <span class="o">=</span> <span class="p">[</span>
@@ -43,11 +45,13 @@
     <span class="p">]</span>
     <span class="n">response_body</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">response_body</span><span class="p">)</span>
 
-    <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;200&#39;</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;200 OK&#39;</span>
 
     <span class="n">response_headers</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">(</span><span class="s1">&#39;Content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">),</span>
     <span class="p">]</span>
+
+    <span class="n">start_response</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="n">response_headers</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="p">[</span><span class="n">response_body</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)]</span>
 
@@ -76,7 +80,7 @@
     <span class="p">]</span>
     <span class="n">response_body</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">response_body</span><span class="p">)</span>
 
-    <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;200&#39;</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;200 OK&#39;</span>
 
     <span class="n">response_headers</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">(</span><span class="s1">&#39;Content-type&#39;</span><span class="p">,</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">),</span>
