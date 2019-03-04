@@ -5,28 +5,28 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://rahmonov.me/</loc>
-<lastmod>2019-03-04T11:21:04-00:00</lastmod>
+<lastmod>2019-03-04T11:23:40-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://rahmonov.me/archives.html</loc>
-<lastmod>2019-03-04T11:21:04-00:00</lastmod>
+<lastmod>2019-03-04T11:23:40-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://rahmonov.me/tags.html</loc>
-<lastmod>2019-03-04T11:21:04-00:00</lastmod>
+<lastmod>2019-03-04T11:23:40-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://rahmonov.me/categories.html</loc>
-<lastmod>2019-03-04T11:21:04-00:00</lastmod>
+<lastmod>2019-03-04T11:23:40-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -180,7 +180,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://rahmonov.me/posts/what-the-hell-is-wsgi-anyway-and-what-do-you-eat-it-with/</loc>
-<lastmod>2017-07-25T20:10:00+05:00</lastmod>
+<lastmod>2017-07-25T20:11:00+05:00</lastmod>
 <changefreq>weekly</changefreq>
 <priority>0.5</priority>
 </url>
