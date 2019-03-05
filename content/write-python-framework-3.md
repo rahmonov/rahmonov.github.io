@@ -117,8 +117,8 @@ def test_parameterized_route(api, client):
     def hello(req, resp, name):
         resp.text = f"hey {name}"
 
-    assert client.get(url("/matthew")).text == "hey matthew"
-    assert client.get(url("/ashley")).text == "hey ashley"
+    assert client.get("http://testserver/matthew").text == "hey matthew"
+    assert client.get("http://testserver/ashley").text == "hey ashley"
 ```
 
 This tests that the parameters that we send in the url are working.
@@ -128,7 +128,7 @@ This tests that the parameters that we send in the url are working.
 ...
 
 def test_default_404_response(client):
-    response = client.get(url("/doesnotexist"))
+    response = client.get("http://testserver/doesnotexist")
 
     assert response.status_code == 404
     assert response.text == "Not found."
@@ -136,7 +136,7 @@ def test_default_404_response(client):
 
 This one tests that if a request is sent to a non existent route, 404(Not Found) response is returned.
 
-The rest I will leave to you. Try to write a couple more tasks and let me know in the comments if you need any help. Here are some ideas for unit tests:
+The rest I will leave to you. Try to write a couple more tests and let me know in the comments if you need any help. Here are some ideas for unit tests:
 
 - test that class based handlers are working with a GET request
 - test that class based handlers are working with a POST request
@@ -251,7 +251,7 @@ api = API(templates_dir="templates")
 
 @api.route("/home")
 def handler(req, resp):
-    resp.body = api.template("home.html", context={"name": "Alcazar"})
+    resp.body = api.template("home.html", context={"title": "Awesome Framework", "name": "Alcazar"})
 ```
 
 I want it to be as simple as possible so I just need one method that takes template name and context as params and
