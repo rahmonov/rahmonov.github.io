@@ -203,7 +203,7 @@ class API:
             self.add_route(pattern, handler)
             return handler
 
-    return wrapper
+        return wrapper
 
 ```
 
