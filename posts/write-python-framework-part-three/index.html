@@ -94,7 +94,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">handler</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">handler</span>
 
-    <span class="k">return</span> <span class="n">wrapper</span>
+        <span class="k">return</span> <span class="n">wrapper</span>
 </pre></div><p>And let's add a unit test to check if it is working:</p><div class="highlight"><pre><span></span><span class="c1"># test_bumbo.py</span>
 
 <span class="k">def</span> <span class="nf">test_alternative_route</span><span class="p">(</span><span class="n">api</span><span class="p">,</span> <span class="n">client</span><span class="p">):</span>
