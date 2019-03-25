@@ -38,8 +38,13 @@ By far the most popular way of sending HTTP requests in Python is the [`Requests
 However, for us to be able to use it in the unit tests, we should always have our app up and running (i.e. start gunicorn before running tests). The reason
 is that [Requests only ships with a single Transport Adapter, the HTTPAdapter](http://docs.python-requests.org/en/master/user/advanced/#transport-adapters).
 That defeats the purpose of unit tests. Unit tests should be self sustained. Fortunately for us, [Sean Brant](https://github.com/seanbrant) wrote a
-[WSGI Transport Adapter for Requests](https://github.com/seanbrant/requests-wsgi-adapter) that we can use to create a test client.
-Let's write the code first and then discuss.
+[WSGI Transport Adapter for Requests](https://github.com/seanbrant/requests-wsgi-adapter) that we can use to create a test client. Go ahead and install both of these wonderful libraries:
+
+```shell
+pip install requests requests-wsgi-adapter
+```
+
+Now, let's write the code first and then discuss.
 
 Add the following method to the main `API` class in `api.py`:
 
@@ -198,9 +203,9 @@ class API:
 
         self.routes[path] = handler
 
-    def route(self, pattern):
+    def route(self, path):
         def wrapper(handler):
-            self.add_route(pattern, handler)
+            self.add_route(path, handler)
             return handler
 
         return wrapper
@@ -266,6 +271,7 @@ So, if you know Django it should feel right at home.
 Here is how to create and configure one:
 
 ```python
+import os
 from jinja2 import Environment, FileSystemLoader
 
 templates_env = Environment(loader=FileSystemLoader(os.path.abspath("templates")))
@@ -288,6 +294,7 @@ Then, create the `Environment` object in the `__init__` method of our `API` clas
 
 ```python
 # api.py
+import os
 from jinja2 import Environment, FileSystemLoader
 
 
