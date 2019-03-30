@@ -461,5 +461,5 @@ features we should implement in our framework. I am thinking of class based hand
 
 Fight on!
 
-*Check out Part II [here](/posts/write-python-framework-part-two/)*
+*Check out Part II [here](/posts/write-python-framework-part-two/)*<br>
 *Check out Part III [here](/posts/write-python-framework-part-three/)*<br>

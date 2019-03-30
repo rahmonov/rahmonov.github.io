@@ -377,5 +377,5 @@ what is yet to come in the blog and make sure to show some love by starring the 
 
 Fight on!
 
-*Check out Part I [here](/posts/write-python-framework-part-two/)*
+*Check out Part I [here](/posts/write-python-framework-part-two/)*<br>
 *Check out Part III [here](/posts/write-python-framework-part-three/)*<br>
