@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head prefix="og: http://ogp.me/ns#"><title>How to write a Python web framework. Part II.</title><link rel="stylesheet" href="/static/css/main.css"><link rel="stylesheet" href="/static/css/pygment.css"><link rel="stylesheet" href="/static/css/font-awesome.min.css"><link href="//fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet" type="text/css"><link rel="stylesheet" href="/static/vendor/lightbox2/css/lightbox.min.css"><link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet"><link rel="shortcut icon" type="image/png" href="/static/images/favicon.png"><meta name="google-site-verification" content="RhKly6bfyZ4vo03CPdY9f-Bg8CuZA0GhTPvCEPsNa2c"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="<p>The second post of the series where we will be writing our own Python framework just like Flask and Django.</p>"><meta name="author" content="Jahongir Rahmonov"><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta property="og:title" content="How to write a Python web framework. Part II."><meta property="og:type" content="website"><meta property="og:image" content="/static/images/programming.jpg"><meta property="og:url" content="http://rahmonov.me/posts/write-python-framework-part-two/"><meta property="og:description" content="<p>The second post of the series where we will be writing our own Python framework just like Flask and Django.</p>"><link href="http://rahmonov.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Full Atom Feed"><link href="http://rahmonov.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="Jahongir Rahmonov Full RSS Feed"><link href="http://rahmonov.me/feeds/python.atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Categories Atom Feed"><meta name="description" content="<p>The second post of the series where we will be writing our own Python framework just like Flask and Django.</p>"><meta name="tags" content="programming"><meta name="tags" content="python"><link href="https://unpkg.com/ilyabirman-likely@2/release/likely.css" rel="stylesheet"><script src="https://unpkg.com/ilyabirman-likely@2/release/likely.js" type="text/javascript"></script></head><body id="index" class="home"><div class="container"><button class="nav js-mobile"><i class="fa fa-bars"></i></button><div class="side"><div class="logo"><a href="/"><img src="/static/images/me.jpg" width="150" height="150" class="jahon" alt="Jahongir Rahmonov"></a></div><h2>Jahongir Rahmonov</h2><div class="paragraphs"><p> I'm a Software Developer at <a href="http://mysuperdispatch.com/">Super Dispatch (TechStars '16)</a>. Avid reader. <a href="http://wiut.uz/">WIUT</a> graduate. Blogger and an amateur speaker </p><p> I write about Python, Django, AngularJS and sometimes something non-technical. </p><p> Welcome to my corner <i class="em em-snake"></i></p> </div><form method="get" action="https://www.google.com/search"><input name="sitesearch" value="rahmonov.me" type="hidden"><input type="text" id="search-query" class="field field-text" required name="q" placeholder="Search..." autocomplete="off"><input type="image" src="/static/images/search-icon.png" width="20" height="20" class="search-icon" title="Search via Google" alt="Search via Google"></form><ul class="menu"><li><a href="/">Home</a></li><li><a href="/pages/about.html">About</a></li><li><a href="/pages/about.html#subscribe">Subscribe</a></li><li><a href="/pages/about.html#contact">Contact</a></li><li><a href="/feeds/atom.xml">RSS <i class="fa fa-rss"></i></a></li></ul><p class="profiles"><a title="GitHub" href="https://github.com/rahmonov"><i class="fa fa-github-square"></i></a><a title="StackOverflow" href="https://stackoverflow.com/users/4137194/jahongir-rahmonov?tab=profile"><i class="fa fa-stack-overflow"></i></a><a title="Twitter" href="https://twitter.com/rahmon0v"><i class="fa fa-twitter-square"></i></a><a title="LinkedIn" href="https://www.linkedin.com/in/jahongirrahmonov"><i class="fa fa-linkedin-square"></i></a></p></div><div class="wrap"><div class="content"><h4>Sat 23 February 2019</h4><h1>How to write a Python web framework. Part II.</h1><div class="entry-content"><p>In the <a href="/posts/write-python-framework-part-one/">first part</a>, we started writing our own Python framework and implemented the following features:</p><ul><li>WSGI compatible</li><li>Request Handlers</li><li>Routing: simple and parameterized</li></ul><p>Make sure to read <a href="/posts/write-python-framework-part-one/">Part I</a> of these series before this one.</p><p>This part will be no less exciting and we will add the following features in it:</p><ul><li>Check for duplicate routes</li><li>Class Based Handlers</li><li>Unit tests</li></ul><p>Ready? Let's get started.</p><h2>Duplicate routes</h2><p>Right now, our framework allows to add the same route any number of times. So, the following will work:</p><div class="highlight"><pre><span></span><span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/home&quot;</span><span class="p">)</span>
+<!DOCTYPE html><html lang="en"><head prefix="og: http://ogp.me/ns#"><title>How to write a Python web framework. Part II.</title><link rel="stylesheet" href="/static/css/main.css"><link rel="stylesheet" href="/static/css/pygment.css"><link rel="stylesheet" href="/static/css/font-awesome.min.css"><link href="//fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet" type="text/css"><link rel="stylesheet" href="/static/vendor/lightbox2/css/lightbox.min.css"><link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet"><link rel="shortcut icon" type="image/png" href="/static/images/favicon.png"><meta name="google-site-verification" content="RhKly6bfyZ4vo03CPdY9f-Bg8CuZA0GhTPvCEPsNa2c"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="<p>The second post of the series where we will be writing our own Python framework just like Flask and Django.</p>"><meta name="author" content="Jahongir Rahmonov"><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta property="og:title" content="How to write a Python web framework. Part II."><meta property="og:type" content="website"><meta property="og:image" content="/static/images/programming.jpg"><meta property="og:url" content="http://rahmonov.me/posts/write-python-framework-part-two/"><meta property="og:description" content="<p>The second post of the series where we will be writing our own Python framework just like Flask and Django.</p>"><link href="http://rahmonov.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Full Atom Feed"><link href="http://rahmonov.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="Jahongir Rahmonov Full RSS Feed"><link href="http://rahmonov.me/feeds/python.atom.xml" type="application/atom+xml" rel="alternate" title="Jahongir Rahmonov Categories Atom Feed"><meta name="description" content="<p>The second post of the series where we will be writing our own Python framework just like Flask and Django.</p>"><meta name="tags" content="programming"><meta name="tags" content="python"><link href="https://unpkg.com/ilyabirman-likely@2/release/likely.css" rel="stylesheet"><script src="https://unpkg.com/ilyabirman-likely@2/release/likely.js" type="text/javascript"></script></head><body id="index" class="home"><div class="container"><button class="nav js-mobile"><i class="fa fa-bars"></i></button><div class="side"><div class="logo"><a href="/"><img src="/static/images/me.jpg" width="150" height="150" class="jahon" alt="Jahongir Rahmonov"></a></div><h2>Jahongir Rahmonov</h2><div class="paragraphs"><p> I'm a Software Developer at <a href="http://mysuperdispatch.com/">Super Dispatch (TechStars '16)</a>. Avid reader. <a href="http://wiut.uz/">WIUT</a> graduate. Blogger and an amateur speaker </p><p> I write about Python, Django, AngularJS and sometimes something non-technical. </p><p> Welcome to my corner <i class="em em-snake"></i></p> </div><form method="get" action="https://www.google.com/search"><input name="sitesearch" value="rahmonov.me" type="hidden"><input type="text" id="search-query" class="field field-text" required name="q" placeholder="Search..." autocomplete="off"><input type="image" src="/static/images/search-icon.png" width="20" height="20" class="search-icon" title="Search via Google" alt="Search via Google"></form><ul class="menu"><li><a href="/">Home</a></li><li><a href="/pages/about.html">About</a></li><li><a href="/pages/about.html#subscribe">Subscribe</a></li><li><a href="/pages/about.html#contact">Contact</a></li><li><a href="/feeds/atom.xml">RSS <i class="fa fa-rss"></i></a></li></ul><p class="profiles"><a title="GitHub" href="https://github.com/rahmonov"><i class="fa fa-github-square"></i></a><a title="StackOverflow" href="https://stackoverflow.com/users/4137194/jahongir-rahmonov?tab=profile"><i class="fa fa-stack-overflow"></i></a><a title="Twitter" href="https://twitter.com/rahmon0v"><i class="fa fa-twitter-square"></i></a><a title="LinkedIn" href="https://www.linkedin.com/in/jahongirrahmonov"><i class="fa fa-linkedin-square"></i></a></p></div><div class="wrap"><div class="content"><h4>Sat 23 February 2019</h4><h1>How to write a Python web framework. Part II.</h1><div class="entry-content"><p>In the <a href="/posts/write-python-framework-part-one/">first part</a>, we started writing our own Python framework and implemented the following features:</p><ul><li>WSGI compatibility</li><li>Request Handlers</li><li>Routing: simple and parameterized</li></ul><p>Make sure to read <a href="/posts/write-python-framework-part-one/">Part I</a> of these series before this one.</p><p>This part will be no less exciting and we will add the following features in it:</p><ul><li>Check for duplicate routes</li><li>Class Based Handlers</li><li>Unit tests</li></ul><p>Ready? Let's get started.</p><h2>Duplicate routes</h2><p>Right now, our framework allows to add the same route any number of times. So, the following will work:</p><div class="highlight"><pre><span></span><span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/home&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">home</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
     <span class="n">response</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Hello from the HOME page&quot;</span>
 
@@ -7,6 +7,9 @@
 <span class="k">def</span> <span class="nf">home2</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
     <span class="n">response</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Hello from the SECOND HOME page&quot;</span>
 </pre></div><p>The framework will not complain and because we use a Python dictionary to store routes, only the last one will work if you go to <code>http://localhost:8000/home/</code>. Obviously, this is not good. We want to make sure that the framework complains if the user tries to add an existing route. As you can imagine, it is not very difficult to implement. Because we are using a Python dict to store routes, we can simply check if the given path already exists in the dictionary. If it does, we throw an exception, if it does not we let it add a route. Before we write any code, let's remember our main <code>API</code> class:</p><div class="highlight"><pre><span></span><span class="c1"># api.py</span>
+<span class="kn">from</span> <span class="nn">parse</span> <span class="kn">import</span> <span class="n">parse</span>
+<span class="kn">from</span> <span class="nn">webob</span> <span class="kn">import</span> <span class="n">Request</span><span class="p">,</span> <span class="n">Response</span>
+
 
 <span class="k">class</span> <span class="nc">API</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -51,25 +54,36 @@
         <span class="n">response</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Not found.&quot;</span>
 </pre></div><p>We need to change the <code>route</code> function so that it throws an exception if an existing route is being added again:</p><div class="highlight"><pre><span></span><span class="c1"># api.py</span>
 
-<span class="k">def</span> <span class="nf">route</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">routes</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;Such route already exists.&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">routes</span><span class="p">[</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="n">handler</span>
-        <span class="k">return</span> <span class="n">handler</span>
+<span class="k">class</span> <span class="nc">API</span><span class="p">:</span>
+    <span class="o">...</span>
 
-    <span class="k">return</span> <span class="n">wrapper</span>
+    <span class="k">def</span> <span class="nf">route</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">routes</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;Such route already exists.&quot;</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">routes</span><span class="p">[</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="n">handler</span>
+            <span class="k">return</span> <span class="n">handler</span>
+
+        <span class="k">return</span> <span class="n">wrapper</span>
+
+    <span class="o">...</span>
 </pre></div><p>Now, try adding the same route twice and restart your gunicorn. You should see the following exception thrown:</p><div class="highlight"><pre><span></span>Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
 ...
 AssertionError: Such route already exists.
 </pre></div><p>We can refactor it to decrease it to one line:</p><div class="highlight"><pre><span></span><span class="c1"># api.py</span>
 
-<span class="k">def</span> <span class="nf">route</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
-    <span class="k">assert</span> <span class="n">path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">routes</span><span class="p">,</span> <span class="s2">&quot;Such route already exists.&quot;</span>
+<span class="k">class</span> <span class="nc">API</span><span class="p">:</span>
+    <span class="o">...</span>
+
+    <span class="k">def</span> <span class="nf">route</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">routes</span><span class="p">,</span> <span class="s2">&quot;Such route already exists.&quot;</span>
 
     <span class="o">...</span>
 </pre></div><p>Voilà! Onto the next feature.</p><h2>Class Based Handlers</h2><p>If you know Django, you know that it supports both function based and class based views (our handlers). We already have function based handlers. Now we will add class based ones which are more suitable if the handler is more complicated and bigger. Our class based handlers will look like this:</p><div class="highlight"><pre><span></span><span class="c1"># app.py</span>
+
+<span class="o">...</span>
 
 <span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/book&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">BooksHandler</span><span class="p">:</span>
@@ -79,59 +93,72 @@ AssertionError: Such route already exists.
     <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="n">resp</span><span class="p">):</span>
         <span class="n">resp</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Endpoint to create a book&quot;</span>
 
-    <span class="o">...</span>
+<span class="o">...</span>
 </pre></div><p>It means that our dict where we store routes <code>self.routes</code> can contain both classes and functions as values. Thus, when we find a handler in the <code>handle_request()</code> method, we need to check if the handler is a function or if it is a class. If it is a function, it should work just like now. If it is a class, depending on the request method, we should call the appropriate method of the class. That is, if the request method is <code>GET</code>, we should call the <code>get()</code> method of the class, if it is <code>POST</code> we should call the <code>post</code> method and etc. Here is how the <code>handle_request()</code> method looks like now:</p><div class="highlight"><pre><span></span><span class="c1"># api.py</span>
 
-<span class="k">def</span> <span class="nf">handle_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">API</span><span class="p">:</span>
+    <span class="o">...</span>
 
-    <span class="n">handler</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_handler</span><span class="p">(</span><span class="n">request_path</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">handle_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
 
-    <span class="k">if</span> <span class="n">handler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">handler</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">default_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+        <span class="n">handler</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_handler</span><span class="p">(</span><span class="n">request_path</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">response</span>
+        <span class="k">if</span> <span class="n">handler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">handler</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">response</span>
+
+    <span class="o">...</span>
 </pre></div><p>The first thing we will do is check if the found handler is a class. For that, we use the <code>inspect</code> module like this:</p><div class="highlight"><pre><span></span><span class="c1"># api.py</span>
-
+<span class="o">...</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 
-<span class="o">...</span>
+<span class="k">class</span> <span class="nc">API</span><span class="p">:</span>
+    <span class="o">...</span>
 
-<span class="k">def</span> <span class="nf">handle_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">handle_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
 
-    <span class="n">handler</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_handler</span><span class="p">(</span><span class="n">request_path</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">handler</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_handler</span><span class="p">(</span><span class="n">request_path</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">handler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
-            <span class="k">pass</span>   <span class="c1"># class based handler is being used</span>
+        <span class="k">if</span> <span class="n">handler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
+                <span class="k">pass</span>   <span class="c1"># class based handler is being used</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">handler</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">handler</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">default_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">response</span>
+        <span class="k">return</span> <span class="n">response</span>
 
-<span class="o">...</span>
+    <span class="o">...</span>
 </pre></div><p>Now, if a class based handler is being used, we need to find the appropriate method of the class depending on the request method. For that we can use the built-in <code>getattr</code> function:</p><div class="highlight"><pre><span></span><span class="c1"># api.py</span>
 
-<span class="k">def</span> <span class="nf">handle_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+<span class="o">...</span>
 
-    <span class="n">handler</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_handler</span><span class="p">(</span><span class="n">request_path</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">API</span><span class="p">:</span>
+    <span class="o">...</span>
 
-    <span class="k">if</span> <span class="n">handler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
-            <span class="n">handler_function</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">handler</span><span class="p">(),</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="bp">None</span><span class="p">)</span>
-            <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">handle_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+
+        <span class="n">handler</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_handler</span><span class="p">(</span><span class="n">request_path</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">handler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
+                <span class="n">handler_function</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">handler</span><span class="p">(),</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="bp">None</span><span class="p">)</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">handler</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">handler</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">default_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">response</span>
+        <span class="k">return</span> <span class="n">response</span>
+
+    <span class="o">...</span>
 </pre></div><p><code>getattr</code> accepts an object instance as the first param and the attribute name to get as the second. The third argument is the value to return if nothing is found. So, <code>GET</code> will return <code>get</code>, <code>POST</code> will return <code>post</code> and <code>some_other_attribute</code> will return <code>None</code>. If the <code>handler_function</code> is <code>None</code>, it means that such function was not implemented in the class and that this request method is not allowed:</p><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
     <span class="n">handler_function</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">handler</span><span class="p">(),</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="bp">None</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">handler_function</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -141,38 +168,57 @@ AssertionError: Such route already exists.
     <span class="k">if</span> <span class="n">handler_function</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Method now allowed&quot;</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="p">)</span>
     <span class="n">handler_function</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</pre></div><p>Now the whole method looks like this:</p><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">handle_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+</pre></div><p>Now the whole method looks like this:</p><div class="highlight"><pre><span></span><span class="o">...</span>
 
-    <span class="n">handler</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_handler</span><span class="p">(</span><span class="n">request_path</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">API</span><span class="p">:</span>
+    <span class="o">...</span>
 
-    <span class="k">if</span> <span class="n">handler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
-            <span class="n">handler_function</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">handler</span><span class="p">(),</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="bp">None</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">handler_function</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Method now allowed&quot;</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="p">)</span>
-            <span class="n">handler_function</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">handle_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+
+        <span class="n">handler</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_handler</span><span class="p">(</span><span class="n">request_path</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">handler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
+                <span class="n">handler_function</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">handler</span><span class="p">(),</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="bp">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">handler_function</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Method now allowed&quot;</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="p">)</span>
+                <span class="n">handler_function</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">handler</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+    <span class="o">...</span>
+</pre></div><p>I don't like that we have both <code>handler_function</code> and <code>handler</code>. We can refactor them to make it more elegant:</p><div class="highlight"><pre><span></span><span class="c1"># api.py</span>
+<span class="o">...</span>
+
+<span class="k">class</span> <span class="nc">API</span><span class="p">:</span>
+    <span class="o">...</span>
+
+    <span class="k">def</span> <span class="nf">handle_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+
+        <span class="n">handler</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_handler</span><span class="p">(</span><span class="n">request_path</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">handler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
+                <span class="n">handler</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">handler</span><span class="p">(),</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="bp">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">handler</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Method now allowed&quot;</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="p">)</span>
+
             <span class="n">handler</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">default_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
-</pre></div><p>I don't like that we have both <code>handler_function</code> and <code>handler</code>. We can refactor them to make it more elegant:</p><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">handle_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
 
-    <span class="n">handler</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_handler</span><span class="p">(</span><span class="n">request_path</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span>
 
-    <span class="k">if</span> <span class="n">handler</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>
-            <span class="n">handler</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">handler</span><span class="p">(),</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="bp">None</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">handler</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Method now allowed&quot;</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span><span class="p">)</span>
+    <span class="o">...</span>
+</pre></div><p>And that's it. We can now test the support for class based handlers. First, if you haven't already, add this handler to <code>app.py</code>:</p><div class="highlight"><pre><span></span><span class="c1"># app.py</span>
 
-        <span class="n">handler</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">default_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+<span class="o">...</span>
 
-    <span class="k">return</span> <span class="n">response</span>
-</pre></div><p>And that's it. We can now test the support for class based handlers. First, if you haven't already, add this handler to <code>app.py</code>:</p><div class="highlight"><pre><span></span><span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/book&quot;</span><span class="p">)</span>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/book&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">BooksResource</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">,</span> <span class="n">resp</span><span class="p">):</span>
         <span class="n">resp</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;Books Page&quot;</span>
@@ -187,7 +233,9 @@ AssertionError: Such route already exists.
 <span class="nd">@pytest.fixture</span>
 <span class="k">def</span> <span class="nf">api</span><span class="p">():</span>
     <span class="k">return</span> <span class="n">API</span><span class="p">()</span>
-</pre></div><p>Now, for our first unit test, let's start with something simple. Let's test if we can add a route. If it doesn't throw an exception, it means that the test passes successfully:</p><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_basic_route</span><span class="p">(</span><span class="n">api</span><span class="p">):</span>
+</pre></div><p>Now, for our first unit test, let's start with something simple. Let's test if we can add a route. If it doesn't throw an exception, it means that the test passes successfully:</p><div class="highlight"><pre><span></span><span class="o">...</span>
+
+<span class="k">def</span> <span class="nf">test_basic_route</span><span class="p">(</span><span class="n">api</span><span class="p">):</span>
     <span class="nd">@api.route</span><span class="p">(</span><span class="s2">&quot;/home&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">home</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">resp</span><span class="p">):</span>
         <span class="n">resp</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;YOLO&quot;</span>
@@ -198,6 +246,8 @@ test_bumbo.py .                                                                 
 <span class="o">======</span> <span class="m">1</span> passed in 0.09 <span class="nv">seconds</span> <span class="o">======</span>
 </pre></div><p>Now, let's test that it throws an exception if we try to add an existing route:</p><div class="highlight"><pre><span></span><span class="c1"># test_bumbo.py</span>
 
+<span class="o">...</span>
+
 <span class="k">def</span> <span class="nf">test_route_overlap_throws_exception</span><span class="p">(</span><span class="n">api</span><span class="p">):</span>
     <span class="nd">@api.route</span><span class="p">(</span><span class="s2">&quot;/home&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">home</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">resp</span><span class="p">):</span>
@@ -207,7 +257,7 @@ test_bumbo.py .                                                                 
         <span class="nd">@api.route</span><span class="p">(</span><span class="s2">&quot;/home&quot;</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">home2</span><span class="p">(</span><span class="n">req</span><span class="p">,</span> <span class="n">resp</span><span class="p">):</span>
             <span class="n">resp</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;YOLO&quot;</span>
-</pre></div><p>Run the tests again and you will see that both of them pass.</p><p>We can add a lot more tests such as the default response, parameterized routing, status codes and etc. However, all of them require that we send an HTTP request to our handlers. For that we need to have a test client. But I think this post will become too big if we do it here. We will do it in the next post in these series. We will also add support for templates and a couple of other interesting stuff. So, stay tuned.</p><p>As usual, if you want to see some feature implemented please let me know in the comments section.</p><p>P.S. These blog posts are based on the <a href="https://github.com/rahmonov/alcazar">Python web framework</a> that I am building. So, <a href="https://github.com/rahmonov/alcazar">check it out</a> to see what is yet to come in the blog and make sure to show some love by starring the repo.</p><p>Fight on!</p><p><em>Check out Part I <a href="/posts/write-python-framework-part-two/">here</a></em><br><em>Check out Part III <a href="/posts/write-python-framework-part-three/">here</a></em><br></p></div><div class="pagination clearfix"><a class="prev" href="/posts/write-python-framework-part-one/">« Previous</a><a class="next" href="/posts/write-python-framework-part-three/">Next »</a></ul></div><p><div class="likely likely-big"><div class="facebook">Share</div><div class="twitter" data-via="rahmon0v">Tweet</div><div class="telegram">Send</div><div class="linkedin">Share</div></div></p><div class="end"><span> If you liked what you read, subscribe below. Once in a while, I will send you a list of my new posts. </span><div id="popup"><p><link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css"><style type="text/css">
+</pre></div><p>Run the tests again and you will see that both of them pass.</p><p>We can add a lot more tests such as the default response, parameterized routing, status codes and etc. However, all of them require that we send an HTTP request to our handlers. For that we need to have a test client. But I think this post will become too big if we do it here. We will do it in the next post in this series. We will also add support for templates and a couple of other interesting stuff. So, stay tuned.</p><p>As usual, if you want to see some feature implemented please let me know in the comments section.</p><blockquote><p>A little reminder that this series is based on the <a href="https://github.com/rahmonov/alcazar">Alcazar framework</a> that I am writing for learning purposes. If you liked this series, show some love by starring the <a href="https://github.com/rahmonov/alcazar">repo</a>.</p></blockquote><p>Fight on!</p><p><em>Check out Part I <a href="/posts/write-python-framework-part-two/">here</a></em><br><em>Check out Part III <a href="/posts/write-python-framework-part-three/">here</a></em><br></p></div><div class="pagination clearfix"><a class="prev" href="/posts/write-python-framework-part-one/">« Previous</a><a class="next" href="/posts/write-python-framework-part-three/">Next »</a></ul></div><p><div class="likely likely-big"><div class="facebook">Share</div><div class="twitter" data-via="rahmon0v">Tweet</div><div class="telegram">Send</div><div class="linkedin">Share</div></div></p><div class="end"><span> If you liked what you read, subscribe below. Once in a while, I will send you a list of my new posts. </span><div id="popup"><p><link href="//cdn-images.mailchimp.com/embedcode/classic-10_7.css" rel="stylesheet" type="text/css"><style type="text/css">
                 #mc_embed_signup{background:#fff; clear:left; font:14px Helvetica,Arial,sans-serif; }
                 /* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
                    We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
