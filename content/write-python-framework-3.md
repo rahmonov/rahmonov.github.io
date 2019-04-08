@@ -16,7 +16,7 @@ learning purposes. If you liked this series, show some love by starring the [rep
 In the previous blog posts in the series, we started writing our own Python framework and implemented
 the following features:
 
-- WSGI compatible
+- WSGI compatibility
 - Request Handlers
 - Routing: simple and parameterized
 - Check for duplicate routes
@@ -83,7 +83,8 @@ def api():
     return API()
 ```
 
-In case you didn't know, this file is where `pytest` looks for fixtures by default. Now, let's create the test client fixture here:
+In case you didn't know, this file is where `pytest` looks for fixtures by default. Remember to delete this `api` fixture from `test_bumbo.py`.
+Now, let's create the test client fixture:
 
 ```python
 # conftest.py
@@ -186,6 +187,8 @@ class API:
         assert path not in self.routes, "Such route already exists."
 
         self.routes[path] = handler
+
+    ...
 ```
 
 Pretty simple. Does this code look familiar to you? It is because we already wrote such code in the `route` decorator. We can now follow the DRY principle and
@@ -210,12 +213,15 @@ class API:
 
         return wrapper
 
+    ...
 ```
 
 And let's add a unit test to check if it is working:
 
 ```python
 # test_bumbo.py
+
+...
 
 def test_alternative_route(api, client):
     response_text = "Alternative way to add a route"
@@ -226,6 +232,8 @@ def test_alternative_route(api, client):
     api.add_route("/alternative", home)
 
     assert client.get("http://testserver/alternative").text == response_text
+
+...
 ```
 
 Run your tests and you will see that all of them pass.
@@ -294,6 +302,7 @@ Then, create the `Environment` object in the `__init__` method of our `API` clas
 
 ```python
 # api.py
+...
 import os
 from jinja2 import Environment, FileSystemLoader
 
@@ -312,13 +321,18 @@ have to write it if they don't want to. Now we have everything to implement the 
 
 ```python
 # api.py
+...
 
 class API:
+    ...
+
     def template(self, template_name, context=None):
         if context is None:
             context = {}
 
         return self.templates_env.get_template(template_name).render(**context)
+
+    ...
 ```
 
 I don't think there is a need to explain anything here. The only thing you may wonder about is why I gave `context` a default value of `None`,
@@ -350,10 +364,14 @@ Now we can create a handler in our `app.py`:
 
 ```python
 # app.py
+...
 
-@api.route("/template")
+@app.route("/template")
 def template_handler(req, resp):
     resp.body = app.template("index.html", context={"name": "Alcazar", "title": "Best Framework"})
+
+
+...
 ```
 
 That's it (well, almost). Start `gunicorn` and go to `http://localhost:8000/template`. You will see a big bold `Internal Server Error`.
@@ -362,7 +380,7 @@ That's because `resp.body` expects bytes and our `template` method returns a uni
 ```python
 # app.py
 
-@api.route("/template")
+@app.route("/template")
 def template_handler(req, resp):
     resp.body = app.template("index.html", context={"name": "Alcazar", "title": "Best Framework"}).encode()
 ```

@@ -17,7 +17,7 @@ learning purposes. If you liked this series, show some love by starring the [rep
 In the previous blog posts in the series, we started writing our own Python framework and implemented
 the following features:
 
-- WSGI compatible
+- WSGI compatibility
 - Request Handlers
 - Routing: simple and parameterized
 - Check for duplicate routes
@@ -49,9 +49,9 @@ from api import API
 app = API()
 
 def custom_exception_handler(request, response, exception_cls):
-    resp.text = "Oops! Something went wrong. Please, contact our customer support at +1-202-555-0127."
+    response.text = "Oops! Something went wrong. Please, contact our customer support at +1-202-555-0127."
 
-api.add_exception_handler(custom_exception_handler)
+app.add_exception_handler(custom_exception_handler)
 ```
 
 Here we create a custom exception handler. It looks almost like our simple request handlers, except that it has `exception_cls` as its
@@ -338,6 +338,7 @@ WSGI entrypoint interface:
 
 ```python
 # middleware.py
+from webob import Request
 
 class Middleware:
 
@@ -353,11 +354,12 @@ With our Middleware class implemented, let's add it to our main `API` class:
 
 ```python
 # api.py
+...
 from middleware import Middleware
 
 
 class API:
-    def __call__(self, environ, start_response):
+    def __init__(self, templates_dir="templates", static_dir="static"):
         ...
         self.middleware = Middleware(self)
 ```
@@ -371,7 +373,7 @@ class API:
     ...
 
     def add_middleware(self, middleware_cls):
-        self.middleware.add_middleware(middleware_cls)
+        self.middleware.add(middleware_cls)
 ```
 
 The only thing left to do is call this middleware in the entrypoint instead of our own wsgi app:
@@ -442,6 +444,14 @@ class API:
 
         return self.middleware(environ, start_response)
 ```
+
+Now, in the templates, we should call static files like so:
+
+```html
+<link href="/static/main.css" type="text/css" rel="stylesheet">
+```
+
+Go ahead and change your `index.html`.
 
 Restart your gunicorn and check that everything is working properly.
 
