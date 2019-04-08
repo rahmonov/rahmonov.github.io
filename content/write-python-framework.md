@@ -10,7 +10,7 @@ Summary: This is the first of the series where we will be writing our own Python
 *Check out Part II [here](/posts/write-python-framework-part-two/)*
 
 "Don't reinvent the wheel" is one of the most frequent mantras we hear every day. But what if I want to learn more about the wheel?
-What if I want to learn how to make this damn wheel? I think it is a great idea to reinvent it for the purpose of learning. Thus, in these series,
+What if I want to learn how to make this damn wheel? I think it is a great idea to reinvent it for the purpose of learning. Thus, in this series,
 we will write our own Python web framework to see how all that magic is done in Flask, Django and other frameworks.
 
 In this first part of the series, we will build the most important parts of the framework. At the end of it, we will have request handlers (think Django views) and
@@ -444,7 +444,7 @@ Let's write a handler with this type of route and try it out:
 
 @app.route("/hello/{name}")
 def greeting(request, response, name):
-    resp.text = f"Hello, {name}"
+    response.text = f"Hello, {name}"
 
 ...
 ```
@@ -462,4 +462,3 @@ features we should implement in our framework. I am thinking of class based hand
 Fight on!
 
 *Check out Part II [here](/posts/write-python-framework-part-two/)*<br>
-*Check out Part III [here](/posts/write-python-framework-part-three/)*<br>

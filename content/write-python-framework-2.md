@@ -10,7 +10,7 @@ Summary: The second post of the series where we will be writing our own Python f
 In the [first part](/posts/write-python-framework-part-one/), we started writing our own Python framework and implemented
 the following features:
 
-- WSGI compatible
+- WSGI compatibility
 - Request Handlers
 - Routing: simple and parameterized
 
@@ -47,6 +47,9 @@ Before we write any code, let's remember our main `API` class:
 
 ```python
 # api.py
+from parse import parse
+from webob import Request, Response
+
 
 class API:
     def __init__(self):
@@ -96,15 +99,21 @@ We need to change the `route` function so that it throws an exception if an exis
 ```python
 # api.py
 
-def route(self, path):
-    if path in self.routes:
-        raise AssertionError("Such route already exists.")
 
-    def wrapper(handler):
-        self.routes[path] = handler
-        return handler
+class API:
+    ...
 
-    return wrapper
+    def route(self, path):
+        if path in self.routes:
+            raise AssertionError("Such route already exists.")
+
+        def wrapper(handler):
+            self.routes[path] = handler
+            return handler
+
+        return wrapper
+
+    ...
 ```
 
 Now, try adding the same route twice and restart your gunicorn. You should see the following exception thrown:
@@ -120,8 +129,11 @@ We can refactor it to decrease it to one line:
 ```python
 # api.py
 
-def route(self, path):
-    assert path not in self.routes, "Such route already exists."
+class API:
+    ...
+
+    def route(self, path):
+        assert path not in self.routes, "Such route already exists."
 
     ...
 ```
@@ -136,6 +148,8 @@ Now we will add class based ones which are more suitable if the handler is more 
 ```python
 # app.py
 
+...
+
 @app.route("/book")
 class BooksHandler:
     def get(self, req, resp):
@@ -144,7 +158,7 @@ class BooksHandler:
     def post(self, req, resp):
         resp.text = "Endpoint to create a book"
 
-    ...
+...
 ```
 
 It means that our dict where we store routes `self.routes` can contain both classes and functions as values. Thus, when we find a handler
@@ -155,44 +169,50 @@ we should call the `get()` method of the class, if it is `POST` we should call t
 ```python
 # api.py
 
-def handle_request(self, request):
-    response = Response()
+class API:
+    ...
 
-    handler, kwargs = self.find_handler(request_path=request.path)
+    def handle_request(self, request):
+        response = Response()
 
-    if handler is not None:
-        handler(request, response, **kwargs)
-    else:
-        self.default_response(response)
+        handler, kwargs = self.find_handler(request_path=request.path)
 
-    return response
+        if handler is not None:
+            handler(request, response, **kwargs)
+        else:
+            self.default_response(response)
+
+        return response
+
+    ...
 ```
 
 The first thing we will do is check if the found handler is a class. For that, we use the `inspect` module like this:
 
 ```python
 # api.py
-
+...
 import inspect
 
-...
+class API:
+    ...
 
-def handle_request(self, request):
-    response = Response()
+    def handle_request(self, request):
+        response = Response()
 
-    handler, kwargs = self.find_handler(request_path=request.path)
+        handler, kwargs = self.find_handler(request_path=request.path)
 
-    if handler is not None:
-        if inspect.isclass(handler):
-            pass   # class based handler is being used
+        if handler is not None:
+            if inspect.isclass(handler):
+                pass   # class based handler is being used
+            else:
+                handler(request, response, **kwargs)
         else:
-            handler(request, response, **kwargs)
-    else:
-        self.default_response(response)
+            self.default_response(response)
 
-    return response
+        return response
 
-...
+    ...
 ```
 
 Now, if a class based handler is being used, we need to find the appropriate method of the class depending on the request method.
@@ -201,21 +221,28 @@ For that we can use the built-in `getattr` function:
 ```python
 # api.py
 
-def handle_request(self, request):
-    response = Response()
+...
 
-    handler, kwargs = self.find_handler(request_path=request.path)
+class API:
+    ...
 
-    if handler is not None:
-        if inspect.isclass(handler):
-            handler_function = getattr(handler(), request.method.lower(), None)
-            pass
+    def handle_request(self, request):
+        response = Response()
+
+        handler, kwargs = self.find_handler(request_path=request.path)
+
+        if handler is not None:
+            if inspect.isclass(handler):
+                handler_function = getattr(handler(), request.method.lower(), None)
+                pass
+            else:
+                handler(request, response, **kwargs)
         else:
-            handler(request, response, **kwargs)
-    else:
-        self.default_response(response)
+            self.default_response(response)
 
-    return response
+        return response
+
+    ...
 ```
 
 `getattr` accepts an object instance as the first param and the attribute name to get as the second. The third argument is the value to return if nothing is found.
@@ -242,47 +269,66 @@ if inspect.isclass(handler):
 Now the whole method looks like this:
 
 ```python
-def handle_request(self, request):
-    response = Response()
+...
 
-    handler, kwargs = self.find_handler(request_path=request.path)
+class API:
+    ...
 
-    if handler is not None:
-        if inspect.isclass(handler):
-            handler_function = getattr(handler(), request.method.lower(), None)
-            if handler_function is None:
-                raise AttributeError("Method now allowed", request.method)
-            handler_function(request, response, **kwargs)
+    def handle_request(self, request):
+        response = Response()
+
+        handler, kwargs = self.find_handler(request_path=request.path)
+
+        if handler is not None:
+            if inspect.isclass(handler):
+                handler_function = getattr(handler(), request.method.lower(), None)
+                if handler_function is None:
+                    raise AttributeError("Method now allowed", request.method)
+                handler_function(request, response, **kwargs)
+            else:
+                handler(request, response, **kwargs)
         else:
-            handler(request, response, **kwargs)
-    else:
-        self.default_response(response)
+            self.default_response(response)
+
+    ...
 ```
 
 I don't like that we have both `handler_function` and `handler`. We can refactor them to make it more elegant:
 
 ```python
-def handle_request(self, request):
-    response = Response()
+# api.py
+...
 
-    handler, kwargs = self.find_handler(request_path=request.path)
+class API:
+    ...
 
-    if handler is not None:
-        if inspect.isclass(handler):
-            handler = getattr(handler(), request.method.lower(), None)
-            if handler is None:
-                raise AttributeError("Method now allowed", request.method)
+    def handle_request(self, request):
+        response = Response()
 
-        handler(request, response, **kwargs)
-    else:
-        self.default_response(response)
+        handler, kwargs = self.find_handler(request_path=request.path)
 
-    return response
+        if handler is not None:
+            if inspect.isclass(handler):
+                handler = getattr(handler(), request.method.lower(), None)
+                if handler is None:
+                    raise AttributeError("Method now allowed", request.method)
+
+            handler(request, response, **kwargs)
+        else:
+            self.default_response(response)
+
+        return response
+
+    ...
 ```
 
 And that's it. We can now test the support for class based handlers. First, if you haven't already, add this handler to `app.py`:
 
 ```python
+# app.py
+
+...
+
 @app.route("/book")
 class BooksResource:
     def get(self, req, resp):
@@ -331,6 +377,8 @@ it means that the test passes successfully:
 
 ```python
 
+...
+
 def test_basic_route(api):
     @api.route("/home")
     def home(req, resp):
@@ -353,6 +401,8 @@ Now, let's test that it throws an exception if we try to add an existing route:
 ```python
 # test_bumbo.py
 
+...
+
 def test_route_overlap_throws_exception(api):
     @api.route("/home")
     def home(req, resp):
@@ -368,12 +418,12 @@ Run the tests again and you will see that both of them pass.
 
 We can add a lot more tests such as the default response, parameterized routing, status codes and etc. However, all of them require that
 we send an HTTP request to our handlers. For that we need to have a test client. But I think this post will become too big if we do it here.
-We will do it in the next post in these series. We will also add support for templates and a couple of other interesting stuff. So, stay tuned.
+We will do it in the next post in this series. We will also add support for templates and a couple of other interesting stuff. So, stay tuned.
 
 As usual, if you want to see some feature implemented please let me know in the comments section.
 
-P.S. These blog posts are based on the [Python web framework](https://github.com/rahmonov/alcazar) that I am building. So, [check it out](https://github.com/rahmonov/alcazar) to see
-what is yet to come in the blog and make sure to show some love by starring the repo.
+> A little reminder that this series is based on the [Alcazar framework](https://github.com/rahmonov/alcazar) that I am writing for
+learning purposes. If you liked this series, show some love by starring the [repo](https://github.com/rahmonov/alcazar).
 
 Fight on!
 
