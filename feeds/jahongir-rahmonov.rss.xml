@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>Jahongir Rahmonov</title><link>http://rahmonov.me/</link><description></description><lastBuildDate>Sat, 23 Feb 2019 20:10:00 +0500</lastBuildDate><item><title>How to write a Python web framework. Part II.</title><link>http://rahmonov.me/posts/write-python-framework-part-two/</link><description>&lt;p&gt;In the &lt;a href="/posts/write-python-framework-part-one/"&gt;first part&lt;/a&gt;, we started writing our own Python framework and implemented
+<rss version="2.0"><channel><title>Jahongir Rahmonov</title><link>http://rahmonov.me/</link><description></description><lastBuildDate>Sat, 23 Feb 2019 20:10:00 +0500</lastBuildDate><item><title>How to write a Python web framework. Part II.</title><link>http://rahmonov.me/posts/write-python-framework-part-two/</link><description>&lt;div class="inpost-announcement"&gt;
+      &lt;h4 style="text-align: center"&gt;&lt;a href="https://testdriven.io/courses/python-web-framework/"&gt;Learn how to write your own framework in Python!&lt;/a&gt;&lt;/h4&gt;
+      I have created a whole course out of this series. If you enjoyed this blog post, you will love the course. It is much more polished and contains many more parts. Check it out! 
+&lt;/div&gt;
+
+&lt;p&gt;In the &lt;a href="/posts/write-python-framework-part-one/"&gt;first part&lt;/a&gt;, we started writing our own Python framework and implemented
 the following features:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;WSGI compatibility&lt;/li&gt;
@@ -385,7 +390,11 @@ learning purposes. If you liked this series, show some love by starring the &lt;
 &lt;/blockquote&gt;
 &lt;p&gt;Fight on!&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Check out Part I &lt;a href="/posts/write-python-framework-part-two/"&gt;here&lt;/a&gt;&lt;/em&gt;&lt;br&gt;
-&lt;em&gt;Check out Part III &lt;a href="/posts/write-python-framework-part-three/"&gt;here&lt;/a&gt;&lt;/em&gt;&lt;br&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jahongir Rahmonov</dc:creator><pubDate>Sat, 23 Feb 2019 20:10:00 +0500</pubDate><guid isPermaLink="false">tag:rahmonov.me,2019-02-23:posts/write-python-framework-part-two/</guid><category>programming</category><category>python</category></item><item><title>How to write a Python web framework. Part I.</title><link>http://rahmonov.me/posts/write-python-framework-part-one/</link><description>&lt;p&gt;&lt;em&gt;Check out Part II &lt;a href="/posts/write-python-framework-part-two/"&gt;here&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;em&gt;Check out Part III &lt;a href="/posts/write-python-framework-part-three/"&gt;here&lt;/a&gt;&lt;/em&gt;&lt;br&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Jahongir Rahmonov</dc:creator><pubDate>Sat, 23 Feb 2019 20:10:00 +0500</pubDate><guid isPermaLink="false">tag:rahmonov.me,2019-02-23:posts/write-python-framework-part-two/</guid><category>programming</category><category>python</category></item><item><title>How to write a Python web framework. Part I.</title><link>http://rahmonov.me/posts/write-python-framework-part-one/</link><description>&lt;div class="inpost-announcement"&gt;
+      &lt;h4 style="text-align: center"&gt;&lt;a href="https://testdriven.io/courses/python-web-framework/"&gt;Learn how to write your own framework in Python!&lt;/a&gt;&lt;/h4&gt;
+      I have created a whole course out of this series. If you enjoyed this blog post, you will love the course. It is much more polished and contains many more parts. Check it out! 
+&lt;/div&gt;
+
 &lt;p&gt;"Don't reinvent the wheel" is one of the most frequent mantras we hear every day. But what if I want to learn more about the wheel?
 What if I want to learn how to make this damn wheel? I think it is a great idea to reinvent it for the purpose of learning. Thus, in this series,
 we will write our own Python web framework to see how all that magic is done in Flask, Django and other frameworks.&lt;/p&gt;
