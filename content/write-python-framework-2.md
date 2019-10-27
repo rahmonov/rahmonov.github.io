@@ -7,6 +7,11 @@ Slug: write-python-framework-part-two
 Authors: Jahongir Rahmonov
 Summary: The second post of the series where we will be writing our own Python framework just like Flask and Django.
 
+<div class="inpost-announcement">
+      <h4 style="text-align: center"><a href="https://testdriven.io/courses/python-web-framework/">Learn how to write your own framework in Python!</a></h4>
+      I have created a whole course out of this series. If you enjoyed this blog post, you will love the course. It is much more polished and contains many more parts. Check it out! 
+</div>
+
 In the [first part](/posts/write-python-framework-part-one/), we started writing our own Python framework and implemented
 the following features:
 

@@ -608,3 +608,31 @@ figure {
   margin: 0.1em 0.5em 0.5em;
   padding-top: 0.5em;
 }
+
+.inpost-announcement {
+    margin-top: 14px;
+    padding: 8px 14px;
+    border-radius: 4px;
+    background-color: #f5f5f5;
+}
+
+.inpost-announcement h4 {
+    margin: 0;
+    margin-bottom: 5px;
+    padding: 0;
+}
+
+.announcement-bar {
+    padding: 8px 14px;
+    border-radius: 4px;
+    border:thin solid #EDDD00;
+    background-color: #FFFDDE;
+    margin-bottom: 5px;
+}
+
+.announcement-bar h4 {
+    margin: 0;
+    margin-bottom: 5px;
+    padding: 0;
+    font-family: Verdana !important;
+}

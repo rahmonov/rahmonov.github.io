@@ -7,7 +7,10 @@ Slug: write-python-framework-part-one
 Authors: Jahongir Rahmonov
 Summary: This is the first of the series where we will be writing our own Python framework just like Flask and Django.
 
-*Check out Part II [here](/posts/write-python-framework-part-two/)*
+<div class="inpost-announcement">
+      <h4 style="text-align: center"><a href="https://testdriven.io/courses/python-web-framework/">Learn how to write your own framework in Python!</a></h4>
+      I have created a whole course out of this series. If you enjoyed this blog post, you will love the course. It is much more polished and contains many more parts. Check it out! 
+</div>
 
 "Don't reinvent the wheel" is one of the most frequent mantras we hear every day. But what if I want to learn more about the wheel?
 What if I want to learn how to make this damn wheel? I think it is a great idea to reinvent it for the purpose of learning. Thus, in this series,
